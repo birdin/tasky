@@ -1,7 +1,20 @@
+import {Container} from '@/components/ui'
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Hello!</h1>
-    </main>
+    <>
+      <Container width='regular'>
+        <h1>Hello!</h1>
+      </Container>
+
+      <Container>
+        <h2>HEllo</h2>
+        <h2>HEllo</h2>
+      </Container>
+      
+      <h2>HEllo</h2>
+      <h2>HEllo</h2>
+      <h2>HEllo</h2>
+    </>
   )
 }
