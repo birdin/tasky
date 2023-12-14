@@ -1,5 +1,5 @@
-export const Container = ({ children, width }: { children: React.ReactNode, width: string | null }) => {
-    if (!width) {
+export const Container = ({ children, width }: { children: React.ReactNode, width?: string }) => {
+    if (width) {
         return (
             <div className="mx-auto px-4 sm:px-6 md:px-8">
                 {children}
