@@ -4,7 +4,7 @@ import { Container } from '@/components/ui'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export default function HomePage() {
   return (
     <>
       <Container width='regular'>
