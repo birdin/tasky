@@ -1,8 +1,14 @@
-const BoardPage = () => {
+import { getPosts } from "@/lib/api";
+import ProjectLists from "./components/ProjectLists";
+
+
+const BoardPage = async () => {
+    //const el = await getPosts();
+    //console.log(el);
     return (
         <>
             <div>Hey there</div>
-            <h1>FEEEE</h1>
+            <ProjectLists />
         </>
     )
 }
