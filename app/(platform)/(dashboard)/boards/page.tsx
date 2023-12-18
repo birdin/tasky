@@ -3,8 +3,7 @@ import ProjectLists from "./components/ProjectLists";
 
 
 const BoardPage = async () => {
-    //const el = await getPosts();
-    //console.log(el);
+
     return (
         <>
             <div>Hey there</div>
