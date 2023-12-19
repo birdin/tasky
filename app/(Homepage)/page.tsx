@@ -1,24 +1,11 @@
-import { Inter } from 'next/font/google'
-
 import { Container } from '@/components/ui'
-
-const inter = Inter({ subsets: ['latin'] })
+import { Hero } from './component/Hero'
 
 export default function HomePage() {
   return (
     <>
-      <Container width='regular'>
-        <div className="max-w-4xl mx-auto">
-          <h1 className={`${inter.className} text-center font-bold text-2xl md:text-5xl`}>Manage Your Tasks easily and efficiently!</h1>
-          <p>Tasky is a platform which provides a powerful and intuitive Kanban board system designed to streamline your workflow and optimize task management.</p>
-          <div className="">
-            <a href="">Get started for free</a>
-            <a href="">Start enterprise edition</a>
-            <p>No credit card required</p>
-          </div>
-        </div>
+      <Hero />
 
-      </Container>
 
       <Container>
         <h2>Easy, simple and powerful </h2>

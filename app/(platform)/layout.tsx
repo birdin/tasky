@@ -6,8 +6,6 @@ export default function AuthLayour({ children }: { children: React.ReactNode }) 
     return (
         <>  
         <Providers>
-            <Navbar />
-
             {children}
         </Providers>
         </>
