@@ -3,6 +3,7 @@
 import React from 'react'
 import { SessionProvider, useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
+import { Navbar } from '@/components/Navbar'
 
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
@@ -17,6 +18,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         return (
             <>
                 <SessionProvider>
+                    <Navbar/>
                     {children}
                 </SessionProvider>
             </>

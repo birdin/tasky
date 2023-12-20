@@ -47,7 +47,7 @@ export const Hero = () => {
                                     <path fill="#434343" d="M7.04 10.56h7.48v.88H7.04v-.88z"></path>
                                 </svg>
                             </a>
-                            <a href="" className='px-3 py-2 ring-1 flex items-center gap-2 ring-stone-400 bg-[--main-color] text-white rounded shadow-2xl shadow-red-600'>
+                            <a href="" className='px-3 py-2 ring-1 flex items-center gap-2 ring-stone-400 bg-[--main-color] text-white rounded shadow-2xl shadow-red-600 hover:opacity-80'>
                                 Get started for free
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
