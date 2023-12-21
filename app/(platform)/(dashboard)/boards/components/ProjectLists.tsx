@@ -5,6 +5,16 @@ import { useSession } from "next-auth/react"
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid';
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+
 import { useInput } from '@/hooks/useInput'
 
 const projects = [
@@ -28,7 +38,10 @@ const ProjectLists = () => {
                     Projects
                 </h2>
                 <div className="">
-                    <button className="bg-gray-100/80 font-medium rounded-md px-4 py-2 text-sm text-gray-500">+ Create new project</button>
+                    {
+                        // Create button
+                    }
+                    <DialogDemo />
                 </div>
             </div>
             <div className="flex gap-4 text-sm mt-2 flex-wrap">
@@ -68,12 +81,11 @@ const ProjectLists = () => {
 
             <section className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2'>
                 {
-                    projects.filter(el => el.title.indexOf(inputSearch.value) != -1 ).map(project => (
+                    projects.filter(el => el.title.indexOf(inputSearch.value) != -1).map(project => (
                         <Card key={project.id} title={project.title} image={project.image} id={project.id} />
                     ))
                 }
             </section>
-
         </>
     )
 }
@@ -91,6 +103,25 @@ const Card = ({ title, image, id }: { title: string, image: string, id: string }
                 </div>
             </Link>
         </div>
+    )
+}
+
+function DialogDemo() {
+    return (
+        <Dialog>
+            <DialogTrigger className="bg-gray-100/80 font-medium rounded-md px-4 py-2 text-sm text-gray-500">
+            + Create new project
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Are you sure absolutely sure?</DialogTitle>
+                    <DialogDescription>
+                        This action cannot be undone. This will permanently delete your account
+                        and remove your data from our servers.
+                    </DialogDescription>
+                </DialogHeader>
+            </DialogContent>
+        </Dialog>
     )
 }
 
