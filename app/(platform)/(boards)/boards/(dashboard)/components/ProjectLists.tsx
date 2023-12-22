@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -118,8 +119,13 @@ function DialogDemo() {
             <DialogTrigger className="bg-gray-100/80 font-medium rounded-md px-4 py-2 text-sm text-gray-500">
                 + Create new project
             </DialogTrigger>
-            <DialogContent className='py-8'>
+            <DialogContent className='py-7'>
                 <CreateBoardForm />
+                <form action="">
+                    <Button type="submit" variant="outline" onClick={() => DialogClose} className="w-full">
+                        Create new board
+                    </Button>
+                </form>
             </DialogContent>
         </Dialog>
     )
@@ -130,17 +136,17 @@ const CreateBoardForm = () => {
     return (
         <>
             <div className="">
-                <CardTitle className='mb-1'>Create a new project / board</CardTitle>
+                <CardTitle className='mb-1 text-[23px]'>Create a new project / board</CardTitle>
                 <CardDescription className='text-sm'>
                     Define a new board and its elements.
                 </CardDescription>
             </div>
             <div className="grid gap-2 mt-1">
-                <Label htmlFor="name" className="font-semibold text-base">What’s the name of the board?</Label>
+                <Label htmlFor="name" className="font-semibold text-[15px]">What’s the name of the board?</Label>
                 <Input id="name" placeholder="First Last" className='hover:outline-none' />
             </div>
             <div className="grid gap-1">
-                <Label htmlFor="name" className="font-semibold text-base">Select your template</Label>
+                <Label htmlFor="name" className="font-semibold text-[15px]">Select your template</Label>
                 <CardDescription className='text-sm mb-1'>
                     Define a new board and its elements.
                 </CardDescription>
@@ -193,12 +199,12 @@ const CreateBoardForm = () => {
                 </RadioGroup>
             </div>
             <div className="grid gap-1 mt-1">
-                <Label htmlFor="name" className="font-semibold text-base">Select the background</Label>
+                <Label htmlFor="name" className="font-semibold text-[15px]">Select the background</Label>
                 <CardDescription className='text-sm mb-2'>
                     Select the type of template to start the board.
                 </CardDescription>
 
-                <RadioGroup defaultValue="default" className="grid grid-cols-4 gap-2">
+                <RadioGroup defaultValue="default" className="grid grid-cols-4 gap-1  bg-stone-50 underline-offset-2">
                     <div className="">
                         <RadioGroupItem value="default" id="default" className="peer sr-only" />
                         <Label
@@ -228,22 +234,31 @@ const CreateBoardForm = () => {
                             </div>
                         </Label>
                     </div>
+                    <div className="">
+                        <RadioGroupItem value="bg-2" id="bg-2" className="peer sr-only" />
+                        <Label
+                            htmlFor="bg-2"
+                            className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-zinc-500 [&:has([data-state=checked])]:border-zinc-500"
+                        >
+                            <div className="h-16 w-full bg-blue-200 rounded overflow-hidden">
+                                <img className='bg-cover bg-center rounded' src="https://images.unsplash.com/photo-1682686581427-7c80ab60e3f3?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxNnx8fGVufDB8fHx8fA%3D%3D" alt="" />
+                            </div>
+                        </Label>
+                    </div>
                 </RadioGroup>
                 <div className="grid gap-1 mt-3">
                     <div className="flex items-center justify-between space-x-2">
                         <Label htmlFor="performance" className="flex flex-col space-y-1">
                             <span>Performance Cookies</span>
                             <span className="font-normal leading-snug text-muted-foreground">
-                                These cookies help to improve the performance of the website.
+                                These cookies help to improve the performance.
                             </span>
                         </Label>
                         <Switch id="performance" />
                     </div>
                 </div>
                 <div className="mt-2">
-                    <Button variant="outline" className="w-full">
-                        Create new board
-                    </Button>
+
                 </div>
             </div>
 

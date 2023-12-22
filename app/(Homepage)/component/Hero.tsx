@@ -27,7 +27,7 @@ export const Hero = () => {
                             Tasky is a platform which provides a powerful and intuitive Kanban board system designed to streamline your workflow and optimize task management.
                         </p>
                         <div className="flex gap-2 items-center justify-center text-sm flex-wrap md:flex-nowrap">
-                            <a href="" className='px-3 py-2 ring-1 ring-stone-300 rounded order-last md:order-first flex items-center gap-2 hover:shadow-red-500 transition-all hover:bg-neutral-100 hover:translate-x-0 shadow-orange-300 shadow-2xl'>
+                            <a href="" className='px-3 py-2 ring-1 ring-stone-300 rounded order-last md:order-first flex items-center gap-2  transition-all hover:opacity-70 hover:translate-x-0 shadow-orange-300 shadow-2xl'>
                                 Discover now
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
