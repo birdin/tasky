@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 import { Navbar } from '@/components/Navbar'
 
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const DashboardLayout = ({ children }: { children: React.ReactNode}) => {
     const { data: session, status } = useSession()
 
 
