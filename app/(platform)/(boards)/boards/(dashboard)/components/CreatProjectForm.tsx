@@ -21,7 +21,7 @@ type Inputs = {
 }
 
 
-export const CreateProjectForm = () => {
+export const CreateProjectForm = ({setProjects}: {setProjects: any}) => {
     const {
         register,
         handleSubmit,
@@ -32,12 +32,23 @@ export const CreateProjectForm = () => {
     const [visibility, setVisibility] = React.useState(false)
     const [title, setTitle] = React.useState('')
     const [theme, setTheme] = React.useState('default')
-
     const [open, setOpen] = React.useState(false)
+    const [error, setError] = React.useState(false)
+
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         console.log({title, theme, visibility})
-        setTimeout(()=> setOpen(false),2000)
+        if(title === '') {
+            setError(true)
+        } else {
+            setOpen(false)
+            setError(false)
+        }
+
+        setProjects((prev:any) => [...prev, 
+            {id: Date.now()+"el",title, theme, visibility, image: 'https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/891debd34b8a4dbc72e2d3474ca4e74b/photo-1515165562839-978bbcf18277.jpg'}
+        ])
+        //setTimeout(()=> setOpen(false),2000)
     }
 
 
@@ -57,9 +68,9 @@ export const CreateProjectForm = () => {
                     </div>
                     <div className="grid gap-2 mt-1">
                         <Label htmlFor="name" className="font-semibold text-[15px]">What’s the name of the board?</Label>
-                        <Input id="title" placeholder="Project name" className='hover:outline-none' onChange={el => setTitle(el.target.value)} />
+                        <Input id="title" placeholder="Project name" className='hover:outline-none' value={title} onChange={el => setTitle(el.target.value)} />
                     </div>
-                    <div className="grid gap-1">
+                    <div className="grid gap-1 mt-2">
                         <Label htmlFor="name" className="font-semibold text-[15px]">Select your template</Label>
                         <CardDescription className='text-sm mb-1'>
                             Define a new board and its elements.
@@ -136,7 +147,7 @@ export const CreateProjectForm = () => {
                             </div>
                         </RadioGroup>
                     </div>
-                    <div className="grid gap-1 mt-1">
+                    <div className="grid gap-1 mt-2">
                         <Label htmlFor="name" className="font-semibold text-[15px]">Select the background</Label>
                         <CardDescription className='text-sm mb-2'>
                             Select the type of template to start the board.
@@ -202,6 +213,7 @@ export const CreateProjectForm = () => {
                     <Button type="submit" variant="outline" className="w-full">
                         Create new board
                     </Button>
+                    {error ? <p className="text-rose-600 text-sm font-medium mt-2">Error: we cant create the board.</p> : ''}
                 </form>
             </DialogContent>
         </Dialog>

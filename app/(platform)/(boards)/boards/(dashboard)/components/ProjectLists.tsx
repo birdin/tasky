@@ -34,7 +34,7 @@ const ProjectLists = () => {
                     {
                         // Create button
                     }
-                    <CreateProjectForm />
+                    <CreateProjectForm setProjects={setProjects}/>
                 </div>
             </div>
             <div className="flex gap-4 text-sm mt-2 flex-wrap">
