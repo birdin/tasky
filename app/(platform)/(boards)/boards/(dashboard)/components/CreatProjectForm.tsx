@@ -21,7 +21,7 @@ type Inputs = {
 }
 
 
-export const CreateProjectForm = ({setProjects}: {setProjects: any}) => {
+export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
     const {
         register,
         handleSubmit,
@@ -37,18 +37,16 @@ export const CreateProjectForm = ({setProjects}: {setProjects: any}) => {
 
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
-        console.log({title, theme, visibility})
-        if(title === '') {
+        console.log({ title, theme, visibility })
+        if (title === '') {
             setError(true)
         } else {
             setOpen(false)
             setError(false)
+            setProjects((prev: any) => [...prev,
+            { id: Date.now() + "el", title, theme, visibility, image: 'https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/891debd34b8a4dbc72e2d3474ca4e74b/photo-1515165562839-978bbcf18277.jpg' }
+            ])
         }
-
-        setProjects((prev:any) => [...prev, 
-            {id: Date.now()+"el",title, theme, visibility, image: 'https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/891debd34b8a4dbc72e2d3474ca4e74b/photo-1515165562839-978bbcf18277.jpg'}
-        ])
-        //setTimeout(()=> setOpen(false),2000)
     }
 
 
@@ -58,7 +56,7 @@ export const CreateProjectForm = ({setProjects}: {setProjects: any}) => {
             <DialogTrigger className="bg-gray-100/80 font-medium rounded-md px-4 py-2 text-sm text-gray-500">
                 + Create new project
             </DialogTrigger>
-            <DialogContent className='py-7'>                    
+            <DialogContent className='py-7'>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="">
                         <CardTitle className='mb-1 text-[23px]'>Create a new project / board</CardTitle>
