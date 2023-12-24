@@ -65,23 +65,6 @@ export default function KanbanBoardPage({ params }: { params: { id: string } }) 
             const overColumnIndex = columns.findIndex((columns: { id: any; }) => columns.id === overId);
 
             return arrayMove(columns, activeColumnIndex, overColumnIndex);
-            /*
-            const activeIndex = columns.findIndex(
-                (column: any) => column.id === activeId
-            );
-
-            const overIndex = columns.findIndex(
-                (column: any) => column.id === overId
-            );
-
-            
-
-            const newColumns = [...columns];
-            newColumns.splice(activeIndex, 1);
-            newColumns.splice(overIndex, 0, activeColumn);
-
-            return newColumns;
-            */
         }
         );
 
@@ -218,8 +201,8 @@ const TaskCard = ({ item }: { item: any }) => {
             onMouseLeave={() => {
                 setMouseIsOver(false);
             }}>
-                {mouseIsOver && '✋'}
-                {content}
+            {mouseIsOver && '✋'}
+            {content}
         </div>
     )
 }
