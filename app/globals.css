@@ -35,6 +35,8 @@
     --radius: 0.5rem;
 
     --main-color: #AB1F41;
+
+    --columnBackgroundColor: #f1f3f9;
   }
 
   .dark {

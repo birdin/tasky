@@ -67,7 +67,7 @@ function ColumnContainer({
       opacity-40
       border-2
       border-pink-500
-      w-[350px]
+      w-[300px]
       h-[500px]
       max-h-[500px]
       rounded-md
@@ -83,8 +83,8 @@ function ColumnContainer({
       ref={setNodeRef}
       style={style}
       className="
-  bg-columnBackgroundColor
-  w-[350px]
+  bg-[#f1f3f9f0]
+  w-[300px]
   h-[500px]
   max-h-[500px]
   rounded-md
@@ -108,8 +108,6 @@ function ColumnContainer({
       rounded-b-none
       p-3
       font-bold
-      border-columnBackgroundColor
-      border-4
       flex
       items-center
       justify-between
@@ -128,12 +126,14 @@ function ColumnContainer({
         rounded-full
         "
           >
-            0
+            <span className="bg-slate-200 rounded	px-2 font-grey-900">
+              {tasks.length}
+            </span>
           </div>
           {!editMode && column.title}
           {editMode && (
             <input
-              className="bg-black focus:border-rose-500 border rounded outline-none px-2"
+              className="bg-transparent focus:border-rose-500 border rounded outline-none px-2"
               value={column.title}
               onChange={(e) => updateColumn(column.id, e.target.value)}
               autoFocus
@@ -179,7 +179,7 @@ function ColumnContainer({
       </div>
       {/* Column footer */}
       <button
-        className="flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black"
+        className="flex gap-2 items-center border-columnBackgroundColor rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black"
         onClick={() => {
           createTask(column.id);
         }}

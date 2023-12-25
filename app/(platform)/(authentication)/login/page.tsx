@@ -7,6 +7,7 @@ import { Suspense } from 'react';
 
 export default function HomePage() {
   const { data: session, status } = useSession()
+  console.log({ session, status })
 
 
   if (status === "authenticated") {
@@ -18,7 +19,6 @@ export default function HomePage() {
       <h1>Loading</h1>
     )
   }
-
 
 
 
