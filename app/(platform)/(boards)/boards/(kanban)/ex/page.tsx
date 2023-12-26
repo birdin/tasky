@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 // DnD
@@ -62,14 +62,18 @@ export default function Home() {
   const [showAddContainerModal, setShowAddContainerModal] = useState(false);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
 
+  useEffect(() => {
+    console.log('containers', containers);
+  }
+  , [containers]);
+
   const onAddContainer = () => {
-    if (!containerName) return;
     const id = `container-${uuidv4()}`;
     setContainers([
       ...containers,
       {
         id,
-        title: containerName,
+        title: "New Column",
         items: [],
       },
     ]);
@@ -77,19 +81,25 @@ export default function Home() {
     setShowAddContainerModal(false);
   };
 
-  const onAddItem = () => {
-    if (!itemName) return;
+  const onAddItem = (idCol:any) => {
     const id = `item-${uuidv4()}`;
-    const container = containers.find((item) => item.id === currentContainerId);
+    const container = containers.find((item) => item.id === idCol);
     if (!container) return;
     container.items.push({
       id,
-      title: itemName,
+      title: "New task ",
     });
     setContainers([...containers]);
     setItemName('');
     setShowAddItemModal(false);
   };
+
+  const onEditContainer = (id: UniqueIdentifier, title: string) => {
+    const container = containers.find((item) => item.id === id);
+    if (!container) return;
+    container.title = title;
+    setContainers([...containers]);
+  }
 
   // Find the value of the items
   function findValueOfItems(id: UniqueIdentifier | undefined, type: string) {
@@ -351,46 +361,19 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl py-10">
+    <div className="">
       {/* Add Container Modal */}
-      <Modal
-        showModal={showAddContainerModal}
-        setShowModal={setShowAddContainerModal}
-      >
-        <div className="flex flex-col w-full items-start gap-y-4">
-          <h1 className="text-gray-800 text-3xl font-bold">Add Container</h1>
-          <Input
-            type="text"
-            placeholder="Container Title"
-            name="containername"
-            value={containerName}
-            onChange={(e) => setContainerName(e.target.value)}
-          />
-          <Button onClick={onAddContainer}>Add container</Button>
-        </div>
-      </Modal>
+      
       {/* Add Item Modal */}
-      <Modal showModal={showAddItemModal} setShowModal={setShowAddItemModal}>
-        <div className="flex flex-col w-full items-start gap-y-4">
-          <h1 className="text-gray-800 text-3xl font-bold">Add Item</h1>
-          <Input
-            type="text"
-            placeholder="Item Title"
-            name="itemname"
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
-          />
-          <Button onClick={onAddItem}>Add Item</Button>
-        </div>
-      </Modal>
+     
       <div className="flex items-center justify-between gap-y-2">
         <h1 className="text-gray-800 text-3xl font-bold">Dnd-kit Guide</h1>
-        <Button onClick={() => setShowAddContainerModal(true)}>
+        <Button onClick={onAddContainer}>
           Add Container
         </Button>
       </div>
       <div className="mt-10">
-        <div className="grid grid-cols-3 gap-6">
+        <div className=" w-screen min-h-screen bg-red-400 inline-grid grid-flow-col auto-cols-min	 gap-8 overflow-x-auto px-[40px]">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}
@@ -405,12 +388,14 @@ export default function Home() {
                   title={container.title}
                   key={container.id}
                   onAddItem={() => {
-                    setShowAddItemModal(true);
                     setCurrentContainerId(container.id);
+                    onAddItem(container.id)
                   }}
+                  number={container.items.length}
+                  editContainer={onEditContainer}
                 >
                   <SortableContext items={container.items.map((i) => i.id)}>
-                    <div className="flex items-start flex-col gap-y-4">
+                    <div className="flex items-start min-h-[100px] flex-col gap-y-4">
                       {container.items.map((i) => (
                         <Items title={i.title} id={i.id} key={i.id} />
                       ))}
@@ -426,7 +411,10 @@ export default function Home() {
               )}
               {/* Drag Overlay For Container */}
               {activeId && activeId.toString().includes('container') && (
-                <Container id={activeId} title={findContainerTitle(activeId)}>
+                <Container id={activeId} 
+                    title={findContainerTitle(activeId)}
+                    editContainer={onEditContainer}
+                    >
                   {findContainerItems(activeId).map((i) => (
                     <Items key={i.id} title={i.title} id={i.id} />
                   ))}
