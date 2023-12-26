@@ -373,7 +373,7 @@ export default function Home() {
         </Button>
       </div>
       <div className="mt-10">
-        <div className=" w-screen min-h-screen bg-red-400 inline-grid grid-flow-col auto-cols-min	 gap-8 overflow-x-auto px-[40px]">
+        <div className=" w-full min-h-screen bg-red-400 inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto px-[40px]">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}

@@ -70,14 +70,6 @@
   }
 }
 
-::-webkit-scrollbar {
-  width: 4px;
-}
-
-::-webkit-scrollbar-horizonal {
-  height: 4px;
-}
-
 /*
 ::-webkit-scrollbar-thumb {
   @apply bg-silver-900 rounded-xl;
