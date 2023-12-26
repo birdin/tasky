@@ -11,7 +11,7 @@ const readexPro = Readex_Pro({ subsets: ['latin'] })
 
 export const Hero = () => {
     return (
-        <div className='relative w-full'>
+        <div className='relative left-0 w-full'>
             <div
                 className="w-full h-screen bg-center bg-cover flex items-center"
                 style={{ backgroundImage: `url(${BgTasky.src})` }}

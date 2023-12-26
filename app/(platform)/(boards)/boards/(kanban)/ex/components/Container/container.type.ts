@@ -5,5 +5,7 @@ export default interface ContainerProps {
   children: React.ReactNode;
   title?: string;
   description?: string;
+  number?: number;
   onAddItem?: () => void;
+  editContainer: (id: UniqueIdentifier, title: string) => void;
 }
