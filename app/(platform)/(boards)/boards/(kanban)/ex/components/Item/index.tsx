@@ -32,14 +32,14 @@ const Items = ({ id, title }: ItemsType) => {
         transform: CSS.Translate.toString(transform),
       }}
       className={clsx(
-        'px-2 py-4 bg-white shadow-md rounded-xl w-full border border-transparent hover:border-gray-200 cursor-pointer',
-        isDragging && 'opacity-50',
+        'px-2 py-4 bg-white shadow-sm rounded border w-full hover:border-gray-200 cursor-pointer',
+        isDragging && 'opacity-50 ring-2 ring-rose-500',
       )}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between text-sm">
         {title}
         <button
-          className="border p-2 text-xs rounded-xl shadow-lg hover:shadow-xl"
+          className="border p-2 text-xs rounded-xl "
           {...listeners}
         >
           Drag Handle

@@ -70,6 +70,13 @@
   }
 }
 
+.wide-container {
+  margin: 0 auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+
 /*
 ::-webkit-scrollbar-thumb {
   @apply bg-silver-900 rounded-xl;

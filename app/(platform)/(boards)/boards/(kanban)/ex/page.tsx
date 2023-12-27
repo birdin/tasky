@@ -361,19 +361,19 @@ export default function Home() {
   }
 
   return (
-    <div className="">
+    <div className="bg-[#cde0e0]">
       {/* Add Container Modal */}
       
       {/* Add Item Modal */}
      
-      <div className="flex items-center justify-between gap-y-2">
-        <h1 className="text-gray-800 text-3xl font-bold">Dnd-kit Guide</h1>
+      <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/60">
+        <h1 className="text-gray-800 text-base font-semibold pl-1">Dnd-kit Guide</h1>
         <Button onClick={onAddContainer}>
           Add Container
         </Button>
       </div>
       <div className="mt-10">
-        <div className=" w-full min-h-screen bg-red-400 inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto px-[40px]">
+        <div className=" w-full min-h-screen  inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto px-[40px]">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}
