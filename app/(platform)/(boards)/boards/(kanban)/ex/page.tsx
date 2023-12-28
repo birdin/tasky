@@ -438,7 +438,7 @@ export default function Home() {
       </div>
       <div className="mt-10">
         <div className=" w-full min-h-screen  inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto px-[40px]">
-          <DndCsontext
+          <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}
             onDragStart={handleDragStart}
