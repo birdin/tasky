@@ -13,7 +13,7 @@ const Container = ({
   title,
   description,
   onAddItem,
-  editContainer
+  editContainer,
 }: ContainerProps) => {
 
   const [isEditing, setIsEditing] = useState(false);
@@ -49,19 +49,19 @@ const Container = ({
         isDragging && 'opacity-50',
       )}
     >
-      <div className='bg-gray-50 rounded flex flex-col gap-y-4 p-4'>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-y-1">
+      <div className='bg-gray-50 rounded flex flex-col gap-y-4 p-2'>
+        <div className="flex items-center justify-between pt-1">
+          <div className="flex items-center gap-y-1 w-full">
             <div
-              className="p-2 text-xs rounded-xl opacity-40 hover:opacity-100"
+              className="p-1 text-xs rounded-xl opacity-30 hover:opacity-100"
               {...listeners}>
-              <GripVertical/>
+              <GripVertical className='h-5'/>
             </div>
 
             {isEditing ? (
               <input
                 type="text"
-                className=" p-1 border border-rose-700/50 rounded w-100 bg-transparent"
+                className=" p-1 border border-rose-700/50 text-sm rounded w-full bg-transparent"
                 value={title}
                 onChange={(e) => updateContainer(e.target.value)}
                 onKeyDown={el => {
@@ -73,16 +73,19 @@ const Container = ({
               />
             ) :
               <>
-                <span className="text-gray-800 text-base font-medium">
-                </span>
-                <h1 className="text-gray-800 text-base font-medium">{title}</h1>
+                { (number && number > 0) ?
+                  <div className='bg-sky-800/50	rounded px-2 mr-2 text-xs	font-semibold  text-white	'>
+                  {number}
+                </div> : ''
+                }
+                <h1 className="text-gray-800 text-base font-semibold">{title}</h1>
               </>
             }
 
             <p className="text-gray-400 text-sm">{description}</p>
           </div>
           <div onClick={() => setIsEditing(true)}>
-            <MoreVertical />
+            <MoreVertical className='h-5' />
           </div>
         </div>
 
