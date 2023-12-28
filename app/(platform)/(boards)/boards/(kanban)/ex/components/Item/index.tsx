@@ -3,6 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import React from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
+import { MoreVertical } from 'lucide-react';
 
 type ItemsType = {
   id: UniqueIdentifier;
@@ -27,22 +28,22 @@ const Items = ({ id, title }: ItemsType) => {
     <div
       ref={setNodeRef}
       {...attributes}
+      {...listeners}
       style={{
         transition,
         transform: CSS.Translate.toString(transform),
       }}
       className={clsx(
-        'px-2 py-4 bg-white shadow-sm rounded border w-full hover:border-gray-200 cursor-pointer',
-        isDragging && 'opacity-50 ring-2 ring-rose-500',
+        'px-2 py-4 bg-white shadow-sm rounded border w-full hover:ring-blue-500/40 hover:ring-2 cursor-pointer',
+        isDragging && 'opacity-50 ring-2 ring-rose-400',
       )}
     >
       <div className="flex items-center justify-between text-sm">
         {title}
         <button
-          className="border p-2 text-xs rounded-xl "
-          {...listeners}
+          className="text-xs rounded-xl "
         >
-          Drag Handle
+          <MoreVertical height={20}/>
         </button>
       </div>
     </div>

@@ -52,7 +52,57 @@ type DNDType = {
   }[];
 };
 
+const containerExample: DNDType[] = [
+  {
+    id: 'container-1',
+    title: 'To do',
+    items: [
+      {
+        id: 'item-1',
+        title: 'Item 1',
+      },
+      {
+        id: 'item-2',
+        title: 'Item 2',
+      },
+      {
+        id: 'item-3',
+        title: 'Item 3',
+      },
+    ],
+  },
+  {
+    id: 'container-2',
+    title: 'In Progress',
+    items: [
+      {
+        id: 'item-4',
+        title: 'Item 4',
+      },
+      {
+        id: 'item-5',
+        title: 'Item 5',
+      },
+    ],
+  },
+  {
+    id: 'container-3',
+    title: 'Done',
+    items: [
+      {
+        id: 'item-6',
+        title: 'Item 6',
+      },
+      {
+        id: 'item-7',
+        title: 'Item 7',
+      },
+    ],
+  },
+];
+
 export default function Home() {
+  const [boardData, setBoardData] = useState<any>();
   const [containers, setContainers] = useState<DNDType[]>([]);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [currentContainerId, setCurrentContainerId] =
@@ -61,6 +111,15 @@ export default function Home() {
   const [itemName, setItemName] = useState('');
   const [showAddContainerModal, setShowAddContainerModal] = useState(false);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/boards/1').then((res) => res.json()).then((data) => {
+      setContainers(data.containers);
+      setBoardData(data);
+    }
+    );
+  }
+  , []);
 
   useEffect(() => {
     console.log('containers', containers);
@@ -135,10 +194,11 @@ export default function Home() {
 
   // DND Handlers
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    })
   );
 
   function handleDragStart(event: DragStartEvent) {
@@ -361,20 +421,24 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-[#cde0e0]">
+    <div className="bg-[#cde0e0]" 
+    style={{ backgroundImage: `url(${boardData?.background})` }}
+    >
       {/* Add Container Modal */}
       
       {/* Add Item Modal */}
      
       <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/60">
-        <h1 className="text-gray-800 text-base font-semibold pl-1">Dnd-kit Guide</h1>
+        <h1 className="text-gray-800 text-base font-semibold pl-1">
+          { boardData?.name }
+        </h1>
         <Button onClick={onAddContainer}>
           Add Container
         </Button>
       </div>
       <div className="mt-10">
         <div className=" w-full min-h-screen  inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto px-[40px]">
-          <DndContext
+          <DndCsontext
             sensors={sensors}
             collisionDetection={closestCorners}
             onDragStart={handleDragStart}
@@ -399,6 +463,7 @@ export default function Home() {
                       {container.items.map((i) => (
                         <Items title={i.title} id={i.id} key={i.id} />
                       ))}
+                      <div> </div>
                     </div>
                   </SortableContext>
                 </Container>
@@ -414,6 +479,7 @@ export default function Home() {
                 <Container id={activeId} 
                     title={findContainerTitle(activeId)}
                     editContainer={onEditContainer}
+                    number={findValueOfItems(activeId, 'container')?.items.length}
                     >
                   {findContainerItems(activeId).map((i) => (
                     <Items key={i.id} title={i.title} id={i.id} />

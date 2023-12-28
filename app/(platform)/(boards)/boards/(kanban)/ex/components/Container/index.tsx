@@ -13,7 +13,7 @@ const Container = ({
   title,
   description,
   onAddItem,
-  editContainer
+  editContainer,
 }: ContainerProps) => {
 
   const [isEditing, setIsEditing] = useState(false);
@@ -51,9 +51,9 @@ const Container = ({
     >
       <div className='bg-gray-50 rounded flex flex-col gap-y-4 p-2'>
         <div className="flex items-center justify-between pt-1">
-          <div className="flex items-center gap-y-1">
+          <div className="flex items-center gap-y-1 w-full">
             <div
-              className="p-1 text-xs rounded-xl opacity-40 hover:opacity-100"
+              className="p-1 text-xs rounded-xl opacity-30 hover:opacity-100"
               {...listeners}>
               <GripVertical className='h-5'/>
             </div>
@@ -61,7 +61,7 @@ const Container = ({
             {isEditing ? (
               <input
                 type="text"
-                className=" p-1 border border-rose-700/50 text-sm rounded w-100 bg-transparent"
+                className=" p-1 border border-rose-700/50 text-sm rounded w-full bg-transparent"
                 value={title}
                 onChange={(e) => updateContainer(e.target.value)}
                 onKeyDown={el => {
@@ -73,7 +73,11 @@ const Container = ({
               />
             ) :
               <>
-                <div className='bg-teal-400	rounded px-2 mr-2 text-xs	font-semibold text-white'>2</div>
+                { (number && number > 0) ?
+                  <div className='bg-sky-800/50	rounded px-2 mr-2 text-xs	font-semibold  text-white	'>
+                  {number}
+                </div> : ''
+                }
                 <h1 className="text-gray-800 text-base font-semibold">{title}</h1>
               </>
             }
