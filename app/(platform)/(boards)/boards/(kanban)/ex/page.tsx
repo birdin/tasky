@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 // DnD
@@ -29,15 +29,16 @@ import Items from './components/Item';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Modal from './components/Modal';
+import { PlusCircle } from 'lucide-react';
 
 
 type DndType = {
+  id: string;
+  title: string;
+  items: {
     id: string;
-    title: string;
-    items: {
-        id: string;
-        titlte: string;
-    }[];
+    titlte: string;
+  }[];
 }
 
 
@@ -49,6 +50,8 @@ type DNDType = {
   items: {
     id: UniqueIdentifier;
     title: string;
+    labelColor?: string;
+    isPlaceholder?: boolean;
   }[];
 };
 
@@ -112,6 +115,8 @@ export default function Home() {
   const [showAddContainerModal, setShowAddContainerModal] = useState(false);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
 
+  const [firstRender, setFirstRender] = useState(true);
+
   useEffect(() => {
     fetch('/api/boards/1').then((res) => res.json()).then((data) => {
       setContainers(data.containers);
@@ -119,12 +124,15 @@ export default function Home() {
     }
     );
   }
-  , []);
+    , []);
 
   useEffect(() => {
-    console.log('containers', containers);
+    if(!firstRender) {
+      console.log('containers inside', containers);
+    }
+    setFirstRender(false);
   }
-  , [containers]);
+    , [containers]);
 
   const onAddContainer = () => {
     const id = `container-${uuidv4()}`;
@@ -133,14 +141,14 @@ export default function Home() {
       {
         id,
         title: "New Column",
-        items: [],
+        items: [{ id: `item-${uuidv4()}`, title: "", isPlaceholder: true, labelColor: "#75D7B6"}]  ,
       },
     ]);
     setContainerName('');
     setShowAddContainerModal(false);
   };
 
-  const onAddItem = (idCol:any) => {
+  const onAddItem = (idCol: any) => {
     const id = `item-${uuidv4()}`;
     const container = containers.find((item) => item.id === idCol);
     if (!container) return;
@@ -158,6 +166,19 @@ export default function Home() {
     if (!container) return;
     container.title = title;
     setContainers([...containers]);
+  }
+
+  const onEditItem = (id: UniqueIdentifier, title: string) => {
+   const container = containers.find((container) =>
+      container.items.find((item) => item.id === id),
+    );
+    if (!container) return;
+
+    const item = container.items.find((item) => item.id === id);
+    if (!item) return;
+    item.title = title;
+        setContainers([...containers]);
+    
   }
 
   // Find the value of the items
@@ -179,6 +200,20 @@ export default function Home() {
     if (!item) return '';
     return item.title;
   };
+
+  const findItem = (id: UniqueIdentifier | undefined) => {
+    let result = {}
+    containers.find((container) =>
+      container.items.find((item) => 
+      { 
+        if(item.id === id){
+          result = item;
+          return item;
+        }
+      }),
+    );
+    return result;
+  }
 
   const findContainerTitle = (id: UniqueIdentifier | undefined) => {
     const container = findValueOfItems(id, 'container');
@@ -421,23 +456,23 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-[#cde0e0]" 
-    style={{ backgroundImage: `url(${boardData?.background})` }}
+    <div className="bg-[#cde0e0]"
+      style={{ backgroundImage: `url(${boardData?.background})` }}
     >
       {/* Add Container Modal */}
-      
+
       {/* Add Item Modal */}
-     
+
       <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/60">
         <h1 className="text-gray-800 text-base font-semibold pl-1">
-          { boardData?.name }
+          {boardData?.name}
         </h1>
         <Button onClick={onAddContainer}>
           Add Container
         </Button>
       </div>
-      <div className="mt-10">
-        <div className=" w-full min-h-screen  inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto px-[40px]">
+      <div className="mt-7">
+        <div className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}
@@ -459,11 +494,14 @@ export default function Home() {
                   editContainer={onEditContainer}
                 >
                   <SortableContext items={container.items.map((i) => i.id)}>
-                    <div className="flex items-start min-h-[100px] flex-col gap-y-4">
+                    <div className="flex items-start min-h-[100px] flex-col gap-y-2">
                       {container.items.map((i) => (
-                        <Items title={i.title} id={i.id} key={i.id} />
+                        <Items 
+                          onEditItem={onEditItem} 
+                          title={i.title} id={i.id} key={i.id} 
+                          labelColor={i.labelColor}
+                          isPlaceholder={i.isPlaceholder}/>
                       ))}
-                      <div> </div>
                     </div>
                   </SortableContext>
                 </Container>
@@ -472,22 +510,31 @@ export default function Home() {
             <DragOverlay adjustScale={false}>
               {/* Drag Overlay For item Item */}
               {activeId && activeId.toString().includes('item') && (
-                <Items id={activeId} title={findItemTitle(activeId)} />
+                <Items onEditItem={onEditItem} id={activeId} title={findItemTitle(activeId)} />
               )}
               {/* Drag Overlay For Container */}
               {activeId && activeId.toString().includes('container') && (
-                <Container id={activeId} 
-                    title={findContainerTitle(activeId)}
-                    editContainer={onEditContainer}
-                    number={findValueOfItems(activeId, 'container')?.items.length}
-                    >
+                <Container id={activeId}
+                  title={findContainerTitle(activeId)}
+                  editContainer={onEditContainer}
+                  number={findValueOfItems(activeId, 'container')?.items.length}
+                >
                   {findContainerItems(activeId).map((i) => (
-                    <Items key={i.id} title={i.title} id={i.id} />
+                    <Items onEditItem={onEditItem} key={i.id} title={i.title} id={i.id} />
                   ))}
                 </Container>
               )}
             </DragOverlay>
           </DndContext>
+          <div>
+            <div 
+              className=" justify-center items-center mt-[1px] h-[60px] w-[300px] min-w-[300px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor p-4 ring-rose-500 hover:ring-2 flex gap-2 bg-slate-50/30 text-base opacity-70 hover:opacity-100"
+              onClick={onAddContainer}>
+              <PlusCircle className='h-5 opacity-80'/>	
+              Add Container
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
