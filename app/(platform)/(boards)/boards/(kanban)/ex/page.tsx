@@ -494,7 +494,8 @@ export default function Home() {
                   editContainer={onEditContainer}
                 >
                   <SortableContext items={container.items.map((i) => i.id)}>
-                    <div className="flex items-start min-h-[100px] flex-col gap-y-2">
+                    <div className="flex items-start min-h-[100px] flex-col gap-y-2 h-full overflow-scroll p-1"
+                      style={{maxHeight: "calc(74vh - 20px)"}}>
                       {container.items.map((i) => (
                         <Items 
                           onEditItem={onEditItem} 
