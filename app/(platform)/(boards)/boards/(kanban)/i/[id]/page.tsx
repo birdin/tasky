@@ -29,7 +29,9 @@ import Items from './components/Item';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Modal from './components/Modal';
-import { PlusCircle } from 'lucide-react';
+import { Plus, PlusCircle, Settings } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 
 type DndType = {
@@ -104,7 +106,7 @@ const containerExample: DNDType[] = [
   },
 ];
 
-export default function Home({ params }: { params: { id: string }}) {
+export default function Home({ params }: { params: { id: string } }) {
   const [boardData, setBoardData] = useState<any>();
   const [containers, setContainers] = useState<DNDType[]>([]);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -127,7 +129,7 @@ export default function Home({ params }: { params: { id: string }}) {
     , []);
 
   useEffect(() => {
-    if(!firstRender) {
+    if (!firstRender) {
       console.log('containers inside', containers);
     }
     setFirstRender(false);
@@ -141,7 +143,7 @@ export default function Home({ params }: { params: { id: string }}) {
       {
         id,
         title: "New Column",
-        items: [{ id: `item-${uuidv4()}`, title: "", isPlaceholder: true, labelColor: "#75D7B6"}]  ,
+        items: [{ id: `item-${uuidv4()}`, title: "", isPlaceholder: true, labelColor: "#75D7B6" }],
       },
     ]);
     setContainerName('');
@@ -169,7 +171,7 @@ export default function Home({ params }: { params: { id: string }}) {
   }
 
   const onEditItem = (id: UniqueIdentifier, title: string) => {
-   const container = containers.find((container) =>
+    const container = containers.find((container) =>
       container.items.find((item) => item.id === id),
     );
     if (!container) return;
@@ -177,8 +179,8 @@ export default function Home({ params }: { params: { id: string }}) {
     const item = container.items.find((item) => item.id === id);
     if (!item) return;
     item.title = title;
-        setContainers([...containers]);
-    
+    setContainers([...containers]);
+
   }
 
   // Find the value of the items
@@ -204,9 +206,8 @@ export default function Home({ params }: { params: { id: string }}) {
   const findItem = (id: UniqueIdentifier | undefined) => {
     let result = {}
     containers.find((container) =>
-      container.items.find((item) => 
-      { 
-        if(item.id === id){
+      container.items.find((item) => {
+        if (item.id === id) {
           result = item;
           return item;
         }
@@ -465,11 +466,38 @@ export default function Home({ params }: { params: { id: string }}) {
 
       <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/60">
         <h1 className="text-gray-800 text-base font-semibold pl-1">
-          {boardData?.name}
+          {boardData?.name} {params.id}
         </h1>
-        <Button onClick={onAddContainer}>
-          Add Container
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button onClick={onAddContainer} className='p-3'>
+                <Plus />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>Add column</p>
+            </TooltipContent>
+          </Tooltip>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className='p-3'>
+                <Settings />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className='backdrop-blur-md bg-white/50'>
+              <div className="grid gap-4 ">
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Settings</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Set the dimensions for the layer.
+                  </p>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+        </TooltipProvider>
       </div>
       <div className="mt-7">
         <div className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
@@ -495,13 +523,13 @@ export default function Home({ params }: { params: { id: string }}) {
                 >
                   <SortableContext items={container.items.map((i) => i.id)}>
                     <div className="items-container flex items-start min-h-[100px] flex-col gap-y-2 h-full overflow-scroll p-1"
-                      style={{maxHeight: "calc(74vh - 20px)"}}>
+                      style={{ maxHeight: "calc(74vh - 20px)" }}>
                       {container.items.map((i) => (
-                        <Items 
-                          onEditItem={onEditItem} 
-                          title={i.title} id={i.id} key={i.id} 
+                        <Items
+                          onEditItem={onEditItem}
+                          title={i.title} id={i.id} key={i.id}
                           labelColor={i.labelColor}
-                          isPlaceholder={i.isPlaceholder}/>
+                          isPlaceholder={i.isPlaceholder} />
                       ))}
                     </div>
                   </SortableContext>
@@ -528,10 +556,10 @@ export default function Home({ params }: { params: { id: string }}) {
             </DragOverlay>
           </DndContext>
           <div>
-            <div 
+            <div
               className=" justify-center items-center mt-[1px] h-[60px] w-[300px] min-w-[300px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor p-4 ring-rose-500 hover:ring-2 flex gap-2 bg-slate-50/30 text-base opacity-70 hover:opacity-100"
               onClick={onAddContainer}>
-              <PlusCircle className='h-5 opacity-80'/>	
+              <PlusCircle className='h-5 opacity-80' />
               Add Container
             </div>
           </div>
