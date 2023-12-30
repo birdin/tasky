@@ -106,7 +106,7 @@ const containerExample: DNDType[] = [
   },
 ];
 
-export default function Home({ params }: { params: { id: string } }) {
+export default function Home() {
   const [boardData, setBoardData] = useState<any>();
   const [containers, setContainers] = useState<DNDType[]>([]);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -466,47 +466,9 @@ export default function Home({ params }: { params: { id: string } }) {
 
       <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/60">
         <h1 className="text-gray-800 text-base font-semibold pl-1">
-          {boardData?.name} {params.id}
+          {boardData?.name}
         </h1>
-        <div className="flex items-center">
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={onAddContainer} className='p-3'>
-                  <Plus />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>Add column</p>
-              </TooltipContent>
-            </Tooltip>
-            <Popover>
-              <PopoverTrigger>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button className='p-3'>
-                      <Settings />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p>Change settings</p>
-                  </TooltipContent>
-                </Tooltip>
-              </PopoverTrigger>
-              <PopoverContent className='backdrop-blur-md bg-white/50'>
-                <div className="grid gap-4 ">
-                  <div className="space-y-2">
-                    <h4 className="font-medium leading-none">Settings</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Set the dimensions for the layer.
-                    </p>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </TooltipProvider>
-        </div>
+        <Toolsection />
       </div>
       <div className="mt-7">
         <div className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
@@ -531,8 +493,9 @@ export default function Home({ params }: { params: { id: string } }) {
                   editContainer={onEditContainer}
                 >
                   <SortableContext items={container.items.map((i) => i.id)}>
-                    <div className="items-container flex items-start min-h-[100px] flex-col gap-y-2 h-full overflow-scroll p-1"
-                      style={{ maxHeight: "calc(74vh - 20px)" }}>
+                    <div className="flex items-start min-h-[100px] flex-col gap-y-2 overflow-scroll p-1"
+                      style={{ maxHeight: "calc(74vh - 20px)" }}
+                    >
                       {container.items.map((i) => (
                         <Items
                           onEditItem={onEditItem}
@@ -558,7 +521,7 @@ export default function Home({ params }: { params: { id: string } }) {
                   number={findValueOfItems(activeId, 'container')?.items.length}
                 >
                   {findContainerItems(activeId).map((i) => (
-                    <Items onEditItem={onEditItem} key={i.id} title={i.title} id={i.id} />
+                    <Items onEditItem={onEditItem} key={i.id} title={i.title} id={i.id} isPlaceholder={i.isPlaceholder} />
                   ))}
                 </Container>
               )}
@@ -579,3 +542,45 @@ export default function Home({ params }: { params: { id: string } }) {
   );
 }
 
+const Toolsection = () => {
+  return (
+    <>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div onClick={() => console.log('add')} className='p-3'>
+            <Plus />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          <p>Add column</p>
+        </TooltipContent>
+      </Tooltip>
+      <Popover>
+        <PopoverTrigger>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className='p-3'>
+                <Settings />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>Change settings</p>
+            </TooltipContent>
+          </Tooltip>
+        </PopoverTrigger>
+        <PopoverContent className='backdrop-blur-md bg-white/50'>
+          <div className="grid gap-4 ">
+            <div className="space-y-2">
+              <h4 className="font-medium leading-none">Settings</h4>
+              <p className="text-sm text-muted-foreground">
+                Set the dimensions for the layer.
+              </p>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </TooltipProvider >
+</>
+)
+}

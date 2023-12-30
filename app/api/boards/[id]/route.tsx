@@ -19,22 +19,6 @@ export async function GET() {
                         "title": "Item Principal 1",
                         "isPlaceholder": true,
                     },
-                    {
-                        "id": "item-1",
-                        "title": "Item Principal 1"
-                    },
-                    {
-                        "id": "item-2",
-                        "title": "Item 2"
-                    },
-                    {
-                        "id": "item-3",
-                        "title": "Item 3"
-                    },
-                    {
-                        "id": "item-166",
-                        "title": "Barush Principal 1 kk"
-                    }
                 ]
             },
             {
@@ -46,15 +30,6 @@ export async function GET() {
                         "title": "Item Principal 2",
                         "isPlaceholder": true,
                     },
-                    {
-                        "id": "item-4",
-                        "title": "Item 4",
-                        "labelColor": "#75D7B6"
-                    },
-                    {
-                        "id": "item-5",
-                        "title": "Item 5"
-                    }
                 ]
             },
             {
@@ -66,14 +41,6 @@ export async function GET() {
                         "title": "Item Principal 1",
                         "isPlaceholder": true,
                     },
-                    {
-                        "id": "item-6",
-                        "title": "Item 6"
-                    },
-                    {
-                        "id": "item-7",
-                        "title": "Item 7"
-                    }
                 ]
             }
         ]

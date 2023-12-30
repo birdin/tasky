@@ -87,7 +87,7 @@ const ProjectLists = () => {
 const Card = ({ title, image, id }: { title: string, image: string, id: string }) => {
     return (
         <div className="h-32 relative overflow-hidden">
-            <Link href={`boards/i/${id}`} className=' block'>
+            <Link href={`boards/b/${id}`} className=' block'>
                 <div className="">
                     <img className='w-full object-cover' src={image} />
                 </div>
