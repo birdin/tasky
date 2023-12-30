@@ -468,36 +468,45 @@ export default function Home({ params }: { params: { id: string } }) {
         <h1 className="text-gray-800 text-base font-semibold pl-1">
           {boardData?.name} {params.id}
         </h1>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button onClick={onAddContainer} className='p-3'>
-                <Plus />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              <p>Add column</p>
-            </TooltipContent>
-          </Tooltip>
-          <Popover>
-            <PopoverTrigger asChild>
-              <button className='p-3'>
-                <Settings />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className='backdrop-blur-md bg-white/50'>
-              <div className="grid gap-4 ">
-                <div className="space-y-2">
-                  <h4 className="font-medium leading-none">Settings</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Set the dimensions for the layer.
-                  </p>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
+        <div className="flex items-center">
 
-        </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={onAddContainer} className='p-3'>
+                  <Plus />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>Add column</p>
+              </TooltipContent>
+            </Tooltip>
+            <Popover>
+              <PopoverTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button className='p-3'>
+                      <Settings />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Change settings</p>
+                  </TooltipContent>
+                </Tooltip>
+              </PopoverTrigger>
+              <PopoverContent className='backdrop-blur-md bg-white/50'>
+                <div className="grid gap-4 ">
+                  <div className="space-y-2">
+                    <h4 className="font-medium leading-none">Settings</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Set the dimensions for the layer.
+                    </p>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </TooltipProvider>
+        </div>
       </div>
       <div className="mt-7">
         <div className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
