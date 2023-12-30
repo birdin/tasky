@@ -37,7 +37,7 @@ const Items = ({ id, title, onEditItem, labelColor, isPlaceholder }: ItemsType) 
       <div 
         ref={setNodeRef}
         {...attributes}
-        className="h-0"
+        className="h-0 order-last"
       ></div>
     )
   }

@@ -521,7 +521,7 @@ export default function Home() {
                   number={findValueOfItems(activeId, 'container')?.items.length}
                 >
                   {findContainerItems(activeId).map((i) => (
-                    <Items onEditItem={onEditItem} key={i.id} title={i.title} id={i.id} />
+                    <Items onEditItem={onEditItem} key={i.id} title={i.title} id={i.id} isPlaceholder={i.isPlaceholder} />
                   ))}
                 </Container>
               )}
@@ -548,9 +548,9 @@ const Toolsection = () => {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <button onClick={() => console.log('add')} className='p-3'>
+            <div onClick={() => console.log('add')} className='p-3'>
             <Plus />
-          </button>
+          </div>
         </TooltipTrigger>
         <TooltipContent side="bottom">
           <p>Add column</p>
@@ -560,9 +560,9 @@ const Toolsection = () => {
         <PopoverTrigger>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button className='p-3'>
+              <div className='p-3'>
                 <Settings />
-              </button>
+              </div>
             </TooltipTrigger>
             <TooltipContent side="bottom">
               <p>Change settings</p>

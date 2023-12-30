@@ -76,6 +76,17 @@
   padding-right: 2rem;
 }
 
+.items-container::-webkit-scrollbar {
+  height: 8px;
+  width: 6px;
+  margin-right: -5px;
+}
+
+.items-container::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 8px;
+}
+
 
 /*
 ::-webkit-scrollbar-thumb {

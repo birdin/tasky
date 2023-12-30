@@ -15,7 +15,7 @@ const columnList = [
 ]
 
 
-export default function KanbanBoardPage({ params }: { params: { id: string } }) {
+export default function KanbanBoardPage({ params }: { params: { id: string }}) {
     const [activeColumn, setActiveColumn] = useState<any>(null);
     const [columns, setColumns] = useState<any>(columnList);
     const [tasks, setTasks] = useState<any>([]);
