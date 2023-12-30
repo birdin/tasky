@@ -51,7 +51,7 @@ className = {
     isDragging && 'opacity-50',
       )}
     >
-  <div className='bg-gray-50 rounded-lg flex flex-col gap-y-2 p-2'>
+  <div className='bg-gray-50 rounded-lg flex flex-col gap-y-2 p-2 pr-[5px]'>
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-y-1 w-full">
         <div
