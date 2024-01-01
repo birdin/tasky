@@ -87,12 +87,33 @@
   border-radius: 8px;
 }
 
+.count-block {
+  transition: .5s;
+  width: 22px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  padding: 0rem 0.2rem;
+  justify-content: center;
+}
 
 /*
 ::-webkit-scrollbar-thumb {
   @apply bg-silver-900 rounded-xl;
 }
 */
+
+.items-container::-webkit-scrollbar {
+  height: 8px;
+  width: 6px;
+  margin-right: -5px;
+}
+
+.items-container::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 8px;
+}
 
 @layer base {
   * {

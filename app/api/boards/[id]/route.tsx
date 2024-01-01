@@ -19,6 +19,12 @@ export async function GET() {
                         "title": "Item Principal 1",
                         "isPlaceholder": true,
                     },
+                    {
+                        "id": "item-213k12nklnsdfsDFJksdfksdmlmldsfnkl",
+                        "title": "Item Principal 1",
+                        "description": "Item description defined",
+                        "isPlaceholder": false,
+                    },
                 ]
             },
             {

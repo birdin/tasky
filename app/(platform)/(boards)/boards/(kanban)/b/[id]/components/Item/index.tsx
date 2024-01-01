@@ -5,16 +5,18 @@ import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
 import { MoreHorizontal, MoreVertical } from 'lucide-react';
 import { on } from 'events';
+import { Item } from '../../types';
 
 type ItemsType = {
-  id: UniqueIdentifier;
+  id: UniqueIdentifier | string;
+  item: Item | null;
   title: string;
-  onEditItem: (id: UniqueIdentifier, title: string) => void;
+  onEditItem: (id: UniqueIdentifier | string, title: any) => void;
   labelColor?: string;
   isPlaceholder?: boolean;
 };
 
-const Items = ({ id, title, onEditItem, labelColor, isPlaceholder }: ItemsType) => {
+const Items = ({ id, title, onEditItem, labelColor, isPlaceholder, item }: ItemsType) => {
   const {
     attributes,
     listeners,
@@ -34,7 +36,7 @@ const Items = ({ id, title, onEditItem, labelColor, isPlaceholder }: ItemsType) 
 
   if (isPlaceholder) {
     return (
-      <div 
+      <div
         ref={setNodeRef}
         {...attributes}
         className="h-0 order-last"
@@ -58,20 +60,53 @@ const Items = ({ id, title, onEditItem, labelColor, isPlaceholder }: ItemsType) 
       )}
     >
       {isEditing ?
-        <input
-          type="text"
-          className="w-full h-full bg-transparent outline-none ring-2 ring-rose-400/40 rounded px-2 py-1 text-sm"
-          value={title}
-          autoFocus
-          onChange={(e) => {
-            onEditItem(id, e.target.value);
-          }}
-          onBlur={() => {
-            setIsEditing(false);
-          }} />
+        <div>
+          <input
+            type="text"
+            className="w-full h-full bg-transparent outline-none ring-2 ring-rose-400/40 rounded px-2 py-1 text-sm"
+            value={item?.title}
+            autoFocus
+            onChange={(e) => {
+              const newItem = { ...item }
+              newItem.title = e.target.value;
+              onEditItem(id, newItem);
+            }}
+            onBlur={() => {
+              /*
+              */
+            }} />
+          <div>
+            <textarea className="w-full h-full bg-transparent outline-none ring-2 ring-rose-400/40 rounded px-2 py-1 text-sm" value={item?.description} onChange={(e) => {
+              const newItem = { ...item }
+              newItem.description = e.target.value;
+              onEditItem(id, newItem);
+            }} />
+          </div>
+          <div className="div">
+
+          </div>
+          <div className="py-2 px-2 bg-black rounded text-white"
+            onClick={() => {
+              setIsEditing(false);
+            }}>
+            Save
+          </div>
+        </div>
         :
         <div className="flex items-center justify-between text-sm">
-          {title}
+          <div className="flex flex-col gap-1">
+            <h3 className='text-base font-medium'>
+              {item?.title}
+            </h3>
+            <p className='text-gray-500'>
+              {item?.description}
+            </p>
+            <div className="tag">
+              <label className='text-rose-900 bg-rose-300 text-[11px] px-3 rounded'>
+                Important
+              </label>
+            </div>
+          </div>
           <button
             className="text-xs rounded-xl "
             onClick={() => {
@@ -81,10 +116,10 @@ const Items = ({ id, title, onEditItem, labelColor, isPlaceholder }: ItemsType) 
           </button>
         </div>
       }
-
-
-    </div>
+    </div >
   );
 };
+
+
 
 export default Items;

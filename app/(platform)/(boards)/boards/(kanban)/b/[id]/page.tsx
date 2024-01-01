@@ -26,35 +26,15 @@ import {
 import { Inter } from 'next/font/google';
 import Container from './components/Container';
 import Items from './components/Item';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import Modal from './components/Modal';
-import { Plus, PlusCircle, Settings } from 'lucide-react';
+import { KanbanSquare, Plus, Settings } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-
-
-type DndType = {
-  id: string;
-  title: string;
-  items: {
-    id: string;
-    titlte: string;
-  }[];
-}
-
-
-const inter = Inter({ subsets: ['latin'] });
+import { Item } from './types';
 
 type DNDType = {
   id: UniqueIdentifier;
   title: string;
-  items: {
-    id: UniqueIdentifier;
-    title: string;
-    labelColor?: string;
-    isPlaceholder?: boolean;
-  }[];
+  items: Item [];
 };
 
 const containerExample: DNDType[] = [
@@ -180,7 +160,22 @@ export default function Home() {
     if (!item) return;
     item.title = title;
     setContainers([...containers]);
+  }
 
+
+  const handleEditItem = (id: UniqueIdentifier, selectItem:Item) => {
+    const container = containers.find((container) =>
+    container.items.find((item) => item.id === id),
+    );
+    if (!container) return;
+
+    let item = container.items.find((item) => item.id === id);
+    if (!item) return;
+    
+    item.description = selectItem.description;
+    item.title = selectItem.title;
+
+    setContainers([...containers]);
   }
 
   // Find the value of the items
@@ -203,17 +198,12 @@ export default function Home() {
     return item.title;
   };
 
-  const findItem = (id: UniqueIdentifier | undefined) => {
-    let result = {}
-    containers.find((container) =>
-      container.items.find((item) => {
-        if (item.id === id) {
-          result = item;
-          return item;
-        }
-      }),
-    );
-    return result;
+  const findItem = (id: UniqueIdentifier) => {
+    const container = findValueOfItems(id, 'item');
+    if (!container) return null;
+    const item = container.items.find((item) => item.id === id);
+    if (!item) return null;
+    return item;
   }
 
   const findContainerTitle = (id: UniqueIdentifier | undefined) => {
@@ -457,20 +447,26 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-[#cde0e0]"
-      style={{ backgroundImage: `url(${boardData?.background})` }}
+    <div className="bg-[#cde0e0] bg-cover max-h-[100vh - 250px]"
+      style={{
+        backgroundImage: `url(${boardData?.background})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        maxHeight: 'calc(100vh - 50px)',
+        overflow: 'hidden',
+      }}
     >
-      {/* Add Container Modal */}
 
-      {/* Add Item Modal */}
-
-      <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/60">
-        <h1 className="text-gray-800 text-base font-semibold pl-1">
-          {boardData?.name}
+      <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/80">
+        <h1 className="text-gray-800 text-base font-medium pl-1 flex items-center gap-2 md:ml-1">
+          <KanbanSquare width={"19px"}/>
+          {boardData?.name }
         </h1>
         <Toolsection />
       </div>
-      <div className="mt-7">
+      <div className="mt-5">
         <div className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
           <DndContext
             sensors={sensors}
@@ -493,12 +489,13 @@ export default function Home() {
                   editContainer={onEditContainer}
                 >
                   <SortableContext items={container.items.map((i) => i.id)}>
-                    <div className="flex items-start min-h-[100px] flex-col gap-y-2 overflow-scroll p-1"
+                    <div className="flex items-start min-h-[100px] flex-col gap-y-2 overflow-scroll p-1 items-container"
                       style={{ maxHeight: "calc(74vh - 20px)" }}
                     >
                       {container.items.map((i) => (
                         <Items
-                          onEditItem={onEditItem}
+                          onEditItem={handleEditItem}
+                          item = {i}
                           title={i.title} id={i.id} key={i.id}
                           labelColor={i.labelColor}
                           isPlaceholder={i.isPlaceholder} />
@@ -511,7 +508,7 @@ export default function Home() {
             <DragOverlay adjustScale={false}>
               {/* Drag Overlay For item Item */}
               {activeId && activeId.toString().includes('item') && (
-                <Items onEditItem={onEditItem} id={activeId} title={findItemTitle(activeId)} />
+                <Items onEditItem={handleEditItem} id={activeId} title={""} item = {findItem(activeId)} />
               )}
               {/* Drag Overlay For Container */}
               {activeId && activeId.toString().includes('container') && (
@@ -520,18 +517,22 @@ export default function Home() {
                   editContainer={onEditContainer}
                   number={findValueOfItems(activeId, 'container')?.items.length}
                 >
-                  {findContainerItems(activeId).map((i) => (
-                    <Items onEditItem={onEditItem} key={i.id} title={i.title} id={i.id} isPlaceholder={i.isPlaceholder} />
-                  ))}
+                  <div className="flex items-start min-h-[100px] flex-col gap-y-2 overflow-scroll p-1 items-container"
+                    style={{ maxHeight: "calc(74vh - 20px)" }}
+                  >
+                    {findContainerItems(activeId).map((i) => (
+                      <Items onEditItem={handleEditItem} key={i.id} title={i.title} id={i.id} isPlaceholder={i.isPlaceholder} item={i} />
+                    ))}
+                  </div>
                 </Container>
               )}
             </DragOverlay>
           </DndContext>
           <div>
             <div
-              className=" justify-center items-center mt-[1px] h-[60px] w-[300px] min-w-[300px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor p-4 ring-rose-500 hover:ring-2 flex gap-2 bg-slate-50/30 text-base opacity-70 hover:opacity-100"
+              className=" justify-center items-center mt-[1px] h-[60px] w-[300px] min-w-[300px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor p-4 ring-rose-500 hover:ring-2 flex gap-2 bg-slate-50/30 text-sm opacity-70 hover:opacity-100"
               onClick={onAddContainer}>
-              <PlusCircle className='h-5 opacity-80' />
+              <Plus className='h-5 opacity-80' />
               Add Container
             </div>
           </div>
@@ -545,42 +546,45 @@ export default function Home() {
 const Toolsection = () => {
   return (
     <>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div onClick={() => console.log('add')} className='p-3'>
-            <Plus />
-          </div>
-        </TooltipTrigger>
-        <TooltipContent side="bottom">
-          <p>Add column</p>
-        </TooltipContent>
-      </Tooltip>
-      <Popover>
-        <PopoverTrigger>
+      <div className="flex items-center">
+
+        <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className='p-3'>
-                <Settings />
+              <div onClick={() => console.log('add')} className='p-3'>
+                <Plus />
               </div>
             </TooltipTrigger>
             <TooltipContent side="bottom">
-              <p>Change settings</p>
+              <p>Add column</p>
             </TooltipContent>
           </Tooltip>
-        </PopoverTrigger>
-        <PopoverContent className='backdrop-blur-md bg-white/50'>
-          <div className="grid gap-4 ">
-            <div className="space-y-2">
-              <h4 className="font-medium leading-none">Settings</h4>
-              <p className="text-sm text-muted-foreground">
-                Set the dimensions for the layer.
-              </p>
-            </div>
-          </div>
-        </PopoverContent>
-      </Popover>
-    </TooltipProvider >
-</>
-)
+          <Popover>
+            <PopoverTrigger>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className='p-3'>
+                    <Settings />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Change settings</p>
+                </TooltipContent>
+              </Tooltip>
+            </PopoverTrigger>
+            <PopoverContent className='backdrop-blur-md bg-white/50'>
+              <div className="grid gap-4 ">
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Settings</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Set the dimensions for the layer.
+                  </p>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </TooltipProvider >
+      </div>
+    </>
+  )
 }
