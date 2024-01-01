@@ -46,11 +46,11 @@ const Container = ({
         maxHeight: "calc(100vh - 140px)",
       }}
       className={clsx(
-        'w-full min-w-[300px] max-w-[350px] h-full  ',
+        'w-[320px] h-full  ',
         isDragging && 'opacity-50',
       )}
     >
-      <div className='bg-gray-50 rounded-lg flex flex-col gap-y-2 p-2'>
+      <div className='bg-gray-50 rounded-md flex flex-col p-2'>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-y-1 w-full">
             <div
@@ -75,20 +75,20 @@ const Container = ({
               />
             ) :
               <>
+                <h1 className="text-gray-800 text-base font-semibold">{title}</h1>
                 {(number && number > 1) ?
-                  <div className='bg-sky-800/50	rounded px-2 mr-2 text-xs	font-semibold  text-white	'>
-                    { number - 1 }
+                  <div className='bg-sky-800/50	rounded px-2 ml-2 text-xs	font-semibold  text-white	'>
+                    {number - 1}
                   </div>
                   : ''
                 }
-                <h1 className="text-gray-800 text-base font-semibold">{title}</h1>
               </>
             }
 
             <p className="text-gray-400 text-sm">{description}</p>
           </div>
-          <button className='py-[12px]' onClick={onAddItem}>
-            <Plus className='h-5 mr-2 opacity-80'/>
+          <button className='py-[8px] mr-2' onClick={onAddItem}>
+            <Plus className='h-5 opacity-80' />
           </button>
           <div className={"mr-2"} onClick={() => setIsEditing(true)}>
             <MoreHorizontal className='h-5' />

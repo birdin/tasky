@@ -50,7 +50,7 @@ const Container = ({
         isDragging && 'opacity-50',
       )}
     >
-      <div className='bg-gray-50 rounded-lg flex flex-col gap-y-2 p-2'>
+      <div className='bg-gray-50 rounded-lg flex flex-col p-2'>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-y-1 w-full">
             <div
