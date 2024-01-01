@@ -150,19 +150,6 @@ export default function Home() {
     setContainers([...containers]);
   }
 
-  const onEditItem = (id: UniqueIdentifier, title: string) => {
-    const container = containers.find((container) =>
-      container.items.find((item) => item.id === id),
-    );
-    if (!container) return;
-
-    const item = container.items.find((item) => item.id === id);
-    if (!item) return;
-    item.title = title;
-    setContainers([...containers]);
-  }
-
-
   const handleEditItem = (id: UniqueIdentifier, selectItem:Item) => {
     const container = containers.find((container) =>
     container.items.find((item) => item.id === id),
@@ -172,8 +159,12 @@ export default function Home() {
     let item = container.items.find((item) => item.id === id);
     if (!item) return;
     
+
+    
     item.description = selectItem.description;
     item.title = selectItem.title;
+    item.labelColor = selectItem.labelColor
+    //item.on
 
     setContainers([...containers]);
   }

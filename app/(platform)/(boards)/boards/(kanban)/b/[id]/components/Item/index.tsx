@@ -6,6 +6,8 @@ import clsx from 'clsx';
 import { MoreHorizontal, MoreVertical } from 'lucide-react';
 import { on } from 'events';
 import { Item } from '../../types';
+import { Select, SelectTrigger } from '@radix-ui/react-select';
+import { SelectContent, SelectGroup, SelectItem, SelectLabel, SelectValue } from '@/components/ui/select';
 
 type ItemsType = {
   id: UniqueIdentifier | string;
@@ -83,7 +85,12 @@ const Items = ({ id, title, onEditItem, labelColor, isPlaceholder, item }: Items
             }} />
           </div>
           <div className="div">
-
+            <SelectDemo label={item?.labelColor}
+              onChangeLabel={(label) => {
+                const newItem = { ...item }
+                newItem.labelColor = label;
+                onEditItem(id, newItem);
+              }} />
           </div>
           <div className="py-2 px-2 bg-black rounded text-white"
             onClick={() => {
@@ -102,9 +109,13 @@ const Items = ({ id, title, onEditItem, labelColor, isPlaceholder, item }: Items
               {item?.description}
             </p>
             <div className="tag">
-              <label className='text-rose-900 bg-rose-300 text-[11px] px-3 rounded'>
-                Important
-              </label>
+              {
+                item?.labelColor ?
+                  <label className='text-rose-900 bg-rose-300 text-[11px] px-3 rounded'>
+                    {item.labelColor}
+                  </label>
+                  : <></>
+              }
             </div>
           </div>
           <button
@@ -120,6 +131,33 @@ const Items = ({ id, title, onEditItem, labelColor, isPlaceholder, item }: Items
   );
 };
 
+function SelectDemo(
+  {
+    label,
+    onChangeLabel
+  }
+    : {
+      label: string | undefined,
+      onChangeLabel: (label: string) => void;
+    }) {
+  return (
+    <Select value={label}
+      onValueChange={onChangeLabel}
+      defaultValue='default'
+    >
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select a fruit" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectItem value="default">Not Defined</SelectItem>
+          <SelectItem value="regular">Regular</SelectItem>
+          <SelectItem value="important">Important</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+  )
+}
 
 
 export default Items;
