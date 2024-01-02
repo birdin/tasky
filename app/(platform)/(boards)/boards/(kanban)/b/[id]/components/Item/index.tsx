@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
 import { MoreHorizontal, MoreVertical } from 'lucide-react';
-import { on } from 'events';
 import { Item } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
 import { SelectContent, SelectGroup, SelectItem, SelectLabel, SelectValue } from '@/components/ui/select';
@@ -14,11 +13,20 @@ type ItemsType = {
   item: Item | null;
   title: string;
   onEditItem: (id: UniqueIdentifier | string, title: any) => void;
+  onDeleteItem: (id: UniqueIdentifier | string) => void;
   labelColor?: string;
   isPlaceholder?: boolean;
 };
 
-const Items = ({ id, title, onEditItem, labelColor, isPlaceholder, item }: ItemsType) => {
+const Items = (
+  { id, 
+    title, 
+    onEditItem, 
+    onDeleteItem,
+    labelColor, 
+    isPlaceholder, 
+    item 
+  }: ItemsType) => {
   const {
     attributes,
     listeners,
@@ -34,7 +42,6 @@ const Items = ({ id, title, onEditItem, labelColor, isPlaceholder, item }: Items
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [inputTitle, setInputTitle] = useState(title);
 
   if (isPlaceholder) {
     return (
@@ -97,6 +104,15 @@ const Items = ({ id, title, onEditItem, labelColor, isPlaceholder, item }: Items
               setIsEditing(false);
             }}>
             Save
+          </div>
+          <div className="">
+            <button className="py-2 px-2 bg-black rounded text-white"
+              onClick={() => {
+                setIsEditing(false);
+                onDeleteItem(id);
+              }}>
+              Delete
+            </button>
           </div>
         </div>
         :

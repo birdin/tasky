@@ -23,13 +23,13 @@ import {
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
 
-import { Inter } from 'next/font/google';
 import Container from './components/Container';
 import Items from './components/Item';
 import { KanbanSquare, Plus, Settings } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Item } from './types';
+import { BoardSettingForm } from './components/Forms/BoardSettingForm';
 
 type DNDType = {
   id: UniqueIdentifier;
@@ -128,6 +128,17 @@ export default function Home() {
     ]);
     setContainerName('');
     setShowAddContainerModal(false);
+    //move scroll to the top left
+    const boardContainer = document.querySelector('#boardContainer')
+    if(boardContainer) {
+      setTimeout(
+        () => {
+          boardContainer.scrollBy({
+            left: boardContainer.clientWidth, // Change the value to the desired scroll amount
+            behavior: 'smooth' // Enables smooth scrolling behavior
+          });
+        }, 1 )
+    }
   };
 
   const onAddItem = (idCol: any) => {
@@ -159,14 +170,25 @@ export default function Home() {
     let item = container.items.find((item) => item.id === id);
     if (!item) return;
     
-
-    
     item.description = selectItem.description;
     item.title = selectItem.title;
     item.labelColor = selectItem.labelColor
     //item.on
 
     setContainers([...containers]);
+  }
+
+  const onDeleteItem = (id: UniqueIdentifier) => {
+    const container = containers.find((container) =>
+      container.items.find((item) => item.id === id),
+    );
+    if (!container) return;
+    container.items = container.items.filter((item) => item.id !== id);
+    setContainers([...containers]);
+  }
+
+  const onEditBoardTitle = (title: string) => {
+    setBoardData({ ...boardData, name: title });
   }
 
   // Find the value of the items
@@ -455,10 +477,10 @@ export default function Home() {
           <KanbanSquare width={"19px"}/>
           {boardData?.name }
         </h1>
-        <Toolsection />
+        <Toolsection addContainer={onAddContainer} onEditBoardTitle={onEditBoardTitle} board={boardData}/>
       </div>
       <div className="mt-5">
-        <div className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
+        <div id="boardContainer" className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}
@@ -486,6 +508,7 @@ export default function Home() {
                       {container.items.map((i) => (
                         <Items
                           onEditItem={handleEditItem}
+                          onDeleteItem={onDeleteItem}
                           item = {i}
                           title={i.title} id={i.id} key={i.id}
                           labelColor={i.labelColor}
@@ -499,7 +522,7 @@ export default function Home() {
             <DragOverlay adjustScale={false}>
               {/* Drag Overlay For item Item */}
               {activeId && activeId.toString().includes('item') && (
-                <Items onEditItem={handleEditItem} id={activeId} title={""} item = {findItem(activeId)} />
+                <Items onEditItem={handleEditItem} id={activeId} title={""} item = {findItem(activeId)} onDeleteItem={onDeleteItem}/>
               )}
               {/* Drag Overlay For Container */}
               {activeId && activeId.toString().includes('container') && (
@@ -512,7 +535,7 @@ export default function Home() {
                     style={{ maxHeight: "calc(74vh - 20px)" }}
                   >
                     {findContainerItems(activeId).map((i) => (
-                      <Items onEditItem={handleEditItem} key={i.id} title={i.title} id={i.id} isPlaceholder={i.isPlaceholder} item={i} />
+                      <Items onEditItem={handleEditItem} key={i.id} title={i.title} id={i.id} isPlaceholder={i.isPlaceholder} item={i} onDeleteItem={onDeleteItem} />
                     ))}
                   </div>
                 </Container>
@@ -534,15 +557,15 @@ export default function Home() {
   );
 }
 
-const Toolsection = () => {
+const Toolsection = (
+    {addContainer, onEditBoardTitle, board}:{addContainer:()=>void, onEditBoardTitle: (el:string) => void, board: any} ) => {
   return (
     <>
       <div className="flex items-center">
-
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div onClick={() => console.log('add')} className='p-3'>
+              <div onClick={addContainer} className='p-3 cursor-pointer'>
                 <Plus />
               </div>
             </TooltipTrigger>
@@ -563,15 +586,11 @@ const Toolsection = () => {
                 </TooltipContent>
               </Tooltip>
             </PopoverTrigger>
-            <PopoverContent className='backdrop-blur-md bg-white/50'>
-              <div className="grid gap-4 ">
-                <div className="space-y-2">
-                  <h4 className="font-medium leading-none">Settings</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Set the dimensions for the layer.
-                  </p>
-                </div>
-              </div>
+            <PopoverContent className='backdrop-blur-md bg-white/70'>
+              {
+                // Board Setting Form
+              }
+              <BoardSettingForm onEditBoardTitle={onEditBoardTitle} board={board} />
             </PopoverContent>
           </Popover>
         </TooltipProvider >
