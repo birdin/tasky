@@ -128,6 +128,17 @@ export default function Home() {
     ]);
     setContainerName('');
     setShowAddContainerModal(false);
+    //move scroll to the top left
+    const boardContainer = document.querySelector('#boardContainer')
+    if(boardContainer) {
+      setTimeout(
+        () => {
+          boardContainer.scrollBy({
+            left: boardContainer.clientWidth, // Change the value to the desired scroll amount
+            behavior: 'smooth' // Enables smooth scrolling behavior
+          });
+        }, 1 )
+    }
   };
 
   const onAddItem = (idCol: any) => {
@@ -159,8 +170,6 @@ export default function Home() {
     let item = container.items.find((item) => item.id === id);
     if (!item) return;
     
-
-    
     item.description = selectItem.description;
     item.title = selectItem.title;
     item.labelColor = selectItem.labelColor
@@ -168,6 +177,16 @@ export default function Home() {
 
     setContainers([...containers]);
   }
+
+  const onDeleteItem = (id: UniqueIdentifier) => {
+    const container = containers.find((container) =>
+      container.items.find((item) => item.id === id),
+    );
+    if (!container) return;
+    container.items = container.items.filter((item) => item.id !== id);
+    setContainers([...containers]);
+  }
+
 
   // Find the value of the items
   function findValueOfItems(id: UniqueIdentifier | undefined, type: string) {
@@ -455,10 +474,10 @@ export default function Home() {
           <KanbanSquare width={"19px"}/>
           {boardData?.name }
         </h1>
-        <Toolsection />
+        <Toolsection addContainer={onAddContainer} />
       </div>
       <div className="mt-5">
-        <div className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
+        <div id="boardContainer" className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}
@@ -486,6 +505,7 @@ export default function Home() {
                       {container.items.map((i) => (
                         <Items
                           onEditItem={handleEditItem}
+                          onDeleteItem={onDeleteItem}
                           item = {i}
                           title={i.title} id={i.id} key={i.id}
                           labelColor={i.labelColor}
@@ -499,7 +519,7 @@ export default function Home() {
             <DragOverlay adjustScale={false}>
               {/* Drag Overlay For item Item */}
               {activeId && activeId.toString().includes('item') && (
-                <Items onEditItem={handleEditItem} id={activeId} title={""} item = {findItem(activeId)} />
+                <Items onEditItem={handleEditItem} id={activeId} title={""} item = {findItem(activeId)} onDeleteItem={onDeleteItem}/>
               )}
               {/* Drag Overlay For Container */}
               {activeId && activeId.toString().includes('container') && (
@@ -512,7 +532,7 @@ export default function Home() {
                     style={{ maxHeight: "calc(74vh - 20px)" }}
                   >
                     {findContainerItems(activeId).map((i) => (
-                      <Items onEditItem={handleEditItem} key={i.id} title={i.title} id={i.id} isPlaceholder={i.isPlaceholder} item={i} />
+                      <Items onEditItem={handleEditItem} key={i.id} title={i.title} id={i.id} isPlaceholder={i.isPlaceholder} item={i} onDeleteItem={onDeleteItem} />
                     ))}
                   </div>
                 </Container>
@@ -534,7 +554,7 @@ export default function Home() {
   );
 }
 
-const Toolsection = () => {
+const Toolsection = ({addContainer}:{addContainer:()=>void}) => {
   return (
     <>
       <div className="flex items-center">
@@ -542,7 +562,7 @@ const Toolsection = () => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div onClick={() => console.log('add')} className='p-3'>
+              <div onClick={addContainer} className='p-3 cursor-pointer'>
                 <Plus />
               </div>
             </TooltipTrigger>
