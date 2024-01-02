@@ -4,7 +4,9 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
 import { Button } from '../Button';
-import { GripVertical, MoreHorizontal, MoreVertical, Plus } from 'lucide-react';
+import { onRemoveContainerve, GripVertical, MoreHorizontal, MoreVertical, Pencil, Plus, Archive } from 'lucide-react';
+import { DropdownMenu, DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const Container = ({
   id,
@@ -14,6 +16,7 @@ const Container = ({
   description,
   onAddItem,
   editContainer,
+  onRemoveContainer
 }: ContainerProps) => {
 
   const [isEditing, setIsEditing] = useState(false);
@@ -62,10 +65,10 @@ const Container = ({
             {isEditing ? (
               <input
                 type="text"
-                className=" p-1 outline-none focus:ring-2 ring-rose-400/50 text-sm rounded w-full bg-transparent"
+                className=" p-1 outline-none ring-2 focus:ring-2 ring-rose-400/50 text-sm rounded w-full bg-transparent"
                 value={title}
                 onChange={(e) => updateContainer(e.target.value)}
-                autoFocus
+                autoFocus={true}
                 onBlur={() => setIsEditing(false)}
                 onKeyDown={el => {
                   if (el.key === 'Enter') {
@@ -90,10 +93,27 @@ const Container = ({
           <button className='py-[8px] mr-2' onClick={onAddItem}>
             <Plus className='h-5 opacity-80' />
           </button>
-          <div className={"mr-2"} onClick={() => setIsEditing(true)}>
-            <MoreHorizontal className='h-5' />
-          </div>
+          <DropdownMenu>
+            <div className={"mr-2 flex"}>
+              <DropdownMenuTrigger>
+                <MoreHorizontal className='h-5' />
+              </DropdownMenuTrigger>
+            </div>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                <Pencil height={14} className='opacity-80' />
+                Edit title
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onRemoveContainer()}>
+                <Archive height={14} className='opacity-80' />
+                Remove container
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
         </div>
+
         {children}
       </div>
     </div>

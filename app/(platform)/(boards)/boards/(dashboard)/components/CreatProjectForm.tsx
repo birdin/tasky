@@ -161,15 +161,9 @@ export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
                                     <div className="h-16 w-full bg-blue-200 rounded overflow-hidden"></div>
                                 </Label>
                             </div>
-                            <div className="">
-                                <RadioGroupItem value="yellow" id="yellow" className="peer sr-only" />
-                                <Label
-                                    htmlFor="yellow"
-                                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-zinc-500 [&:has([data-state=checked])]:border-zinc-500"
-                                >
-                                    <div className="h-16 w-full bg-yellow-200 rounded overflow-hidden"></div>
-                                </Label>
-                            </div>
+                            <BackGroundRadioItem id={"yellow"} value="yellow">
+                                <div className="h-16 w-full bg-rose-700 rounded overflow-hidden"></div>
+                            </BackGroundRadioItem>
                             <div className="">
                                 <RadioGroupItem value="bg-1" id="bg-1" className="peer sr-only" />
                                 <Label
@@ -218,3 +212,17 @@ export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
     )
 }
 
+
+const BackGroundRadioItem = ({ value, id, children }: { value: string, id: string, children?: any }) => {
+    return (
+        <div className="">
+            <RadioGroupItem value={value} id={id} className="peer sr-only" />
+            <Label
+                htmlFor={id}
+                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-zinc-500 [&:has([data-state=checked])]:border-zinc-500"
+            >
+                {children}
+            </Label>
+        </div>
+    )
+}

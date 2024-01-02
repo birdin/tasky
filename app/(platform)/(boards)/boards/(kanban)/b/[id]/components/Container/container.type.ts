@@ -8,4 +8,5 @@ export default interface ContainerProps {
   number?: number;
   onAddItem?: () => void;
   editContainer: (id: UniqueIdentifier, title: string) => void;
+  onRemoveContainer: () => void;
 }
