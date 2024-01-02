@@ -23,13 +23,13 @@ import {
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
 
-import { Inter } from 'next/font/google';
 import Container from './components/Container';
 import Items from './components/Item';
 import { KanbanSquare, Plus, Settings } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Item } from './types';
+import { BoardSettingForm } from './components/Forms/BoardSettingForm';
 
 type DNDType = {
   id: UniqueIdentifier;
@@ -187,6 +187,9 @@ export default function Home() {
     setContainers([...containers]);
   }
 
+  const onEditBoardTitle = (title: string) => {
+    setBoardData({ ...boardData, name: title });
+  }
 
   // Find the value of the items
   function findValueOfItems(id: UniqueIdentifier | undefined, type: string) {
@@ -474,7 +477,7 @@ export default function Home() {
           <KanbanSquare width={"19px"}/>
           {boardData?.name }
         </h1>
-        <Toolsection addContainer={onAddContainer} />
+        <Toolsection addContainer={onAddContainer} onEditBoardTitle={onEditBoardTitle} board={boardData}/>
       </div>
       <div className="mt-5">
         <div id="boardContainer" className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
@@ -554,11 +557,11 @@ export default function Home() {
   );
 }
 
-const Toolsection = ({addContainer}:{addContainer:()=>void}) => {
+const Toolsection = (
+    {addContainer, onEditBoardTitle, board}:{addContainer:()=>void, onEditBoardTitle: (el:string) => void, board: any} ) => {
   return (
     <>
       <div className="flex items-center">
-
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -583,15 +586,11 @@ const Toolsection = ({addContainer}:{addContainer:()=>void}) => {
                 </TooltipContent>
               </Tooltip>
             </PopoverTrigger>
-            <PopoverContent className='backdrop-blur-md bg-white/50'>
-              <div className="grid gap-4 ">
-                <div className="space-y-2">
-                  <h4 className="font-medium leading-none">Settings</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Set the dimensions for the layer.
-                  </p>
-                </div>
-              </div>
+            <PopoverContent className='backdrop-blur-md bg-white/70'>
+              {
+                // Board Setting Form
+              }
+              <BoardSettingForm onEditBoardTitle={onEditBoardTitle} board={board} />
             </PopoverContent>
           </Popover>
         </TooltipProvider >
