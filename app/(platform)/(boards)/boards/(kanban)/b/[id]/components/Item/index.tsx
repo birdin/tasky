@@ -48,7 +48,7 @@ const Items = (
       <div
         ref={setNodeRef}
         {...attributes}
-        className="h-0 order-last"
+        className="h-0 order-first"
       ></div>
     )
   }

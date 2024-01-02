@@ -41,6 +41,8 @@ type DNDType = {
   }
   title: string;
   items: Item[];
+  archive?: Item[];
+  
 };
 
 type Background = {
@@ -55,6 +57,7 @@ const containerExample: DNDType[] = [
   {
     id: 'container-1',
     title: 'To do',
+    archive: [],
     items: [
       {
         id: 'item-1',
@@ -67,34 +70,6 @@ const containerExample: DNDType[] = [
       {
         id: 'item-3',
         title: 'Item 3',
-      },
-    ],
-  },
-  {
-    id: 'container-2',
-    title: 'In Progress',
-    items: [
-      {
-        id: 'item-4',
-        title: 'Item 4',
-      },
-      {
-        id: 'item-5',
-        title: 'Item 5',
-      },
-    ],
-  },
-  {
-    id: 'container-3',
-    title: 'Done',
-    items: [
-      {
-        id: 'item-6',
-        title: 'Item 6',
-      },
-      {
-        id: 'item-7',
-        title: 'Item 7',
       },
     ],
   },
@@ -154,6 +129,17 @@ export default function Home() {
         }, 1)
     }
   };
+
+  const onRemoveContainer = (id: UniqueIdentifier) => {
+    const container = containers.find((item) => item.id === id);
+    if (!container) return;
+    const newContainers = containers.filter((item) => item.id !== id);
+    const newArchiveItems = [...boardData.archive, ...container.items]
+    setContainers([...newContainers]);
+    setBoardData({ ...boardData, archive: newArchiveItems });
+    console.log('boardData', boardData);
+   //setBoardData({ ...boardData, archive: [...boardData.archive, container]});
+  }
 
   const onAddItem = (idCol: any) => {
     const id = `item-${uuidv4()}`;
@@ -521,6 +507,9 @@ export default function Home() {
                     setCurrentContainerId(container.id);
                     onAddItem(container.id)
                   }}
+                  onRemoveContainer={ ()=> {
+                    onRemoveContainer(container.id)
+                  }}
                   number={container.items.length}
                   editContainer={onEditContainer}
                 >
@@ -552,6 +541,11 @@ export default function Home() {
                 <Container id={activeId}
                   title={findContainerTitle(activeId)}
                   editContainer={onEditContainer}
+                  onRemoveContainer={
+                    () => {
+                      onRemoveContainer(activeId)
+                    }
+                  }
                   number={findValueOfItems(activeId, 'container')?.items.length}
                 >
                   <div className="flex items-start min-h-[100px] flex-col gap-y-2 overflow-scroll p-1 items-container"
@@ -582,7 +576,7 @@ export default function Home() {
 
 const Toolsection = (
   { addContainer, onEditBoardTitle, board, onEditBackground } : 
-  { addContainer: () => void, onEditBoardTitle: (el: string) => void, board: any, onEditBackground: (bd: Background) => void}) =>  {
+  { addContainer: () => void, onEditBoardTitle: (el: string) => void, board: any, onEditBackground: (bd: Background) => void, }) =>  {
   return (
     <>
       <div className="flex items-center">

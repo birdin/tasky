@@ -18,6 +18,7 @@ export async function GET() {
         isArchived: false,
         isStarred: false,
         isPinned: false,
+        archive:[],
         containers: [
             {
                 "id": "container-1",
