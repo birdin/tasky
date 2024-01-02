@@ -20,22 +20,36 @@ import {
 import {
   SortableContext,
   arrayMove,
-  sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
 
 import Container from './components/Container';
 import Items from './components/Item';
-import { KanbanSquare, Plus, Settings } from 'lucide-react';
+import { KanbanSquare, Palette, Plus, Settings } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Item } from './types';
 import { BoardSettingForm } from './components/Forms/BoardSettingForm';
+import { BoardThemeSettings } from './components/Forms/BoardThemeSettings';
 
 type DNDType = {
   id: UniqueIdentifier;
+  background?: {
+    id: string
+    value: string;
+    thumb: string;
+    url: string;
+  }
   title: string;
-  items: Item [];
+  items: Item[];
 };
+
+type Background = {
+  id: string
+  value: string;
+  thumb: string;
+  url: string;
+}
+
 
 const containerExample: DNDType[] = [
   {
@@ -130,14 +144,14 @@ export default function Home() {
     setShowAddContainerModal(false);
     //move scroll to the top left
     const boardContainer = document.querySelector('#boardContainer')
-    if(boardContainer) {
+    if (boardContainer) {
       setTimeout(
         () => {
           boardContainer.scrollBy({
             left: boardContainer.clientWidth, // Change the value to the desired scroll amount
             behavior: 'smooth' // Enables smooth scrolling behavior
           });
-        }, 1 )
+        }, 1)
     }
   };
 
@@ -161,15 +175,15 @@ export default function Home() {
     setContainers([...containers]);
   }
 
-  const handleEditItem = (id: UniqueIdentifier, selectItem:Item) => {
+  const handleEditItem = (id: UniqueIdentifier, selectItem: Item) => {
     const container = containers.find((container) =>
-    container.items.find((item) => item.id === id),
+      container.items.find((item) => item.id === id),
     );
     if (!container) return;
 
     let item = container.items.find((item) => item.id === id);
     if (!item) return;
-    
+
     item.description = selectItem.description;
     item.title = selectItem.title;
     item.labelColor = selectItem.labelColor
@@ -189,6 +203,10 @@ export default function Home() {
 
   const onEditBoardTitle = (title: string) => {
     setBoardData({ ...boardData, name: title });
+  }
+
+  const onEditBackground = (background: Background) => {
+    setBoardData({ ...boardData, background: background });
   }
 
   // Find the value of the items
@@ -462,7 +480,7 @@ export default function Home() {
   return (
     <div className="bg-[#cde0e0] bg-cover max-h-[100vh - 250px]"
       style={{
-        backgroundImage: `url(${boardData?.background})`,
+        backgroundImage: `url(${boardData?.background?.url})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -472,12 +490,17 @@ export default function Home() {
       }}
     >
 
-      <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/80">
+      <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/70 backdrop-blur-sm">
         <h1 className="text-gray-800 text-base font-medium pl-1 flex items-center gap-2 md:ml-1">
-          <KanbanSquare width={"19px"}/>
-          {boardData?.name }
+          <KanbanSquare width={"19px"} />
+          {boardData?.name}
         </h1>
-        <Toolsection addContainer={onAddContainer} onEditBoardTitle={onEditBoardTitle} board={boardData}/>
+        <Toolsection
+          addContainer={onAddContainer}
+          onEditBoardTitle={onEditBoardTitle}
+          board={boardData}
+          onEditBackground={onEditBackground}
+        />
       </div>
       <div className="mt-5">
         <div id="boardContainer" className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
@@ -509,7 +532,7 @@ export default function Home() {
                         <Items
                           onEditItem={handleEditItem}
                           onDeleteItem={onDeleteItem}
-                          item = {i}
+                          item={i}
                           title={i.title} id={i.id} key={i.id}
                           labelColor={i.labelColor}
                           isPlaceholder={i.isPlaceholder} />
@@ -522,7 +545,7 @@ export default function Home() {
             <DragOverlay adjustScale={false}>
               {/* Drag Overlay For item Item */}
               {activeId && activeId.toString().includes('item') && (
-                <Items onEditItem={handleEditItem} id={activeId} title={""} item = {findItem(activeId)} onDeleteItem={onDeleteItem}/>
+                <Items onEditItem={handleEditItem} id={activeId} title={""} item={findItem(activeId)} onDeleteItem={onDeleteItem} />
               )}
               {/* Drag Overlay For Container */}
               {activeId && activeId.toString().includes('container') && (
@@ -544,7 +567,7 @@ export default function Home() {
           </DndContext>
           <div>
             <div
-              className=" justify-center items-center mt-[1px] h-[60px] w-[300px] min-w-[300px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor p-4 ring-rose-500 hover:ring-2 flex gap-2 bg-slate-50/30 text-sm opacity-70 hover:opacity-100"
+              className=" justify-center items-center mt-[1px] h-[60px] w-[300px] min-w-[300px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor p-4 ring-rose-500 hover:ring-2 flex gap-2 bg-slate-50/60 text-sm opacity-90 hover:opacity-100 font-medium"
               onClick={onAddContainer}>
               <Plus className='h-5 opacity-80' />
               Add Container
@@ -558,7 +581,8 @@ export default function Home() {
 }
 
 const Toolsection = (
-    {addContainer, onEditBoardTitle, board}:{addContainer:()=>void, onEditBoardTitle: (el:string) => void, board: any} ) => {
+  { addContainer, onEditBoardTitle, board, onEditBackground } : 
+  { addContainer: () => void, onEditBoardTitle: (el: string) => void, board: any, onEditBackground: (bd: Background) => void}) =>  {
   return (
     <>
       <div className="flex items-center">
@@ -577,6 +601,27 @@ const Toolsection = (
             <PopoverTrigger>
               <Tooltip>
                 <TooltipTrigger asChild>
+                  <div onClick={() => console.log("edit backgeround")} className='p-3 cursor-pointer'>
+                    <Palette />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Edit background</p>
+                </TooltipContent>
+              </Tooltip>
+            </PopoverTrigger>
+            <PopoverContent className='backdrop-blur-md bg-white/80'>
+              <BoardThemeSettings 
+                onEditBackground={onEditBackground}
+                background={board?.background}
+              />
+            </PopoverContent>
+          </Popover>
+
+          <Popover>
+            <PopoverTrigger>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <div className='p-3'>
                     <Settings />
                   </div>
@@ -586,7 +631,7 @@ const Toolsection = (
                 </TooltipContent>
               </Tooltip>
             </PopoverTrigger>
-            <PopoverContent className='backdrop-blur-md bg-white/70'>
+            <PopoverContent className='backdrop-blur-md bg-white/80'>
               {
                 // Board Setting Form
               }

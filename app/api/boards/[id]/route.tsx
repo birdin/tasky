@@ -3,7 +3,16 @@ export async function GET() {
         id: "Board name",
         name: "New Container",
         description: "Board description",
-        background: "https://images.unsplash.com/photo-1703016445127-73076df4814b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        background:{
+            id: "bg-5",
+            value: "bg-5",
+            url: "https://images.unsplash.com/photo-1521080755838-d2311117f767?q=80&w=1924&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            thumb: "https://images.unsplash.com/photo-1521080755838-d2311117f767?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDI0fGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D"
+    
+            
+            //thumb: "https://images.unsplash.com/photo-1703016445127-73076df4814b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            //url:"https://images.unsplash.com/photo-1703016445127-73076df4814b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        },
         slug: "board-slug",
         isPrivate: false,
         isArchived: false,
