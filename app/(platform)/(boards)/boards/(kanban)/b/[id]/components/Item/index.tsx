@@ -3,10 +3,10 @@ import { useSortable } from '@dnd-kit/sortable';
 import React, { useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { MoreHorizontal, MoreVertical } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 import { Item } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
-import { SelectContent, SelectGroup, SelectItem, SelectLabel, SelectValue } from '@/components/ui/select';
+import { SelectContent, SelectGroup, SelectItem, SelectValue } from '@/components/ui/select';
 
 type ItemsType = {
   id: UniqueIdentifier | string;

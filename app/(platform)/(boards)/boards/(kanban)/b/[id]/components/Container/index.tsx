@@ -3,8 +3,7 @@ import ContainerProps from './container.type';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { Button } from '../Button';
-import { onRemoveContainerve, GripVertical, MoreHorizontal, MoreVertical, Pencil, Plus, Archive } from 'lucide-react';
+import { GripVertical, MoreHorizontal, Pencil, Plus, Archive } from 'lucide-react';
 import { DropdownMenu, DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
@@ -76,9 +75,11 @@ const Container = ({
                   }
                 }}
               />
-            ) :
+            ) : (
               <>
-                <h1 className="text-gray-800 text-base font-semibold">{title}</h1>
+                <h1 className="text-gray-800 text-base">
+                  {title}
+                </h1>
                 {(number && number > 1) ?
                   <div className='bg-sky-800/50	rounded px-2 ml-2 text-xs	font-semibold  text-white	'>
                     {number - 1}
@@ -86,6 +87,7 @@ const Container = ({
                   : ''
                 }
               </>
+            )
             }
 
             <p className="text-gray-400 text-sm">{description}</p>
