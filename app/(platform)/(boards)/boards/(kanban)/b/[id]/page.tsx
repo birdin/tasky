@@ -561,7 +561,7 @@ export default function Home() {
           </DndContext>
           <div>
             <div
-              className=" justify-center items-center mt-[1px] h-[60px] w-[300px] min-w-[300px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor p-4 ring-rose-500 hover:ring-2 flex gap-2 bg-slate-50/60 text-sm opacity-90 hover:opacity-100 font-medium"
+              className=" justify-center items-center mt-[1px] h-[60px] w-[300px] min-w-[300px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor p-4 ring-rose-500 hover:ring-2 flex gap-2 bg-slate-50/60 text-sm opacity-90 hover:opacity-100 font-medium backdrop-blur-sm"
               onClick={onAddContainer}>
               <Plus className='h-5 opacity-80' />
               Add Container
