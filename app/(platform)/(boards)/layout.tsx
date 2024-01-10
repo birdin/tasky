@@ -15,6 +15,17 @@ const DashboardLayout = ({ children }: { children: React.ReactNode}) => {
     }
 
     if (status === "authenticated") {
+        console.log({session})
+        //Verify if there is a session token
+        /*
+            Verify if it is valid /api/auth/verify
+            If it is valid, then continue
+            If it is not valid
+                - Try to login with the refresh token
+                - If it is valid, then continue
+                - If it is not valid, sing up new user
+
+        */
         return (
             <>
                 <SessionProvider>
