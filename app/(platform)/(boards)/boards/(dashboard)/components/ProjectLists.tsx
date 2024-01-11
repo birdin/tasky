@@ -1,24 +1,47 @@
 "use client"
 
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useSession } from "next-auth/react"
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid';
+import { getCookie, setCookie } from "cookies-next";
+
 
 import { useInput } from '@/hooks/useInput'
 
-import {CreateProjectForm} from './CreatProjectForm'
+import { CreateProjectForm } from './CreatProjectForm'
 
 const projectsAux = [
-    { id: uuidv4(), title: 'Bon dia', image: 'https://i0.wp.com/artefeed.com/wp-content/uploads/2019/08/Animales-acu%C3%A1ticos-Pinturas-surrealistas-de-Lisa-Ericson-1-1.jpg?fit=853%2C1024&ssl=1' },
-    { id: uuidv4(), title: 'Hello wor444ld', image: 'https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/891debd34b8a4dbc72e2d3474ca4e74b/photo-1515165562839-978bbcf18277.jpg' },
-    { id: uuidv4(), title: 'Hello world', image: 'https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/575482d12c48436ad3aa5cccdb82f138/photo-1448375240586-882707db888b.jpg' },
-    { id: uuidv4(), title: 'Hello wovvvrld', image: 'https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/575482d12c48436ad3aa5cccdb82f138/photo-1448375240586-882707db888b.jpg' },
+    { id: uuidv4(), name: 'Bon dia', image: 'https://i0.wp.com/artefeed.com/wp-content/uploads/2019/08/Animales-acu%C3%A1ticos-Pinturas-surrealistas-de-Lisa-Ericson-1-1.jpg?fit=853%2C1024&ssl=1', background:{thumb:''} },
 ]
 
 const ProjectLists = () => {
     const inputSearch = useInput('')
     const [projects, setProjects] = React.useState(projectsAux)
+    useEffect(()=> {
+        getProjects()
+    },[]);
+
+    function getProjects() {
+        const cookie = getCookie("token_2sl");
+        console.log(cookie)
+
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "application/json");
+        myHeaders.append("Authorization", "Bearer " + cookie);
+        console.log("http://api_taski.test" + "/api/projects")
+        fetch("http://api_taski.test" + "/api/projects", {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        })
+            .then(response => response.json())
+            .then(result => {
+                setProjects(result.data.projects)
+            })
+            .catch(error => console.log('error', error));
+    }
+
 
     const { data: session } = useSession()
     return (
@@ -34,7 +57,7 @@ const ProjectLists = () => {
                     {
                         // Create button
                     }
-                    <CreateProjectForm setProjects={setProjects}/>
+                    <CreateProjectForm setProjects={setProjects} />
                 </div>
             </div>
             <div className="flex gap-4 text-sm mt-2 flex-wrap">
@@ -74,9 +97,9 @@ const ProjectLists = () => {
 
             <section className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2'>
                 {
-                    projects.filter(el => el.title.indexOf(inputSearch.value) != -1).map(project => (
-                        <Card key={project.id} title={project.title} image={project.image} id={project.id} />
-                    )).slice().reverse()
+                    projects.filter(el => el.name.indexOf(inputSearch.value) != -1).map(project => (
+                        <Card key={project.id + "-project"} title={project.name} image={project?.background?.thumb} id={project.id + "-project"} />
+                    ))
                 }
             </section>
         </>
