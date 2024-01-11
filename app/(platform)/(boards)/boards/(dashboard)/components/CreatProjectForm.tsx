@@ -1,3 +1,5 @@
+"use client"
+
 import {
     Dialog,
     DialogClose,
@@ -5,21 +7,21 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 
-import { CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
+import { CardDescription, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 
-import { useForm, SubmitHandler } from "react-hook-form"
-import React from "react";
+import { useForm, SubmitHandler, set } from "react-hook-form"
+import React, { useEffect } from "react";
+import { get } from "http";
 
 type Inputs = {
     title: string;
     visibility: boolean;
 }
-
 
 export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
     const {
@@ -31,10 +33,11 @@ export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
 
     const [visibility, setVisibility] = React.useState(false)
     const [title, setTitle] = React.useState('')
-    const [theme, setTheme] = React.useState('default')
+    const [theme, setTheme] = React.useState(1)
     const [open, setOpen] = React.useState(false)
     const [error, setError] = React.useState(false)
 
+    const backgerounds = useGetBackgrounds()
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         console.log({ title, theme, visibility })
@@ -43,9 +46,11 @@ export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
         } else {
             setOpen(false)
             setError(false)
+            setProjects({id:Date.now(), name: title, theme, visibility, background_id: theme});
+            /*
             setProjects((prev: any) => [...prev,
-            { id: Date.now() + "el", title, theme, visibility, image: 'https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/891debd34b8a4dbc72e2d3474ca4e74b/photo-1515165562839-978bbcf18277.jpg' }
-            ])
+            { id: Date.now() + "el", name: title, theme, visibility, background:{thumb: 'https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/891debd34b8a4dbc72e2d3474ca4e74b/photo-1515165562839-978bbcf18277.jpg'} }
+            ])*/
         }
     }
 
@@ -73,7 +78,7 @@ export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
                         <CardDescription className='text-sm mb-1'>
                             Define a new board and its elements.
                         </CardDescription>
-                        <RadioGroup defaultValue={"default"} onValueChange={e => setTheme(e)} className="grid grid-cols-3 gap-4">
+                        <RadioGroup defaultValue={"default"} onValueChange={e => setTheme(parseInt(e))} className="grid grid-cols-3 gap-4">
                             <div>
                                 <RadioGroupItem value="default" id="default" className="peer sr-only" />
                                 <Label
@@ -151,41 +156,29 @@ export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
                             Select the type of template to start the board.
                         </CardDescription>
 
-                        <RadioGroup defaultValue="defaultBackground" className="grid grid-cols-4 gap-1  bg-stone-50 underline-offset-2">
-                            <div className="">
-                                <RadioGroupItem value="default" id="default" className="peer sr-only" />
-                                <Label
-                                    htmlFor="defaultBackground"
-                                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-zinc-500 [&:has([data-state=checked])]:border-zinc-500"
-                                >
-                                    <div className="h-16 w-full bg-blue-200 rounded overflow-hidden"></div>
-                                </Label>
-                            </div>
-                            <BackGroundRadioItem id={"yellow"} value="yellow">
-                                <div className="h-16 w-full bg-rose-700 rounded overflow-hidden"></div>
-                            </BackGroundRadioItem>
-                            <div className="">
-                                <RadioGroupItem value="bg-1" id="bg-1" className="peer sr-only" />
-                                <Label
-                                    htmlFor="bg-1"
-                                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-zinc-500 [&:has([data-state=checked])]:border-zinc-500"
-                                >
-                                    <div className="h-16 w-full bg-blue-200 rounded overflow-hidden">
-                                        <img className='bg-cover bg-center rounded' src="https://images.unsplash.com/photo-1682686581427-7c80ab60e3f3?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxNnx8fGVufDB8fHx8fA%3D%3D" alt="" />
+                        <RadioGroup 
+                            defaultValue="defaultBackground" 
+                            className="grid grid-cols-4 gap-1  bg-stone-50 underline-offset-2"
+                            onValueChange={ (el: any) => setTheme(el)}
+                            >
+
+                            {
+                                backgerounds.loading === false ? backgerounds.backgrounds.map((el: any) => (
+                                    <div key={`el-comp-${el.value}`} >
+                                        <RadioGroupItem value={el.id} id={el.value} className="peer sr-only" />
+                                        <Label
+                                            htmlFor={el.value}
+                                            className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-zinc-500 [&:has([data-state=checked])]:border-zinc-500"
+                                        >
+                                            <div className="h-16 w-full bg-blue-200 rounded overflow-hidden">
+                                                <img className='bg-cover bg-center rounded' src={el.thumb} alt="" />
+                                            </div>
+                                        </Label>
                                     </div>
-                                </Label>
-                            </div>
-                            <div className="">
-                                <RadioGroupItem value="bg-2" id="bg-2" className="peer sr-only" />
-                                <Label
-                                    htmlFor="bg-2"
-                                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-zinc-500 [&:has([data-state=checked])]:border-zinc-500"
-                                >
-                                    <div className="h-16 w-full bg-blue-200 rounded overflow-hidden">
-                                        <img className='bg-cover bg-center rounded' src="https://images.unsplash.com/photo-1682686581427-7c80ab60e3f3?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxNnx8fGVufDB8fHx8fA%3D%3D" alt="" />
-                                    </div>
-                                </Label>
-                            </div>
+                                )) : <div>Loading...</div>
+                            
+                                }
+                            
                         </RadioGroup>
                         <div className="grid gap-1 mt-3">
                             <div className="flex items-center justify-between space-x-2">
@@ -225,4 +218,37 @@ const BackGroundRadioItem = ({ value, id, children }: { value: string, id: strin
             </Label>
         </div>
     )
+}
+
+const useGetBackgrounds = () => {
+    const [backgrounds, setBackgrounds] = React.useState([])
+    const [loading, setLoading] = React.useState(true)
+    const [error, setError] = React.useState(false)
+
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Authorization", "Bearer 2|hVF7JfqMJWNY9S8SFE1V9L2T0XUcYcTZ3RJbYiq7c0ce91a5");
+
+    var requestOptions: any = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    useEffect(() => {
+        fetch("http://api_taski.test/api/backgrounds", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                setBackgrounds(result.data.backgrounds)
+            })
+            .catch(error => {
+                console.log('error', error)
+                setError(true)
+            }).finally(() => {
+                setLoading(false)
+            });
+    }, [])
+
+    return { backgrounds, loading, error }
+
 }

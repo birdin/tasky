@@ -1,27 +1,38 @@
 "use client"
 
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { useSession } from "next-auth/react"
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid';
 import { getCookie, setCookie } from "cookies-next";
-
-
 import { useInput } from '@/hooks/useInput'
+
+import { toast } from "sonner"
+
 
 import { CreateProjectForm } from './CreatProjectForm'
 
 const projectsAux = [
-    { id: uuidv4(), name: 'Bon dia', image: 'https://i0.wp.com/artefeed.com/wp-content/uploads/2019/08/Animales-acu%C3%A1ticos-Pinturas-surrealistas-de-Lisa-Ericson-1-1.jpg?fit=853%2C1024&ssl=1', background:{thumb:''} },
+    { id: uuidv4(), name: 'Bon dia', image: 'https://i0.wp.com/artefeed.com/wp-content/uploads/2019/08/Animales-acu%C3%A1ticos-Pinturas-surrealistas-de-Lisa-Ericson-1-1.jpg?fit=853%2C1024&ssl=1', background: { thumb: '' } },
 ]
+
+type Project = {
+    id: string;
+    name: string;
+    description?: string;
+    image?: string;
+    background?: { thumb: string };
+    background_id?: number;
+}
 
 const ProjectLists = () => {
     const inputSearch = useInput('')
     const [projects, setProjects] = React.useState(projectsAux)
-    useEffect(()=> {
+    useEffect(() => {
         getProjects()
-    },[]);
+    }, []);
 
+    // Senf to the server
     function getProjects() {
         const cookie = getCookie("token_2sl");
         console.log(cookie)
@@ -42,6 +53,60 @@ const ProjectLists = () => {
             .catch(error => console.log('error', error));
     }
 
+    // Senf to the server
+    function createProject(project : Project) {
+        if(!project.name) {
+            return;
+        }
+
+        const cookie = getCookie("token_2sl");
+
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "application/json");
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer " + cookie);
+
+        var raw = JSON.stringify({
+            "name": project.name,
+            "description": "",
+            "slug": uuidv4(),
+            "isPrivate": true,
+            "isArchived": false,
+            "isStarred": false,
+            "isPinned": false,
+            "container": 2,
+            "background_id": project.background_id,
+            "archive": "[]"
+        });
+
+        let requestOptions : any = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch("http://api_taski.test/api/projects", requestOptions)
+            .then(response => response.json())
+            .then(res => {
+                if(res.data.project) {
+                    setProjects([res.data.project, ...projects])
+                               
+                    toast.success("Event has been created", {
+                        action: {
+                        label: "done",
+                        onClick: () => console.log("Undo"),
+                        },
+                    })
+                }
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    const onSetProjects = (project: any) => {
+        createProject(project)
+    }
+
 
     const { data: session } = useSession()
     return (
@@ -57,7 +122,7 @@ const ProjectLists = () => {
                     {
                         // Create button
                     }
-                    <CreateProjectForm setProjects={setProjects} />
+                    <CreateProjectForm setProjects={onSetProjects} />
                 </div>
             </div>
             <div className="flex gap-4 text-sm mt-2 flex-wrap">
