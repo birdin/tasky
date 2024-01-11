@@ -1,9 +1,17 @@
+export type Label = {
+  id?: any;
+  title: string;
+  color?: string;
+}
+
+
 export type Item = {
-    id: any;
-    title: string;
-    labelColor?: string;
-    label?: string;
-    isPlaceholder?: boolean;
-    description?: string
-  }
-  
+  id: any;
+  title: string;
+  labelColor?: string;
+  member?: { name: string, avatar: string };
+  label?: Label[]
+  isPlaceholder?: boolean;
+  description?: string
+}
+

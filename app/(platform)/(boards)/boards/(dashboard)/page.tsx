@@ -1,7 +1,5 @@
-import { getPosts } from "@/lib/api";
 import ProjectLists from "./components/ProjectLists";
 import { Container } from "@/components/ui";
-
 
 const BoardPage = async () => {
 

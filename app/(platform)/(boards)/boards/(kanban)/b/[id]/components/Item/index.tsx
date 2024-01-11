@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import React, { useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { MoreHorizontal } from 'lucide-react';
+import { FileText, MoreHorizontal } from 'lucide-react';
 import { Item } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
 import { SelectContent, SelectGroup, SelectItem, SelectValue } from '@/components/ui/select';
@@ -19,13 +19,13 @@ type ItemsType = {
 };
 
 const Items = (
-  { id, 
-    title, 
-    onEditItem, 
+  { id,
+    title,
+    onEditItem,
     onDeleteItem,
-    labelColor, 
-    isPlaceholder, 
-    item 
+    labelColor,
+    isPlaceholder,
+    item
   }: ItemsType) => {
   const {
     attributes,
@@ -52,6 +52,8 @@ const Items = (
       ></div>
     )
   }
+
+  //console.log('item', item);
 
   return (
     <div
@@ -117,21 +119,54 @@ const Items = (
         </div>
         :
         <div className="flex items-center justify-between text-sm">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 w-full">
             <h3 className='text-base font-medium'>
               {item?.title}
             </h3>
-            <p className='text-gray-500'>
-              {item?.description}
-            </p>
-            <div className="tag">
-              {
-                item?.labelColor ?
-                  <label className='text-rose-900 bg-rose-300 text-[11px] px-3 rounded'>
-                    {item.labelColor}
-                  </label>
-                  : <></>
-              }
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="">
+                {
+                  item?.member && (
+                    <div className="rounded-full bg-rose-600 w-7 h-7 flex justify-center items-center">
+                      <div className="text-white">
+                        {item?.member?.name?.split(' ')[0].charAt(0).toUpperCase()}
+                      </div>
+                    </div>
+                  )
+                }
+              </div>
+              <div className='text-gray-400'>
+                {
+                  item?.description &&
+                  <div className='flex items-center gap-1 text-[13px]'>
+                    <FileText width={14} />
+                    <span>
+                      Description
+                    </span>
+                  </div>
+                }
+              </div>
+              <div className="tag">
+                {
+                  item?.label?.map((label) => {
+                    return (
+                      <label key={`label-${label.id}`} className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
+                        {label.title}
+                      </label>
+                    )
+                  })
+                }
+
+
+
+                {/*
+                  item?.labelColor ?
+                    <label className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
+                      {item.labelColor}
+                    </label>
+                  : <></>*/
+                }
+              </div>
             </div>
           </div>
           <button
