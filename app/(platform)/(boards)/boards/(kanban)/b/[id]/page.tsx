@@ -109,7 +109,6 @@ export default function Home() {
 
     fetch(`http://api_taski.test/api/projects/${slug.id}`  , requestOptions).then((res) => res.json()).then((res) => {
       //console.log('/api/boards/1', data)
-      console.log("containers", res.data.project.containers)
       setContainers(JSON.parse(res.data.project.containers));
       setBoardData(res.data.project);
     }
@@ -157,7 +156,6 @@ export default function Home() {
     const newArchiveItems = [...boardData.archive, ...container.items]
     setContainers([...newContainers]);
     setBoardData({ ...boardData, archive: newArchiveItems });
-    console.log('boardData', boardData);
     //setBoardData({ ...boardData, archive: [...boardData.archive, container]});
   }
 
@@ -676,10 +674,7 @@ const useGetProject = (slug: any) => {
     fetch("http://api_taski.test/api/projects/18a1ffd0-76b4-4c62-a2b5-2a4bf957868a", requestOptions)
       .then(response => response.json())
       .then(result => {
-        console.log('laravel/1', result.data.project)
-        console.log('laravel/1', result.data.project.containers)
         setProject(result.data.project)
-        console.log('project', result.data.project)
       })
       .catch(error => console.log('error', error));
   }, [slug])

@@ -35,12 +35,9 @@ const ProjectLists = () => {
 
     // Send to the server
     function getProjects() {
-        console.log(cookie)
-
         var myHeaders = new Headers();
         myHeaders.append("Accept", "application/json");
         myHeaders.append("Authorization", "Bearer " + cookie);
-        console.log("http://api_taski.test" + "/api/projects")
         fetch("http://api_taski.test" + "/api/projects", {
             method: 'GET',
             headers: myHeaders,
