@@ -12,29 +12,29 @@ import { toast } from "sonner"
 
 import { CreateProjectForm } from './CreatProjectForm'
 
-const projectsAux = [
-    { id: uuidv4(), name: 'Bon dia', image: 'https://i0.wp.com/artefeed.com/wp-content/uploads/2019/08/Animales-acu%C3%A1ticos-Pinturas-surrealistas-de-Lisa-Ericson-1-1.jpg?fit=853%2C1024&ssl=1', background: { thumb: '' } },
-]
-
 type Project = {
     id: string;
     name: string;
+    slug?: string;
     description?: string;
     image?: string;
+    isVisible?: boolean;    
     background?: { thumb: string };
     background_id?: number;
-}
+    template?: string;
+} 
 
 const ProjectLists = () => {
     const inputSearch = useInput('')
-    const [projects, setProjects] = React.useState(projectsAux)
+    const [projects, setProjects] = React.useState<any>([])
     useEffect(() => {
         getProjects()
     }, []);
 
-    // Senf to the server
+    const cookie = getCookie("token_2sl");
+
+    // Send to the server
     function getProjects() {
-        const cookie = getCookie("token_2sl");
         console.log(cookie)
 
         var myHeaders = new Headers();
@@ -58,9 +58,6 @@ const ProjectLists = () => {
         if(!project.name) {
             return;
         }
-
-        const cookie = getCookie("token_2sl");
-
         var myHeaders = new Headers();
         myHeaders.append("Accept", "application/json");
         myHeaders.append("Content-Type", "application/json");
@@ -69,14 +66,13 @@ const ProjectLists = () => {
         var raw = JSON.stringify({
             "name": project.name,
             "description": "",
-            "slug": uuidv4(),
             "isPrivate": true,
             "isArchived": false,
             "isStarred": false,
             "isPinned": false,
             "container": 2,
             "background_id": project.background_id,
-            "archive": "[]"
+            "template": project.template
         });
 
         let requestOptions : any = {
@@ -91,8 +87,7 @@ const ProjectLists = () => {
             .then(res => {
                 if(res.data.project) {
                     setProjects([res.data.project, ...projects])
-                               
-                    toast.success("Event has been created", {
+                    toast.success("Board has been created", {
                         action: {
                         label: "done",
                         onClick: () => console.log("Undo"),
@@ -100,7 +95,17 @@ const ProjectLists = () => {
                     })
                 }
             })
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                toast.error("Ups! We coudn't create the board. Try it again later", {
+                    action: {
+                    label: "done",
+                    onClick: () => console.log("Undo"),
+                    },
+                })
+
+                console.log('error', error)
+            } );
+                
     }
 
     const onSetProjects = (project: any) => {
@@ -162,8 +167,8 @@ const ProjectLists = () => {
 
             <section className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2'>
                 {
-                    projects.filter(el => el.name.indexOf(inputSearch.value) != -1).map(project => (
-                        <Card key={project.id + "-project"} title={project.name} image={project?.background?.thumb} id={project.id + "-project"} />
+                    projects.filter((el:any) => el.name.indexOf(inputSearch.value) != -1).map((project:any) => (
+                        <Card key={project.id + "-project"} title={project.name} image={project?.background?.thumb} id={project.id + "-project"} slug={project?.slug} />
                     ))
                 }
             </section>
@@ -172,10 +177,10 @@ const ProjectLists = () => {
 }
 
 
-const Card = ({ title, image, id }: { title: string, image: string, id: string }) => {
+const Card = ({ title, image, id, slug }: { title: string, image: string, id: string, slug:string }) => {
     return (
         <div className="h-32 relative overflow-hidden">
-            <Link href={`boards/b/${id}`} className=' block'>
+            <Link href={`boards/b/${slug}`} className=' block'>
                 <div className="">
                     <img className='w-full object-cover' src={image} />
                 </div>

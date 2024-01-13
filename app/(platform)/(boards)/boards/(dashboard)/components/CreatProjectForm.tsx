@@ -16,7 +16,9 @@ import { Button } from '@/components/ui/button';
 
 import { useForm, SubmitHandler, set } from "react-hook-form"
 import React, { useEffect } from "react";
-import { get } from "http";
+import { getCookie } from "cookies-next";
+
+import {useGetBackgrounds} from '@/hooks/useGetBackgrounds'
 
 type Inputs = {
     title: string;
@@ -34,10 +36,12 @@ export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
     const [visibility, setVisibility] = React.useState(false)
     const [title, setTitle] = React.useState('')
     const [theme, setTheme] = React.useState(1)
+    const [template, setTemplate] = React.useState('default')
     const [open, setOpen] = React.useState(false)
     const [error, setError] = React.useState(false)
 
-    const backgerounds = useGetBackgrounds()
+    const cookie = getCookie("token_2sl");
+    const backgerounds = useGetBackgrounds(cookie)
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         console.log({ title, theme, visibility })
@@ -46,14 +50,9 @@ export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
         } else {
             setOpen(false)
             setError(false)
-            setProjects({id:Date.now(), name: title, theme, visibility, background_id: theme});
-            /*
-            setProjects((prev: any) => [...prev,
-            { id: Date.now() + "el", name: title, theme, visibility, background:{thumb: 'https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/891debd34b8a4dbc72e2d3474ca4e74b/photo-1515165562839-978bbcf18277.jpg'} }
-            ])*/
+            setProjects({id:Date.now(), name: title, theme, template, isPrivate: !visibility, background_id: theme});
         }
     }
-
 
 
     return (
@@ -78,7 +77,7 @@ export const CreateProjectForm = ({ setProjects }: { setProjects: any }) => {
                         <CardDescription className='text-sm mb-1'>
                             Define a new board and its elements.
                         </CardDescription>
-                        <RadioGroup defaultValue={"default"} onValueChange={e => setTheme(parseInt(e))} className="grid grid-cols-3 gap-4">
+                        <RadioGroup defaultValue={"default"} value={template} onValueChange={e => setTemplate(e)} className="grid grid-cols-3 gap-4">
                             <div>
                                 <RadioGroupItem value="default" id="default" className="peer sr-only" />
                                 <Label
@@ -220,35 +219,3 @@ const BackGroundRadioItem = ({ value, id, children }: { value: string, id: strin
     )
 }
 
-const useGetBackgrounds = () => {
-    const [backgrounds, setBackgrounds] = React.useState([])
-    const [loading, setLoading] = React.useState(true)
-    const [error, setError] = React.useState(false)
-
-    var myHeaders = new Headers();
-    myHeaders.append("Accept", "application/json");
-    myHeaders.append("Authorization", "Bearer 2|hVF7JfqMJWNY9S8SFE1V9L2T0XUcYcTZ3RJbYiq7c0ce91a5");
-
-    var requestOptions: any = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-    };
-
-    useEffect(() => {
-        fetch("http://api_taski.test/api/backgrounds", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                setBackgrounds(result.data.backgrounds)
-            })
-            .catch(error => {
-                console.log('error', error)
-                setError(true)
-            }).finally(() => {
-                setLoading(false)
-            });
-    }, [])
-
-    return { backgrounds, loading, error }
-
-}

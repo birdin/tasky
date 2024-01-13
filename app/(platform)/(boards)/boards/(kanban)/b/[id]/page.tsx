@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
 // DnD
@@ -30,6 +31,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Item } from './types';
 import { BoardSettingForm } from './components/Forms/BoardSettingForm';
 import { BoardThemeSettings } from './components/Forms/BoardThemeSettings';
+import { getCookie } from 'cookies-next';
 
 type DNDType = {
   id: UniqueIdentifier;
@@ -42,7 +44,7 @@ type DNDType = {
   title: string;
   items: Item[];
   archive?: Item[];
-  
+
 };
 
 type Background = {
@@ -88,10 +90,28 @@ export default function Home() {
 
   const [firstRender, setFirstRender] = useState(true);
 
+  const slug = useParams();
+ 
+  //useGetProject(slug.id);
+
   useEffect(() => {
-    fetch('/api/boards/1').then((res) => res.json()).then((data) => {
-      setContainers(data.containers);
-      setBoardData(data);
+    const cookie = getCookie("token_2sl");
+
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Authorization", "Bearer " + cookie);
+  
+    var requestOptions: any = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    fetch(`http://api_taski.test/api/projects/${slug.id}`  , requestOptions).then((res) => res.json()).then((res) => {
+      //console.log('/api/boards/1', data)
+      console.log("containers", res.data.project.containers)
+      setContainers(JSON.parse(res.data.project.containers));
+      setBoardData(res.data.project);
     }
     );
   }
@@ -138,7 +158,7 @@ export default function Home() {
     setContainers([...newContainers]);
     setBoardData({ ...boardData, archive: newArchiveItems });
     console.log('boardData', boardData);
-   //setBoardData({ ...boardData, archive: [...boardData.archive, container]});
+    //setBoardData({ ...boardData, archive: [...boardData.archive, container]});
   }
 
   const onAddItem = (idCol: any) => {
@@ -507,17 +527,17 @@ export default function Home() {
                     setCurrentContainerId(container.id);
                     onAddItem(container.id)
                   }}
-                  onRemoveContainer={ ()=> {
+                  onRemoveContainer={() => {
                     onRemoveContainer(container.id)
                   }}
-                  number={container.items.length}
+                  number={container.items?.length}
                   editContainer={onEditContainer}
                 >
-                  <SortableContext items={container.items.map((i) => i.id)}>
+                  <SortableContext items={container.items?.map((i) => i.id)}>
                     <div className="flex items-start min-h-[100px] flex-col gap-y-2 overflow-scroll p-1 items-container"
                       style={{ maxHeight: "calc(74vh - 20px)" }}
                     >
-                      {container.items.map((i) => (
+                      {container.items?.map((i) => (
                         <Items
                           onEditItem={handleEditItem}
                           onDeleteItem={onDeleteItem}
@@ -575,8 +595,8 @@ export default function Home() {
 }
 
 const Toolsection = (
-  { addContainer, onEditBoardTitle, board, onEditBackground } : 
-  { addContainer: () => void, onEditBoardTitle: (el: string) => void, board: any, onEditBackground: (bd: Background) => void, }) =>  {
+  { addContainer, onEditBoardTitle, board, onEditBackground }:
+    { addContainer: () => void, onEditBoardTitle: (el: string) => void, board: any, onEditBackground: (bd: Background) => void, }) => {
   return (
     <>
       <div className="flex items-center">
@@ -605,7 +625,7 @@ const Toolsection = (
               </Tooltip>
             </PopoverTrigger>
             <PopoverContent className='backdrop-blur-md bg-white/80'>
-              <BoardThemeSettings 
+              <BoardThemeSettings
                 onEditBackground={onEditBackground}
                 background={board?.background}
               />
@@ -636,4 +656,35 @@ const Toolsection = (
       </div>
     </>
   )
+}
+
+const useGetProject = (slug: any) => {
+  const [project, setProject] = useState<any>(null);
+  const cookie = getCookie("token_2sl");
+
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Authorization", "Bearer " + cookie);
+
+  var requestOptions: any = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  useEffect(() => {
+    fetch("http://api_taski.test/api/projects/18a1ffd0-76b4-4c62-a2b5-2a4bf957868a", requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        console.log('laravel/1', result.data.project)
+        console.log('laravel/1', result.data.project.containers)
+        setProject(result.data.project)
+        console.log('project', result.data.project)
+      })
+      .catch(error => console.log('error', error));
+  }, [slug])
+
+  return {
+    containers: project
+  }
 }
