@@ -1,35 +1,43 @@
 "use client"
 
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { useSession } from "next-auth/react"
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid';
 import { getCookie, setCookie } from "cookies-next";
-
-
 import { useInput } from '@/hooks/useInput'
+
+import { toast } from "sonner"
+
 
 import { CreateProjectForm } from './CreatProjectForm'
 
-const projectsAux = [
-    { id: uuidv4(), name: 'Bon dia', image: 'https://i0.wp.com/artefeed.com/wp-content/uploads/2019/08/Animales-acu%C3%A1ticos-Pinturas-surrealistas-de-Lisa-Ericson-1-1.jpg?fit=853%2C1024&ssl=1', background:{thumb:''} },
-]
+type Project = {
+    id: string;
+    name: string;
+    slug?: string;
+    description?: string;
+    image?: string;
+    isVisible?: boolean;    
+    background?: { thumb: string };
+    background_id?: number;
+    template?: string;
+} 
 
 const ProjectLists = () => {
     const inputSearch = useInput('')
-    const [projects, setProjects] = React.useState(projectsAux)
-    useEffect(()=> {
+    const [projects, setProjects] = React.useState<any>([])
+    useEffect(() => {
         getProjects()
-    },[]);
+    }, []);
 
+    const cookie = getCookie("token_2sl");
+
+    // Send to the server
     function getProjects() {
-        const cookie = getCookie("token_2sl");
-        console.log(cookie)
-
         var myHeaders = new Headers();
         myHeaders.append("Accept", "application/json");
         myHeaders.append("Authorization", "Bearer " + cookie);
-        console.log("http://api_taski.test" + "/api/projects")
         fetch("http://api_taski.test" + "/api/projects", {
             method: 'GET',
             headers: myHeaders,
@@ -40,6 +48,65 @@ const ProjectLists = () => {
                 setProjects(result.data.projects)
             })
             .catch(error => console.log('error', error));
+    }
+
+    // Senf to the server
+    function createProject(project : Project) {
+        if(!project.name) {
+            return;
+        }
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "application/json");
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer " + cookie);
+
+        var raw = JSON.stringify({
+            "name": project.name,
+            "description": "",
+            "isPrivate": true,
+            "isArchived": false,
+            "isStarred": false,
+            "isPinned": false,
+            "container": 2,
+            "background_id": project.background_id,
+            "template": project.template
+        });
+
+        let requestOptions : any = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch("http://api_taski.test/api/projects", requestOptions)
+            .then(response => response.json())
+            .then(res => {
+                if(res.data.project) {
+                    setProjects([res.data.project, ...projects])
+                    toast.success("Board has been created", {
+                        action: {
+                        label: "done",
+                        onClick: () => console.log("Undo"),
+                        },
+                    })
+                }
+            })
+            .catch(error => {
+                toast.error("Ups! We coudn't create the board. Try it again later", {
+                    action: {
+                    label: "done",
+                    onClick: () => console.log("Undo"),
+                    },
+                })
+
+                console.log('error', error)
+            } );
+                
+    }
+
+    const onSetProjects = (project: any) => {
+        createProject(project)
     }
 
 
@@ -57,7 +124,7 @@ const ProjectLists = () => {
                     {
                         // Create button
                     }
-                    <CreateProjectForm setProjects={setProjects} />
+                    <CreateProjectForm setProjects={onSetProjects} />
                 </div>
             </div>
             <div className="flex gap-4 text-sm mt-2 flex-wrap">
@@ -97,8 +164,8 @@ const ProjectLists = () => {
 
             <section className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2'>
                 {
-                    projects.filter(el => el.name.indexOf(inputSearch.value) != -1).map(project => (
-                        <Card key={project.id + "-project"} title={project.name} image={project?.background?.thumb} id={project.id + "-project"} />
+                    projects.filter((el:any) => el.name.indexOf(inputSearch.value) != -1).map((project:any) => (
+                        <Card key={project.id + "-project"} title={project.name} image={project?.background?.thumb} id={project.id + "-project"} slug={project?.slug} />
                     ))
                 }
             </section>
@@ -107,10 +174,10 @@ const ProjectLists = () => {
 }
 
 
-const Card = ({ title, image, id }: { title: string, image: string, id: string }) => {
+const Card = ({ title, image, id, slug }: { title: string, image: string, id: string, slug:string }) => {
     return (
         <div className="h-32 relative overflow-hidden">
-            <Link href={`boards/b/${id}`} className=' block'>
+            <Link href={`boards/b/${slug}`} className=' block'>
                 <div className="">
                     <img className='w-full object-cover' src={image} />
                 </div>
