@@ -32,6 +32,7 @@ import { Item } from './types';
 import { BoardSettingForm } from './components/Forms/BoardSettingForm';
 import { BoardThemeSettings } from './components/Forms/BoardThemeSettings';
 import { getCookie } from 'cookies-next';
+import { Pomodoro } from './components/Pomodoro';
 
 type DNDType = {
   id: UniqueIdentifier;
@@ -53,7 +54,6 @@ type Background = {
   thumb: string;
   url: string;
 }
-
 
 const containerExample: DNDType[] = [
   {
@@ -91,24 +91,22 @@ export default function Home() {
   const [firstRender, setFirstRender] = useState(true);
 
   const slug = useParams();
- 
-  //useGetProject(slug.id);
+  const cookie = getCookie("token_2sl");
 
+  //useGetProject(slug.id);
   useEffect(() => {
-    const cookie = getCookie("token_2sl");
 
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Authorization", "Bearer " + cookie);
-  
+
     var requestOptions: any = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow'
     };
 
-    fetch(`http://api_taski.test/api/projects/${slug.id}`  , requestOptions).then((res) => res.json()).then((res) => {
-      //console.log('/api/boards/1', data)
+    fetch(`http://api_taski.test/api/projects/${slug.id}`, requestOptions).then((res) => res.json()).then((res) => {
       setContainers(JSON.parse(res.data.project.containers));
       setBoardData(res.data.project);
     }
@@ -118,11 +116,33 @@ export default function Home() {
 
   useEffect(() => {
     if (!firstRender) {
-      console.log('containers inside', containers);
+      updateData({slug: slug.id, containers: containers});
     }
     setFirstRender(false);
   }
     , [containers]);
+
+  //Server Uodate
+  const updateData = ({slug, containers}:{slug : string | any, containers: any}) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer " + cookie);
+
+    var raw = JSON.stringify( {"containers": containers});
+
+    var requestOptions : any = {
+      method: 'PUT',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch(`http://api_taski.test/api/projects/${slug}/containers`, requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+  }
 
   const onAddContainer = () => {
     const id = `container-${uuidv4()}`;
@@ -499,6 +519,7 @@ export default function Home() {
           <KanbanSquare width={"19px"} />
           {boardData?.name}
         </h1>
+        <Pomodoro />
         <Toolsection
           addContainer={onAddContainer}
           onEditBoardTitle={onEditBoardTitle}
