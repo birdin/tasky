@@ -1,7 +1,10 @@
+import React, { useState } from 'react';
+
 import { CardDescription } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import React from 'react'
+import { useGetBackgrounds } from '@/hooks/useGetBackgrounds'
+import { getCookie } from "cookies-next";
 
 const urlOptions = [
     {
@@ -44,18 +47,22 @@ const urlOptions = [
 
 type Props = {
     onEditBackground: (value: any) => void;
-    background: {id:string, value:string, url:string, thumb:string};
+    background: { id: string, value: string, url: string, thumb: string };
 }
-export const BoardThemeSettings = ({onEditBackground, background}: Props) => {
+export const BoardThemeSettings = ({ onEditBackground, background }: Props) => {
     const [selected, setSelected] = React.useState(background)
+    const cookie = getCookie("token_2sl");
+
+    const { backgrounds, loading, error } = useGetBackgrounds(cookie);
+
     const handleSelect = (value: string) => {
         const resp = urlOptions.find(el => el.value === value)
         console.log(resp)
-        if(resp) {
+        if (resp) {
             onEditBackground(resp)
             setSelected(resp)
         }
-    } 
+    }
     return (
         <div className="grid gap-4 text-sm">
             <div className="space-y-2">
@@ -64,17 +71,19 @@ export const BoardThemeSettings = ({onEditBackground, background}: Props) => {
                     Define the background and theme of your board.
                 </p>
 
-                <RadioGroup defaultValue="default" value={selected.value} onValueChange={handleSelect} className="grid grid-cols-3 gap-1  bg-stone-50/30 underline-offset-2">
-                    {
-                        urlOptions.map((el) => (
-                            <BackGroundRadioItem key={`bg-${el.id}`} value={el.value} id={el.id}>
-                                <div className="h-full" onClick={()=>onEditBackground(el)}>
-                                    <img src={el.thumb} className="h-full rounded object-cover" />
-                                </div>
-                            </BackGroundRadioItem>
-                        ))
-                    }
-                </RadioGroup>
+                {loading ? <p>Loading...</p> :
+                    <RadioGroup defaultValue="default" value={selected.value} onValueChange={handleSelect} className="grid grid-cols-3 gap-1  bg-stone-50/30 underline-offset-2">
+                        {
+                            backgrounds.map((el: any) => (
+                                <BackGroundRadioItem key={`bg-${el.id}`} value={el.value} id={el.id}>
+                                    <div className="h-full" onClick={() => onEditBackground(el)}>
+                                        <img src={el.thumb} className="h-full rounded object-cover" />
+                                    </div>
+                                </BackGroundRadioItem>
+                            ))
+                        }
+                    </RadioGroup>
+                }
             </div>
         </div>
     )
@@ -92,4 +101,8 @@ const BackGroundRadioItem = ({ value, id, children }: { value: string, id: strin
             </Label>
         </div>
     )
+}
+
+function useGetCookie(arg0: string) {
+    throw new Error('Function not implemented.')
 }
