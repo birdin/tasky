@@ -33,6 +33,7 @@ import { BoardSettingForm } from './components/Forms/BoardSettingForm';
 import { BoardThemeSettings } from './components/Forms/BoardThemeSettings';
 import { getCookie } from 'cookies-next';
 import { Pomodoro } from './components/Pomodoro';
+import { useGetBackgrounds } from '@/hooks/useGetBackgrounds';
 
 type DNDType = {
   id: UniqueIdentifier;
@@ -616,6 +617,8 @@ export default function Home() {
 const Toolsection = (
   { addContainer, onEditBoardTitle, board, onEditBackground }:
     { addContainer: () => void, onEditBoardTitle: (el: string) => void, board: any, onEditBackground: (bd: Background) => void, }) => {
+  const cookies = getCookie("token_2sl");
+  const backgeroundList = useGetBackgrounds(cookies);
   return (
     <>
       <div className="flex items-center">
@@ -647,6 +650,7 @@ const Toolsection = (
               <BoardThemeSettings
                 onEditBackground={onEditBackground}
                 background={board?.background}
+                backgroundList={backgeroundList}
               />
             </PopoverContent>
           </Popover>
