@@ -117,22 +117,22 @@ export default function Home() {
 
   useEffect(() => {
     if (!firstRender) {
-      updateData({slug: slug.id, containers: containers});
+      updateData({ slug: slug.id, containers: containers });
     }
     setFirstRender(false);
   }
     , [containers]);
 
   //Server Uodate
-  const updateData = ({slug, containers}:{slug : string | any, containers: any}) => {
+  const updateData = ({ slug, containers }: { slug: string | any, containers: any }) => {
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer " + cookie);
 
-    var raw = JSON.stringify( {"containers": containers});
+    var raw = JSON.stringify({ "containers": containers });
 
-    var requestOptions : any = {
+    var requestOptions: any = {
       method: 'PUT',
       headers: myHeaders,
       body: raw,
@@ -521,6 +521,7 @@ export default function Home() {
           {boardData?.name}
         </h1>
         <Pomodoro />
+
         <Toolsection
           addContainer={onAddContainer}
           onEditBoardTitle={onEditBoardTitle}
