@@ -11,8 +11,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const { data: session, status } = useSession()
     const cookie = getCookie("token_2sl");
 
-    console.log('Cookie', cookie)
-
     const { isLoadded, isAuthenticated } = useIsAuth(cookie);
 
     useEffect(() => {
@@ -108,12 +106,13 @@ function useIsAuth($token: any): any {
         headers: myHeaders,
         redirect: 'follow'
     })
-        .then(response => response.text())
+        .then(response => response.json())
         .then(result => {
-            if (result === "Unauthorized") {
-                setIsAuthenticated(false)
-            } else {
+            console.log('result', result.message)
+            if (result.data) {
                 setIsAuthenticated(true)
+            } else {
+                setIsAuthenticated(false)
             }
         })
         .catch(error => error)
