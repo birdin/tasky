@@ -6,7 +6,6 @@ import { SessionProvider, useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 import { Navbar } from '@/components/Navbar'
 
-
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = React.useState(true)
     const { data: session, status } = useSession()
@@ -73,7 +72,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     if (!status && status === "unauthenticated") {
         redirect("/loading")
     }
-
 
 
     if (status === "authenticated" && isAuthenticated && cookie) {
