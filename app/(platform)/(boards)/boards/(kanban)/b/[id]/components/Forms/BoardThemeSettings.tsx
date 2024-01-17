@@ -48,12 +48,13 @@ const urlOptions = [
 type Props = {
     onEditBackground: (value: any) => void;
     background: { id: string, value: string, url: string, thumb: string };
+    backgroundList: { backgrounds: any, loading: boolean, error: any };
 }
-export const BoardThemeSettings = ({ onEditBackground, background }: Props) => {
+export const BoardThemeSettings = ({ onEditBackground, background, backgroundList }: Props) => {
     const [selected, setSelected] = React.useState(background)
-    const cookie = getCookie("token_2sl");
-
-    const { backgrounds, loading, error } = useGetBackgrounds(cookie);
+    //const cookie = getCookie("token_2sl");
+    const { backgrounds, loading, error } = backgroundList;
+    //const { backgrounds, loading, error } = useGetBackgrounds(cookie);
 
     const handleSelect = (value: string) => {
         const resp = urlOptions.find(el => el.value === value)

@@ -33,6 +33,7 @@ import { BoardSettingForm } from './components/Forms/BoardSettingForm';
 import { BoardThemeSettings } from './components/Forms/BoardThemeSettings';
 import { getCookie } from 'cookies-next';
 import { Pomodoro } from './components/Pomodoro';
+import { useGetBackgrounds } from '@/hooks/useGetBackgrounds';
 
 type DNDType = {
   id: UniqueIdentifier;
@@ -116,22 +117,22 @@ export default function Home() {
 
   useEffect(() => {
     if (!firstRender) {
-      updateData({slug: slug.id, containers: containers});
+      updateData({ slug: slug.id, containers: containers });
     }
     setFirstRender(false);
   }
     , [containers]);
 
   //Server Uodate
-  const updateData = ({slug, containers}:{slug : string | any, containers: any}) => {
+  const updateData = ({ slug, containers }: { slug: string | any, containers: any }) => {
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer " + cookie);
 
-    var raw = JSON.stringify( {"containers": containers});
+    var raw = JSON.stringify({ "containers": containers });
 
-    var requestOptions : any = {
+    var requestOptions: any = {
       method: 'PUT',
       headers: myHeaders,
       body: raw,
@@ -520,6 +521,7 @@ export default function Home() {
           {boardData?.name}
         </h1>
         <Pomodoro />
+
         <Toolsection
           addContainer={onAddContainer}
           onEditBoardTitle={onEditBoardTitle}
@@ -616,6 +618,8 @@ export default function Home() {
 const Toolsection = (
   { addContainer, onEditBoardTitle, board, onEditBackground }:
     { addContainer: () => void, onEditBoardTitle: (el: string) => void, board: any, onEditBackground: (bd: Background) => void, }) => {
+  const cookies = getCookie("token_2sl");
+  const backgeroundList = useGetBackgrounds(cookies);
   return (
     <>
       <div className="flex items-center">
@@ -647,6 +651,7 @@ const Toolsection = (
               <BoardThemeSettings
                 onEditBackground={onEditBackground}
                 background={board?.background}
+                backgroundList={backgeroundList}
               />
             </PopoverContent>
           </Popover>

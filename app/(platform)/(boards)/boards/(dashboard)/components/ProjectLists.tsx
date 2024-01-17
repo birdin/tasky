@@ -3,12 +3,10 @@
 import React, { useEffect } from 'react'
 import { useSession } from "next-auth/react"
 import Link from 'next/link'
-import { v4 as uuidv4 } from 'uuid';
 import { getCookie, setCookie } from "cookies-next";
 import { useInput } from '@/hooks/useInput'
 
 import { toast } from "sonner"
-
 
 import { CreateProjectForm } from './CreatProjectForm'
 
