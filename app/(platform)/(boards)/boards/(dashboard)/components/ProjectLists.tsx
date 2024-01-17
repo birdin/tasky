@@ -30,6 +30,7 @@ const ProjectLists = () => {
     }, []);
 
     const cookie = getCookie("token_2sl");
+    console.log('Cookie on project page', cookie)
 
     // Send to the server
     function getProjects() {
@@ -43,6 +44,7 @@ const ProjectLists = () => {
         })
             .then(response => response.json())
             .then(result => {
+                console.log('result', result)
                 setProjects(result.data.projects)
             })
             .catch(error => console.log('error', error));
