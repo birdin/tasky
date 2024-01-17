@@ -1,15 +1,17 @@
 "use client"
 
 import React, { useEffect } from 'react'
-import { getCookie, setCookie } from "cookies-next"; 
+import { getCookie, setCookie } from "cookies-next";
 import { SessionProvider, useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 import { Navbar } from '@/components/Navbar'
 
-
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+    const [loading, setLoading] = React.useState(true)
     const { data: session, status } = useSession()
     const cookie = getCookie("token_2sl");
+
+    console.log('Cookie', cookie)
 
     const { isLoadded, isAuthenticated } = useIsAuth(cookie);
 
@@ -27,7 +29,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         }
         return;
     }
-        , [status, isLoadded, isAuthenticated])
+    , [status, isLoadded, isAuthenticated])
 
 
     const setCookieToken = () => {
@@ -51,8 +53,19 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 setCookie("token_2sl", response?.data?.token);
                 const rt = getCookie("token_2sl");
             })
-            .catch(error => console.log('error', error));
+            .catch(error => console.log('error', error)).finally(() => {
+                setLoading(false)
+            });
 
+    }
+
+
+    if (isLoadded) {
+        return (
+            <>
+                <h1>Page is loading…</h1>
+            </>
+        )
     }
 
 
@@ -61,19 +74,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     }
 
 
-
-    if (status === "authenticated") {
-
-        //Verify if there is a session token
-        /*
-            Verify if it is valid /api/auth/verify
-            If it is valid, then continue
-            If it is not valid
-                - Try to login with the refresh token
-                - If it is valid, then continue
-                - If it is not valid, sing up new user
-
-        */
+    if (status === "authenticated" && isAuthenticated && cookie) {
         return (
             <>
                 <SessionProvider>
