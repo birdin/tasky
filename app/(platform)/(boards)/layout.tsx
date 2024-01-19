@@ -76,7 +76,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         redirect("/loading")
     }
 
-
     if (status === "authenticated" && isAuthenticated && cookie) {
         return (
             <>
@@ -87,8 +86,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             </>
         )
     }
-
-
 
     if (status === "loading") {
         return (
