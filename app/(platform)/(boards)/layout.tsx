@@ -11,7 +11,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const { data: session, status } = useSession()
     const cookie = getCookie("token_2sl");
 
-    const { isLoadded, isAuthenticated } = useIsAuth(cookie);
+    const { isLoadded, isAuthenticated, error } = useIsAuth(cookie);
 
     useEffect(() => {
         if (status === "authenticated") {
@@ -28,7 +28,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         return;
     }
     , [status, isLoadded, isAuthenticated])
-
 
     const setCookieToken = () => {
         var myHeaders = new Headers();
@@ -57,7 +56,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
     }
 
-
     if (isLoadded) {
         return (
             <>
@@ -66,6 +64,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         )
     }
 
+    if (error) {
+        return (
+            <h1>op
+                Ups! there was an error. Please try again later.
+            </h1>
+        )
+    }
 
     if (!status && status === "unauthenticated") {
         redirect("/loading")
@@ -95,11 +100,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 function useIsAuth($token: any): any {
     const [isLoadded, setIsLoadded] = React.useState(true)
     const [isAuthenticated, setIsAuthenticated] = React.useState(false)
+    const [error, setError] = React.useState(false)
 
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Authorization", "Bearer " + $token);
-
 
     fetch("http://api_taski.test/api/user", {
         method: 'GET',
@@ -122,7 +127,8 @@ function useIsAuth($token: any): any {
 
     return {
         isLoadded,
-        isAuthenticated
+        isAuthenticated,
+        error
     }
 }
 
