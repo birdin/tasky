@@ -11,7 +11,6 @@ import {
   DragMoveEvent,
   DragOverlay,
   DragStartEvent,
-  KeyboardSensor,
   PointerSensor,
   UniqueIdentifier,
   closestCorners,
@@ -56,28 +55,6 @@ type Background = {
   url: string;
 }
 
-const containerExample: DNDType[] = [
-  {
-    id: 'container-1',
-    title: 'To do',
-    archive: [],
-    items: [
-      {
-        id: 'item-1',
-        title: 'Item 1',
-      },
-      {
-        id: 'item-2',
-        title: 'Item 2',
-      },
-      {
-        id: 'item-3',
-        title: 'Item 3',
-      },
-    ],
-  },
-];
-
 export default function Home() {
   const [boardData, setBoardData] = useState<any>();
   const [containers, setContainers] = useState<DNDType[]>([]);
@@ -96,7 +73,6 @@ export default function Home() {
 
   //useGetProject(slug.id);
   useEffect(() => {
-
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Authorization", "Bearer " + cookie);
@@ -122,6 +98,38 @@ export default function Home() {
     setFirstRender(false);
   }
     , [containers]);
+
+  useEffect(() => {
+    if (boardData) {
+      onUpdateBoardInfo({slug: slug.id, boardData});
+    }
+  }
+    , [boardData]);
+
+  const onUpdateBoardInfo = async ({slug, boardData}:{slug:any, boardData: any}) => {
+    var myHeaders: any = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    myHeaders.append("Authorization", "Bearer " + cookie);
+    
+    let urlencoded : any = new URLSearchParams();
+    urlencoded.append("name", boardData.name);
+    urlencoded.append("description", boardData.description);
+    urlencoded.append("background_id", boardData.background?.id);
+    
+    let requestOptions: any = {
+      method: 'PUT',
+      headers: myHeaders,
+      body: urlencoded,
+      redirect: 'follow'
+    };
+    
+    fetch("http://api_taski.test/api/projects/" + slug, requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+
+  }
 
   //Server Uodate
   const updateData = ({ slug, containers }: { slug: string | any, containers: any }) => {

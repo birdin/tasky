@@ -11,9 +11,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const { data: session, status } = useSession()
     const cookie = getCookie("token_2sl");
 
-    console.log('Cookie', cookie)
-
-    const { isLoadded, isAuthenticated } = useIsAuth(cookie);
+    const { isLoadded, isAuthenticated, error } = useIsAuth(cookie);
 
     useEffect(() => {
         if (status === "authenticated") {
@@ -30,7 +28,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         return;
     }
     , [status, isLoadded, isAuthenticated])
-
 
     const setCookieToken = () => {
         var myHeaders = new Headers();
@@ -59,7 +56,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
     }
 
-
     if (isLoadded) {
         return (
             <>
@@ -68,11 +64,17 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         )
     }
 
+    if (error) {
+        return (
+            <h1>op
+                Ups! there was an error. Please try again later.
+            </h1>
+        )
+    }
 
     if (!status && status === "unauthenticated") {
         redirect("/loading")
     }
-
 
     if (status === "authenticated" && isAuthenticated && cookie) {
         return (
@@ -85,8 +87,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         )
     }
 
-
-
     if (status === "loading") {
         return (
             <h1>Loading</h1>
@@ -97,23 +97,24 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 function useIsAuth($token: any): any {
     const [isLoadded, setIsLoadded] = React.useState(true)
     const [isAuthenticated, setIsAuthenticated] = React.useState(false)
+    const [error, setError] = React.useState(false)
 
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Authorization", "Bearer " + $token);
-
 
     fetch("http://api_taski.test/api/user", {
         method: 'GET',
         headers: myHeaders,
         redirect: 'follow'
     })
-        .then(response => response.text())
+        .then(response => response.json())
         .then(result => {
-            if (result === "Unauthorized") {
-                setIsAuthenticated(false)
-            } else {
+            console.log('result', result.message)
+            if (result.data) {
                 setIsAuthenticated(true)
+            } else {
+                setIsAuthenticated(false)
             }
         })
         .catch(error => error)
@@ -123,7 +124,8 @@ function useIsAuth($token: any): any {
 
     return {
         isLoadded,
-        isAuthenticated
+        isAuthenticated,
+        error
     }
 }
 

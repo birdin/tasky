@@ -29,6 +29,7 @@ export const Pomodoro = () => {
     const [time, setTime] = useState<any>(0)
     const [startTime, setTimeStart] = useState<any>()
     const [start, setStart] = useState(false);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const current = new Date().getTime()
@@ -55,34 +56,38 @@ export const Pomodoro = () => {
     return (
         <>
             <div className='ml-auto cursor-pointer'>
-                <div className='font-bold' onClick={handleStart}>
+                <div className='font-bold' onClick={() => setOpen(e => !e)}>
                     <Timer />
                 </div>
             </div>
-            <ReactPortal wrapperId="portal">
+            {
+                open && (
 
-                <div className="absolute bottom-0 w-80 h-40 p-4 bg-white">
-                    <div className="flex justify-between items-center">
-                        <div className="font-medium text-5xl">
-                            {time}
-                        </div>
-                        <div className="text-gray-600">
+                    <ReactPortal wrapperId="portal">
+                        <div className="absolute bottom-0 w-80 h-40 p-4 bg-white">
+                            <div className="flex justify-between items-center">
+                                <div className="font-medium text-5xl">
+                                    {time}
+                                </div>
+                                <div className="text-gray-600">
 
-                            {
-                                start ? (
-                                    <div className="cursor-pointer" onClick={handleStop}>
-                                        <PauseCircle size={"3rem"} />
-                                    </div>
-                                ) : (
-                                    <div className="cursor-pointer" onClick={handleStart}>
-                                        <Play size={"2.5rem"} />
-                                    </div>
-                                )
-                            }
+                                    {
+                                        start ? (
+                                            <div className="cursor-pointer" onClick={handleStop}>
+                                                <PauseCircle size={"3rem"} />
+                                            </div>
+                                        ) : (
+                                            <div className="cursor-pointer" onClick={handleStart}>
+                                                <Play size={"2.5rem"} />
+                                            </div>
+                                        )
+                                    }
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </ReactPortal>
+                    </ReactPortal>
+                )
+            }
         </>
     )
 }
