@@ -1,6 +1,6 @@
 "use client"
 
-import { PauseCircle, Play, Timer } from 'lucide-react';
+import { PauseCircle, Play, StopCircle, Timer } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom';
 
@@ -36,6 +36,7 @@ export const Pomodoro = () => {
         if (start) {
             var interval = setInterval(function () {
                 const value = ((current - startTime) / 1000).toFixed(0)
+                console.log('value', value)
                 setTime(value);
             }, 1000);
             return () => clearInterval(interval)
@@ -53,6 +54,28 @@ export const Pomodoro = () => {
     const handleStop = () => {
         setStart(false)
     }
+
+    const handleButtonSection = () => {
+        if (start) {
+            return (
+                <div className="flex items-center gap-2">
+                    <div className="cursor-pointer" onClick={handleStop}>
+                        <PauseCircle size={"2.8rem"} />
+                    </div>
+                    <div className="cursor-pointer">
+                        <StopCircle size={"2.8rem"} />
+                    </div>
+                </div>
+            )
+        } else {
+            return (
+                <div className="cursor-pointer" onClick={handleStart}>
+                    <Play size={"2.5rem"} />
+                </div>
+            )
+        }
+    }
+
     return (
         <>
             <div className='ml-auto cursor-pointer'>
@@ -64,28 +87,19 @@ export const Pomodoro = () => {
                 open && (
 
                     <ReactPortal wrapperId="portal">
-                        <div className="absolute bottom-0 w-80 h-40 p-4 bg-white">
+                        <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 bg-white">
                             <div className="flex justify-between items-center">
                                 <div className="font-medium text-5xl">
                                     {time}
                                 </div>
                                 <div className="text-gray-600">
-
                                     {
-                                        start ? (
-                                            <div className="cursor-pointer" onClick={handleStop}>
-                                                <PauseCircle size={"3rem"} />
-                                            </div>
-                                        ) : (
-                                            <div className="cursor-pointer" onClick={handleStart}>
-                                                <Play size={"2.5rem"} />
-                                            </div>
-                                        )
+                                        handleButtonSection()
                                     }
                                 </div>
                             </div>
                         </div>
-                    </ReactPortal>
+                    </ReactPortal >
                 )
             }
         </>

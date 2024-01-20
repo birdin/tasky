@@ -13,6 +13,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
     const { isLoadded, isAuthenticated, error } = useIsAuth(cookie);
 
+    /**
+     *  Verify if the user is authenticated 
+     */
     useEffect(() => {
         if (status === "authenticated") {
             if (cookie) {
