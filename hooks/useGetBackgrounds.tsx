@@ -1,3 +1,4 @@
+import { API_URL } from "@/helpers/contrants"
 import { useEffect, useState } from "react"
 
 export const useGetBackgrounds = (cookie : any) => {
@@ -15,8 +16,11 @@ export const useGetBackgrounds = (cookie : any) => {
         redirect: 'follow'
     };
 
+    const backgroundURL = API_URL + "/backgrounds";
+    console.log('backgroundURL', backgroundURL)
+
     useEffect(() => {
-        fetch("http://api_taski.test/api/backgrounds", requestOptions)
+        fetch(API_URL + "/backgrounds", requestOptions)
             .then(response => response.json())
             .then(result => {
                 setBackgrounds(result.data.backgrounds)
