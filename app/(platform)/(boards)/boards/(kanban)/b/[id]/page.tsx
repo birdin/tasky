@@ -33,6 +33,7 @@ import { BoardThemeSettings } from './components/Forms/BoardThemeSettings';
 import { getCookie } from 'cookies-next';
 import { Pomodoro } from './components/Pomodoro';
 import { useGetBackgrounds } from '@/hooks/useGetBackgrounds';
+import useChannel from '@/hooks/useChannel';
 
 type DNDType = {
   id: UniqueIdentifier;
@@ -54,6 +55,8 @@ type Background = {
   thumb: string;
   url: string;
 }
+const uniqueID = uuidv4();
+
 
 export default function Home() {
   const [boardData, setBoardData] = useState<any>();
@@ -70,6 +73,16 @@ export default function Home() {
 
   const slug = useParams();
   const cookie = getCookie("token_2sl");
+
+  const [value, setValue] = useState(0);
+
+	const { broadcast } = useChannel<any>({
+		channelName: "count-channel",
+		messageHandler: (msg : any) => {
+      console.log(msg);
+      setContainers(msg.data);
+    },
+	});
 
   //useGetProject(slug.id);
   useEffect(() => {
@@ -537,6 +550,13 @@ export default function Home() {
           onEditBackground={onEditBackground}
         />
       </div>
+
+      <div className="card">
+				<button onClick={() => broadcast(containers)}>
+					count is {value}
+				</button>
+			</div>
+
       <div className="mt-5">
         <div id="boardContainer" className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">
           <DndContext

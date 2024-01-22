@@ -5,6 +5,7 @@ import { getCookie, setCookie } from "cookies-next";
 import { SessionProvider, useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 import { Navbar } from '@/components/Navbar'
+import { useIsAuth } from '@/hooks/useIsAuth';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = React.useState(true)
@@ -30,7 +31,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         }
         return;
     }
-    , [status, isLoadded, isAuthenticated])
+        , [status, isLoadded, isAuthenticated])
 
     const setCookieToken = () => {
         var myHeaders = new Headers();
@@ -62,7 +63,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     if (isLoadded) {
         return (
             <>
-                <h1>Page is loading…</h1>
+                <SessionProvider>
+                    <Navbar />
+                    <h1>Page is loading…</h1>
+                </SessionProvider> d
             </>
         )
     }
@@ -92,43 +96,14 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
     if (status === "loading") {
         return (
-            <h1>Loading</h1>
+            <>
+                <SessionProvider>
+                    <Navbar />
+                    <h1>Loading</h1>
+                </SessionProvider>
+            </>
+
         )
-    }
-}
-
-function useIsAuth($token: any): any {
-    const [isLoadded, setIsLoadded] = React.useState(true)
-    const [isAuthenticated, setIsAuthenticated] = React.useState(false)
-    const [error, setError] = React.useState(false)
-
-    var myHeaders = new Headers();
-    myHeaders.append("Accept", "application/json");
-    myHeaders.append("Authorization", "Bearer " + $token);
-
-    fetch("http://api_taski.test/api/user", {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-    })
-        .then(response => response.json())
-        .then(result => {
-            console.log('result', result.message)
-            if (result.data) {
-                setIsAuthenticated(true)
-            } else {
-                setIsAuthenticated(false)
-            }
-        })
-        .catch(error => error)
-        .finally(() => {
-            setIsLoadded(false)
-        });
-
-    return {
-        isLoadded,
-        isAuthenticated,
-        error
     }
 }
 

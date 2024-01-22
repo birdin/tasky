@@ -17,7 +17,6 @@ export const useGetBackgrounds = (cookie : any) => {
     };
 
     const backgroundURL = API_URL + "/backgrounds";
-    console.log('backgroundURL', backgroundURL)
 
     useEffect(() => {
         fetch(API_URL + "/backgrounds", requestOptions)
