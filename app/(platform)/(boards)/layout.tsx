@@ -31,7 +31,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         }
         return;
     }
-    , [status, isLoadded, isAuthenticated])
+        , [status, isLoadded, isAuthenticated])
 
     const setCookieToken = () => {
         var myHeaders = new Headers();
@@ -63,7 +63,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     if (isLoadded) {
         return (
             <>
-                <h1>Page is loading…</h1>
+                <SessionProvider>
+                    <Navbar />
+                    <h1>Page is loading…</h1>
+                </SessionProvider> d
             </>
         )
     }
@@ -93,7 +96,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
     if (status === "loading") {
         return (
-            <h1>Loading</h1>
+            <>
+                <SessionProvider>
+                    <Navbar />
+                    <h1>Loading</h1>
+                </SessionProvider>
+            </>
+
         )
     }
 }
