@@ -34,6 +34,7 @@ import { getCookie } from 'cookies-next';
 import { Pomodoro } from './components/Pomodoro';
 import { useGetBackgrounds } from '@/hooks/useGetBackgrounds';
 import useChannel from '@/hooks/useChannel';
+import { useDebounce } from '@/hooks/useDebounce';
 
 type DNDType = {
   id: UniqueIdentifier;
@@ -55,7 +56,7 @@ type Background = {
   thumb: string;
   url: string;
 }
-const uniqueID = uuidv4();
+const UNIQUE_ID = uuidv4();
 
 
 export default function Home() {
@@ -69,6 +70,8 @@ export default function Home() {
   const [showAddContainerModal, setShowAddContainerModal] = useState(false);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
 
+  const updatedContainers = useDebounce(containers, 2000)
+
   const [firstRender, setFirstRender] = useState(true);
 
   const slug = useParams();
@@ -77,7 +80,7 @@ export default function Home() {
   const [value, setValue] = useState(0);
 
 	const { broadcast } = useChannel<any>({
-		channelName: "count-channel",
+		channelName: "count-channel" + slug.id,
 		messageHandler: (msg : any) => {
       console.log(msg);
       setContainers(msg.data);
@@ -110,7 +113,7 @@ export default function Home() {
     }
     setFirstRender(false);
   }
-    , [containers]);
+    , [updatedContainers]);
 
   useEffect(() => {
     if (boardData) {
@@ -553,7 +556,7 @@ export default function Home() {
 
       <div className="card">
 				<button onClick={() => broadcast(containers)}>
-					count is {value}
+					Update All tabs
 				</button>
 			</div>
 
