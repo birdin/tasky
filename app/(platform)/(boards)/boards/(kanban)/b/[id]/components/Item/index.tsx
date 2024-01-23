@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import React, { useEffect, useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { FileText, MoreHorizontal } from 'lucide-react';
+import { FileText, MoreHorizontal, Text } from 'lucide-react';
 import { Item } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
 import { SelectContent, SelectGroup, SelectItem, SelectValue } from '@/components/ui/select';
@@ -13,7 +13,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet"
 import { useDebounce } from '@/hooks/useDebounce';
 
@@ -85,9 +84,9 @@ const Items = (
         <div></div>
         :
         <>
-          <SheetDemo 
-            open={open} 
-            setOpen={el => setOpen(el)} 
+          <SheetDemo
+            open={open}
+            setOpen={el => setOpen(el)}
             item={item}
             onEditItem={onEditItem}
             onDeleteItem={onDeleteItem}
@@ -204,6 +203,9 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
   const [labelColor, setLabelColor] = useState('')
   const [member, setMember] = useState('')
 
+  const [editTitle, setEditTitle] = useState(false)
+  const [editDescription, setEditDescription] = useState(false)
+
   const [updatedItem, setUpdatedItem] = useState<any>(item);
 
   const val = useDebounce(updatedItem, 2500)
@@ -216,34 +218,60 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Are you absolutely sure?</SheetTitle>
-          <SheetDescription>
-            This action cannot be undone. This will permanently delete your account
-            and remove your data from our servers.
-          </SheetDescription>
+        <SheetHeader className='mt-2'>
         </SheetHeader>
         <div>
-          <input
-            type="text"
-            className="w-full h-full bg-transparent outline-none ring-2 ring-rose-400/40 rounded px-2 py-1 text-sm"
-            value={updatedItem?.title}
-            autoFocus
-            onChange={(e) => {
-              const newItem = { ...item }
-              newItem.title = e.target.value;
-              setUpdatedItem(newItem);
-            }}
-            onBlur={() => {
-              /*
-              */
-            }} />
+          <div className='min-h-12 flex items-center'>
+
+            {
+              !editTitle ? (
+                <h2
+                  onClick={() => { setEditTitle(true) }}
+                  className='font-semibold text-xl px-2 py-1'>{updatedItem?.title}</h2>
+              ) :
+                <>
+                  <input
+                    type="text"
+                    className="w-full h-full bg-transparent outline-none ring-2 ring-rose-400/40 rounded px-2 py-1 text-xl"
+                    value={updatedItem?.title}
+                    autoFocus
+                    onChange={(e) => {
+                      //if key is enter the, change setEditTitle to false
+                      const newItem = { ...item }
+                      newItem.title = e.target.value;
+                      setUpdatedItem(newItem);
+                    }}
+                    onBlur={() => {
+                      setEditTitle(false);
+
+                    }} />
+                </>
+            }
+          </div>
           <div>
-            <textarea className="w-full h-full bg-transparent outline-none ring-2 ring-rose-400/40 rounded px-2 py-1 text-sm" value={updatedItem?.description} onChange={(e) => {
-              const newItem = { ...item }
-              newItem.description = e.target.value;
-              setUpdatedItem(newItem);
-            }} />
+            {
+              editDescription ? (
+                <textarea className="w-full h-full bg-transparent outline-none ring-2 ring-rose-400/40 rounded px-2 py-1 text-sm" value={updatedItem?.description}
+                autoFocus  
+                onBlur={() => {
+                  setEditDescription(false);
+                }} 
+                  onChange={(e) => {
+                    const newItem = { ...item }
+                    newItem.description = e.target.value;
+                    setUpdatedItem(newItem);
+                  }} />
+              ) : (
+                <div className="px-2 py-1 text-sm flex items-start mt-1" onClick={() => { setEditDescription(true) }}>
+                  <div className="mr-2">
+                    <Text />
+                  </div>
+                  <div className="">
+                    {updatedItem?.description ? updatedItem?.description : <span className='text-slate-500'>Add a description (optional)</span>}
+                  </div>
+                </div>
+              )
+            }
           </div>
           <div className="div">
             <SelectDemo label={updatedItem?.labelColor}
