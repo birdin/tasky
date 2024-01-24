@@ -66,94 +66,94 @@ const Items = (
   //console.log('item', item);
 
   return (
-    <div
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      style={{
-        transition,
-        transform: CSS.Translate.toString(transform),
-        borderLeft: labelColor ? `5px solid ${labelColor}` : 'none',
-      }}
-      className={clsx(
-        ' bg-white shadow-sm rounded border w-full hover:ring-blue-500/40 hover:ring-2 cursor-pointer',
-        isDragging && 'opacity-50 ring-2 ring-rose-400'
-      )}
-    >
-      {isEditing ?
-        <div></div>
-        :
-        <>
-          <SheetDemo
-            open={open}
-            setOpen={el => setOpen(el)}
-            item={item}
-            onEditItem={onEditItem}
-            onDeleteItem={onDeleteItem}
-            id={id}
-          />
-          <div className=" px-2 py-4 flex items-center justify-between text-sm" onClick={el => setOpen(true)}>
-            <div className="flex flex-col gap-1 w-full">
-              <h3 className='text-base font-medium'>
-                {item?.title}
-              </h3>
-              <div className="flex items-center gap-2 flex-wrap">
-                <div className="">
-                  {
-                    item?.member && (
-                      <div className="rounded-full bg-rose-600 w-7 h-7 flex justify-center items-center">
-                        <div className="text-white">
-                          {item?.member?.name?.split(' ')[0].charAt(0).toUpperCase()}
+    <>
+      <SheetDemo
+        open={open}
+        setOpen={el => setOpen(el)}
+        item={item}
+        onEditItem={onEditItem}
+        onDeleteItem={onDeleteItem}
+        id={id}
+      />
+
+      <div
+        ref={setNodeRef}
+        {...attributes}
+        {...listeners}
+        style={{
+          transition,
+          transform: CSS.Translate.toString(transform),
+          borderLeft: labelColor ? `5px solid ${labelColor}` : 'none',
+        }}
+        className={clsx(
+          ' bg-white shadow-sm rounded border w-full hover:ring-blue-500/40 hover:ring-2 cursor-pointer',
+          isDragging && 'opacity-50 ring-2 ring-rose-400'
+        )}
+      >
+        {isEditing ?
+          <div></div>
+          :
+          <>
+            <div className=" px-2 py-4 flex items-center justify-between text-sm" onClick={el => setOpen(true)}>
+              <div className="flex flex-col gap-1 w-full">
+                <h3 className='text-base font-medium'>
+                  {item?.title}
+                </h3>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <div className="">
+                    {
+                      item?.member && (
+                        <div className="rounded-full bg-rose-600 w-7 h-7 flex justify-center items-center">
+                          <div className="text-white">
+                            {item?.member?.name?.split(' ')[0].charAt(0).toUpperCase()}
+                          </div>
                         </div>
-                      </div>
-                    )
-                  }
-                </div>
-                <div className='text-gray-400'>
-                  {
-                    item?.description &&
-                    <div className='flex items-center gap-1 text-[13px]'>
-                      <FileText width={14} />
-                      <span>
-                        Description
-                      </span>
-                    </div>
-                  }
-                </div>
-                <div className="tag">
-                  {
-                    item?.label?.map((label) => {
-                      return (
-                        <label key={`label-${label.id}`} className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
-                          {label.title}
-                        </label>
                       )
-                    })
-                  }
-
-
-
-                  {/*
+                    }
+                  </div>
+                  <div className='text-gray-400'>
+                    {
+                      item?.description &&
+                      <div className='flex items-center gap-1 text-[13px]'>
+                        <FileText width={14} />
+                        <span>
+                          Description
+                        </span>
+                      </div>
+                    }
+                  </div>
+                  <div className="tag">
+                    {
+                      item?.label?.map((label) => {
+                        return (
+                          <label key={`label-${label.id}`} className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
+                            {label.title}
+                          </label>
+                        )
+                      })
+                    }
+                    {/*
                   item?.labelColor ?
                     <label className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
                       {item.labelColor}
                     </label>
                   : <></>*/
-                  }
+                    }
+                  </div>
                 </div>
               </div>
+              <button
+                className="text-xs rounded-xl "
+                onClick={() => {
+                  //setIsEditing(true);
+                }}>
+                <MoreHorizontal className={'opacity-40 hover:opacity-100'} height={20} />
+              </button>
             </div>
-            <button
-              className="text-xs rounded-xl "
-              onClick={() => {
-                //setIsEditing(true);
-              }}>
-              <MoreHorizontal className={'opacity-40 hover:opacity-100'} height={20} />
-            </button>
-          </div>
-        </>
-      }
-    </div >
+          </>
+        }
+      </div >
+    </>
   );
 };
 
@@ -248,32 +248,39 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
                 </>
             }
           </div>
+
+          <div className="flex items-center flex-wrap gap-1 my-2">
+            <LabelSelect />
+            <StatusSelect />
+          </div>
           <div>
-            {
-              editDescription ? (
-                <textarea className="w-full h-full bg-transparent outline-none ring-2 ring-rose-400/40 rounded px-2 py-1 text-sm" value={updatedItem?.description}
-                autoFocus  
-                onBlur={() => {
-                  setEditDescription(false);
-                }} 
-                  onChange={(e) => {
-                    const newItem = { ...item }
-                    newItem.description = e.target.value;
-                    setUpdatedItem(newItem);
-                  }} />
-              ) : (
-                <div className="px-2 py-1 text-sm flex items-start mt-1" onClick={() => { setEditDescription(true) }}>
-                  <div className="mr-2">
-                    <Text />
-                  </div>
+            <div className="px-2 py-1 text-sm flex items-start mt-1" onClick={() => { setEditDescription(true) }}>
+              <div className="mr-2">
+                <Text width={16} />
+              </div>
+              {
+                editDescription ? (
+                  <textarea
+                    className="w-full block min-h-30 bg-transparent outline-none ring-2 ring-rose-400/40 rounded px-2 py-1 text-sm" value={updatedItem?.description}
+                    autoFocus
+                    rows={7}
+                    onBlur={() => {
+                      setEditDescription(false);
+                    }}
+                    onChange={(e) => {
+                      const newItem = { ...item }
+                      newItem.description = e.target.value;
+                      setUpdatedItem(newItem);
+                    }} />
+                ) : (
                   <div className="">
                     {updatedItem?.description ? updatedItem?.description : <span className='text-slate-500'>Add a description (optional)</span>}
                   </div>
-                </div>
-              )
-            }
+                )
+              }
+            </div>
           </div>
-          <div className="div">
+          <div>
             <SelectDemo label={updatedItem?.labelColor}
               onChangeLabel={(label) => {
                 const newItem = { ...item }
@@ -300,6 +307,66 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
         </div>
       </SheetContent>
     </Sheet>
+  )
+}
+
+
+const LabelSelect = () => {
+  return (
+    <Select>
+      <SelectTrigger className="w-[110px] text-sm border-x-2">
+        <div className="flex items-center gap-1">
+          <span className='w-[25px] h-[12px] rounded-md bg-red-400 border-w-1 ml-2 mr-2'></span>
+          <SelectValue placeholder="Color" />
+        </div>
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="light">Light</SelectItem>
+        <SelectItem value="dark">Dark</SelectItem>
+        <SelectItem value="system">System</SelectItem>
+      </SelectContent>
+    </Select>
+  )
+}
+
+const StatusSelect = () => {
+  return (
+    <Select>
+      <SelectTrigger className="w-[110px] text-sm">
+        <div className="flex items-center gap-1">
+          <div className="ml-1 mr-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              fill="none"
+              viewBox="0 0 12 12"
+            >
+              <g clipPath="url(#clip0_607_9)">
+                <path
+                  fill="#6E6E6E"
+                  fillRule="evenodd"
+                  d="M11.956 5.275A6 6 0 01.868 9.109a.563.563 0 01.962-.584 4.875 4.875 0 106.691-6.697.563.563 0 01.582-.963 6 6 0 012.853 4.41zM6.75.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm-4.647 3a.75.75 0 10-1.294-.759.75.75 0 001.294.759zM.75 5.25a.75.75 0 110 1.5.75.75 0 010-1.5zm3-3.147A.75.75 0 103.008.799a.75.75 0 00.742 1.304z"
+                  clipRule="evenodd"
+                ></path>
+              </g>
+              <defs>
+                <clipPath id="clip0_607_9">
+                  <path fill="#fff" d="M0 0H12V12H0z"></path>
+                </clipPath>
+              </defs>
+            </svg>
+          </div>
+          <SelectValue placeholder="Status" />
+        </div>
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="light">No define</SelectItem>
+        <SelectItem value="dark">Pending</SelectItem>
+        <SelectItem value="system">In progres</SelectItem>
+        <SelectItem value="done">Done</SelectItem>
+      </SelectContent>
+    </Select>
   )
 }
 
