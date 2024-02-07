@@ -254,7 +254,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
           <div className="flex items-center flex-wrap my-2">
             <LabelSelect />
             <StatusSelect setUpdatedItem={setUpdatedItem} statusValue={updatedItem?.status} updatedItem={updatedItem} />
-            <DateSelect />
+            <DateSelect setUpdatedItem={setUpdatedItem} dateValue={updatedItem?.dueDate} updatedItem={updatedItem} />
           </div>
           <div>
             <div className="px-2 py-1 text-sm flex items-start mt-1" onClick={() => { setEditDescription(true) }}>
@@ -344,19 +344,13 @@ const STATUS_OPTIONS = [
 ]
 
 const StatusSelect = ({ setUpdatedItem, statusValue, updatedItem }: { setUpdatedItem: any, statusValue: any, updatedItem: any }) => {
-  
-  console.log('updatedItem status component', updatedItem)
-  const [status, setStatus] = useState(statusValue || 'default')
-  //setUpdatedItem({...updatedItem, status: status})
+    const [status, setStatus] = useState(statusValue || 'default')
 
   const handleOnChange = (el: string) => {
-    //const newItem = {...updatedItem, status: el}
     console.log('Updated item ', updatedItem)
     setStatus(el)
     setUpdatedItem({...updatedItem, status: el})
   }
-
-
 
   return (
     <Select value={status} defaultValue='default' onValueChange={(el) => handleOnChange(el)}>
@@ -402,8 +396,17 @@ const StatusSelect = ({ setUpdatedItem, statusValue, updatedItem }: { setUpdated
 }
 
 
-const DateSelect = () => {
-  const [date, setDate] = React.useState<Date>()
+const DateSelect = ({ setUpdatedItem, dateValue, updatedItem }: { setUpdatedItem: any, dateValue: any, updatedItem: any }) => {
+  const [date, setDate] = React.useState<Date>(dateValue)
+
+  const handleOnChange = (el: Date | undefined) => {
+    if(!el) return;
+    console.log('Updated item ', updatedItem)
+    setDate(el)
+    setUpdatedItem({...updatedItem, dueDate: el})
+  }
+
+  
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -420,7 +423,7 @@ const DateSelect = () => {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={(newDate)=> handleOnChange(newDate)}
           initialFocus
         />
       </PopoverContent>
