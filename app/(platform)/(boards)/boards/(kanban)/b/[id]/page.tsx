@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -176,7 +176,7 @@ export default function Home() {
       {
         id,
         title: "New Column",
-        items: [{ id: `item-${uuidv4()}`, title: "", isPlaceholder: true, labelColor: "#75D7B6" }],
+        items: [{ id: `item-${uuidv4()}`, title: "", isPlaceholder: true, labelColor: "#75D7B6", dueDate: "", description: ""}],
       },
     ]);
     setContainerName('');
@@ -236,6 +236,8 @@ export default function Home() {
     item.description = selectItem.description;
     item.title = selectItem.title;
     item.labelColor = selectItem.labelColor
+    item.dueDate = selectItem.dueDate;
+    item.status = selectItem.status;
     //item.on
 
     setContainers([...containers]);

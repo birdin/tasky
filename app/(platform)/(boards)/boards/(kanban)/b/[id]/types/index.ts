@@ -12,6 +12,10 @@ export type Item = {
   member?: { name: string, avatar: string };
   label?: Label[]
   isPlaceholder?: boolean;
-  description?: string
+  description?: string;
+  dueDate?: string;
+  status?: string;
+  comments?: number;
+  priority?: string;
 }
 

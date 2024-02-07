@@ -3,18 +3,20 @@ import { useSortable } from '@dnd-kit/sortable';
 import React, { useEffect, useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { FileText, MoreHorizontal, Text } from 'lucide-react';
+import { CalendarIcon, FileText, MoreHorizontal, Text } from 'lucide-react';
 import { Item } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
 import { SelectContent, SelectGroup, SelectItem, SelectValue } from '@/components/ui/select';
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
-  SheetTitle,
 } from "@/components/ui/sheet"
 import { useDebounce } from '@/hooks/useDebounce';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 
 type ItemsType = {
@@ -217,7 +219,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent>
+      <SheetContent className="md:min-w-[500px]">
         <SheetHeader className='mt-2'>
         </SheetHeader>
         <div>
@@ -249,9 +251,10 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
             }
           </div>
 
-          <div className="flex items-center flex-wrap gap-1 my-2">
+          <div className="flex items-center flex-wrap my-2">
             <LabelSelect />
-            <StatusSelect />
+            <StatusSelect setUpdatedItem={setUpdatedItem} statusValue={updatedItem?.status} updatedItem={updatedItem} />
+            <DateSelect />
           </div>
           <div>
             <div className="px-2 py-1 text-sm flex items-start mt-1" onClick={() => { setEditDescription(true) }}>
@@ -280,6 +283,8 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
               }
             </div>
           </div>
+          {
+            /*
           <div>
             <SelectDemo label={updatedItem?.labelColor}
               onChangeLabel={(label) => {
@@ -304,6 +309,8 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
               Delete
             </button>
           </div>
+                */
+          }
         </div>
       </SheetContent>
     </Sheet>
@@ -314,8 +321,8 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
 const LabelSelect = () => {
   return (
     <Select>
-      <SelectTrigger className="w-[110px] text-sm border-x-2">
-        <div className="flex items-center gap-1">
+      <SelectTrigger className="w-[110px] text-sm text-muted-foreground">
+        <div className="flex items-center gap-1 text-muted-foreground">
           <span className='w-[25px] h-[12px] rounded-md bg-red-400 border-w-1 ml-2 mr-2'></span>
           <SelectValue placeholder="Color" />
         </div>
@@ -329,10 +336,31 @@ const LabelSelect = () => {
   )
 }
 
-const StatusSelect = () => {
+const STATUS_OPTIONS = [
+  { value: 'default', label: 'No define' },
+  { value: 'pending', label: 'Pending' },
+  { value: 'progress', label: 'In progress' },
+  { value: 'done', label: 'Done' },
+]
+
+const StatusSelect = ({ setUpdatedItem, statusValue, updatedItem }: { setUpdatedItem: any, statusValue: any, updatedItem: any }) => {
+  
+  console.log('updatedItem status component', updatedItem)
+  const [status, setStatus] = useState(statusValue || 'default')
+  //setUpdatedItem({...updatedItem, status: status})
+
+  const handleOnChange = (el: string) => {
+    //const newItem = {...updatedItem, status: el}
+    console.log('Updated item ', updatedItem)
+    setStatus(el)
+    setUpdatedItem({...updatedItem, status: el})
+  }
+
+
+
   return (
-    <Select>
-      <SelectTrigger className="w-[110px] text-sm">
+    <Select value={status} defaultValue='default' onValueChange={(el) => handleOnChange(el)}>
+      <SelectTrigger className="w-[110px] text-sm text-muted-foreground">
         <div className="flex items-center gap-1">
           <div className="ml-1 mr-2">
             <svg
@@ -361,12 +389,42 @@ const StatusSelect = () => {
         </div>
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="light">No define</SelectItem>
-        <SelectItem value="dark">Pending</SelectItem>
-        <SelectItem value="system">In progres</SelectItem>
-        <SelectItem value="done">Done</SelectItem>
+        {
+          STATUS_OPTIONS.map((option, index) => {
+            return (
+              <SelectItem key={`${option.value}-${index}`} value={option.value}>{option.label}</SelectItem>
+            )
+          }
+          )}
       </SelectContent>
     </Select>
+  )
+}
+
+
+const DateSelect = () => {
+  const [date, setDate] = React.useState<Date>()
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          className={cn(
+            "min-w-[110px] text-sm flex items-center br-1",
+            !date && "text-muted-foreground"
+          )}>
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {date ? format(date, "PPP") : <span>Pick a date</span>}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
   )
 }
 
