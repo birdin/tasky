@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import React, { useEffect, useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { CalendarIcon, FileText, MoreHorizontal, Text } from 'lucide-react';
+import { CalendarIcon, FileText, MoreHorizontal, Text, X, Tags} from 'lucide-react';
 import { Item } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
 import { SelectContent, SelectGroup, SelectItem, SelectValue } from '@/components/ui/select';
@@ -471,7 +471,12 @@ const TagsSelect = () => {
                   )
                 }
               </div>
-            ) : <div>Add tags</div>
+            ) : (
+              <div className='text-sm text-muted-foreground flex items-center gap-2'>
+                <Tags className="h-4 w-4"/>
+                Add tags
+                </div>
+            )
           }
         </PopoverTrigger>
         <PopoverContent>
@@ -487,8 +492,13 @@ const TagsSelect = () => {
               <ul className='py-2'>
                 {tags.map((tag, index) => {
                   return (
-                    <li key={`tag-${index}`}>
-                      {tag}
+                    <li key={`tag-${index}`} className='flex items-center justify-between'>
+                      <span>
+                        {tag}
+                      </span>
+                      <span>
+                        <X />
+                      </span>
                     </li>
                   )
                 }
