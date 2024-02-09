@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
-
 // DnD
 import {
   DndContext,
@@ -27,7 +26,7 @@ import Items from './components/Item';
 import { KanbanSquare, Palette, Plus, Settings } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Item } from './types';
+import { Item, DNDType, Background } from './types';
 import { BoardSettingForm } from './components/Forms/BoardSettingForm';
 import { BoardThemeSettings } from './components/Forms/BoardThemeSettings';
 import { getCookie } from 'cookies-next';
@@ -36,26 +35,7 @@ import { useGetBackgrounds } from '@/hooks/useGetBackgrounds';
 import useChannel from '@/hooks/useChannel';
 import { useDebounce } from '@/hooks/useDebounce';
 
-type DNDType = {
-  id: UniqueIdentifier;
-  background?: {
-    id: string
-    value: string;
-    thumb: string;
-    url: string;
-  }
-  title: string;
-  items: Item[];
-  archive?: Item[];
 
-};
-
-type Background = {
-  id: string
-  value: string;
-  thumb: string;
-  url: string;
-}
 const UNIQUE_ID = uuidv4();
 
 
@@ -238,6 +218,7 @@ export default function Home() {
     item.labelColor = selectItem.labelColor
     item.dueDate = selectItem.dueDate;
     item.status = selectItem.status;
+    item.labels = selectItem.labels;
     //item.on
 
     setContainers([...containers]);
