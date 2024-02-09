@@ -251,10 +251,11 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
             }
           </div>
 
-          <div className="flex items-center flex-wrap my-2">
+          <div className="flex items-center flex-wrap my-2 gap-2">
             <LabelSelect />
             <StatusSelect setUpdatedItem={setUpdatedItem} statusValue={updatedItem?.status} updatedItem={updatedItem} />
             <DateSelect setUpdatedItem={setUpdatedItem} dateValue={updatedItem?.dueDate} updatedItem={updatedItem} />
+            <TagsSelect />
           </div>
           <div>
             <div className="px-2 py-1 text-sm flex items-start mt-1" onClick={() => { setEditDescription(true) }}>
@@ -344,12 +345,12 @@ const STATUS_OPTIONS = [
 ]
 
 const StatusSelect = ({ setUpdatedItem, statusValue, updatedItem }: { setUpdatedItem: any, statusValue: any, updatedItem: any }) => {
-    const [status, setStatus] = useState(statusValue || 'default')
+  const [status, setStatus] = useState(statusValue || 'default')
 
   const handleOnChange = (el: string) => {
     console.log('Updated item ', updatedItem)
     setStatus(el)
-    setUpdatedItem({...updatedItem, status: el})
+    setUpdatedItem({ ...updatedItem, status: el })
   }
 
   return (
@@ -400,13 +401,13 @@ const DateSelect = ({ setUpdatedItem, dateValue, updatedItem }: { setUpdatedItem
   const [date, setDate] = React.useState<Date>(dateValue)
 
   const handleOnChange = (el: Date | undefined) => {
-    if(!el) return;
+    if (!el) return;
     console.log('Updated item ', updatedItem)
     setDate(el)
-    setUpdatedItem({...updatedItem, dueDate: el})
+    setUpdatedItem({ ...updatedItem, dueDate: el })
   }
 
-  
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -423,11 +424,82 @@ const DateSelect = ({ setUpdatedItem, dateValue, updatedItem }: { setUpdatedItem
         <Calendar
           mode="single"
           selected={date}
-          onSelect={(newDate)=> handleOnChange(newDate)}
+          onSelect={(newDate) => handleOnChange(newDate)}
           initialFocus
         />
       </PopoverContent>
     </Popover>
+  )
+}
+
+const TagsSelect = () => {
+  const [open, setOpen] = useState(false)
+  const [value, setValue] = useState('')
+  const [tags, setTags] = useState<string[]>([])
+
+  const handleOnChange = (e: any) => {
+    setValue(e.target.value)
+  }
+
+  const handleEnter = (e: any) => {
+    //if key is enter the, change setEditTitle to false
+    if (e.key === 'Enter') {
+      if (value === '') return;
+      setTags([...tags, value])
+      setValue('')
+      //setTags([...tags, value])
+      //e.target.value = ''
+    }
+
+  }
+
+  return (
+    <div className=''>
+      <Popover>
+        <PopoverTrigger asChild>
+          {
+            tags.length > 0 ? (
+              <div className="flex items-center gap-1">
+                {
+                  tags.map((tag, index) => {
+                    return (
+                      <label key={`tag-${index}`} className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
+                        {tag}
+                      </label>
+                    )
+                  }
+                  )
+                }
+              </div>
+            ) : <div>Add tags</div>
+          }
+        </PopoverTrigger>
+        <PopoverContent>
+          <div>
+            <h4 className="font-medium text-base leading-none">Board Settings</h4>
+            <div>
+              <input type="text"
+                className='mt-2 justify-between border rounded px-2 py- h-10 w-full'
+                placeholder="Add new tag"
+                onChange={handleOnChange}
+                value={value}
+                onKeyDown={handleEnter} />
+              <ul className='py-2'>
+                {tags.map((tag, index) => {
+                  return (
+                    <li key={`tag-${index}`}>
+                      {tag}
+                    </li>
+                  )
+                }
+                )}
+              </ul>
+            </div>
+          </div>
+        </PopoverContent>
+
+      </Popover>
+    </div>
   )
 }
 
