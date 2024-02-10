@@ -3,8 +3,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import React, { useEffect, useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { CalendarIcon, FileText, MoreHorizontal, Text, X, Tags} from 'lucide-react';
-import { Item } from '../../types';
+import { CalendarIcon, FileText, MoreHorizontal, Text, X, Tags } from 'lucide-react';
+import { Item, Label } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
 import { SelectContent, SelectGroup, SelectItem, SelectValue } from '@/components/ui/select';
 import {
@@ -18,6 +18,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
+import { TagsSelect } from './TagSelect';
 
 type ItemsType = {
   id: UniqueIdentifier | string;
@@ -65,8 +66,6 @@ const Items = (
     )
   }
 
-  //console.log('item', item);
-
   return (
     <>
       <SheetDemo
@@ -102,31 +101,29 @@ const Items = (
                   {item?.title}
                 </h3>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <div className="">
-                    {
-                      item?.member && (
-                        <div className="rounded-full bg-rose-600 w-7 h-7 flex justify-center items-center">
-                          <div className="text-white">
-                            {item?.member?.name?.split(' ')[0].charAt(0).toUpperCase()}
-                          </div>
+                  {
+                    item?.member && (
+                      <div className="rounded-full bg-rose-600 w-7 h-7 flex justify-center items-center">
+                        <div className="text-white">
+                          {item?.member?.name?.split(' ')[0].charAt(0).toUpperCase()}
                         </div>
-                      )
-                    }
-                  </div>
-                  <div className='text-gray-400'>
-                    {
-                      item?.description &&
+                      </div>
+                    )
+                  }
+                  {
+                    item?.description &&
+                    <div className='text-gray-400'>
                       <div className='flex items-center gap-1 text-[13px]'>
                         <FileText width={14} />
                         <span>
                           Description
                         </span>
                       </div>
-                    }
-                  </div>
-                  <div className="tag">
+                    </div>
+                  }
+                  <div className="tag flex items-center gap-1 flex-wrap">
                     {
-                      item?.label?.map((label) => {
+                      item?.labels?.map((label) => {
                         return (
                           <label key={`label-${label.id}`} className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
                             {label.title}
@@ -214,7 +211,6 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
 
   useEffect(() => {
     onEditItem(id, updatedItem);
-    //console.log('val', val)
   }, [val])
 
   return (
@@ -255,7 +251,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
             <LabelSelect />
             <StatusSelect setUpdatedItem={setUpdatedItem} statusValue={updatedItem?.status} updatedItem={updatedItem} />
             <DateSelect setUpdatedItem={setUpdatedItem} dateValue={updatedItem?.dueDate} updatedItem={updatedItem} />
-            <TagsSelect />
+            <TagsSelect setUpdatedItem={setUpdatedItem} labelsValue={updatedItem?.labels} updatedItem={updatedItem} />
           </div>
           <div>
             <div className="px-2 py-1 text-sm flex items-start mt-1" onClick={() => { setEditDescription(true) }}>
@@ -407,7 +403,6 @@ const DateSelect = ({ setUpdatedItem, dateValue, updatedItem }: { setUpdatedItem
     setUpdatedItem({ ...updatedItem, dueDate: el })
   }
 
-
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -429,87 +424,6 @@ const DateSelect = ({ setUpdatedItem, dateValue, updatedItem }: { setUpdatedItem
         />
       </PopoverContent>
     </Popover>
-  )
-}
-
-const TagsSelect = () => {
-  const [open, setOpen] = useState(false)
-  const [value, setValue] = useState('')
-  const [tags, setTags] = useState<string[]>([])
-
-  const handleOnChange = (e: any) => {
-    setValue(e.target.value)
-  }
-
-  const handleEnter = (e: any) => {
-    //if key is enter the, change setEditTitle to false
-    if (e.key === 'Enter') {
-      if (value === '') return;
-      setTags([...tags, value])
-      setValue('')
-      //setTags([...tags, value])
-      //e.target.value = ''
-    }
-
-  }
-
-  return (
-    <div className=''>
-      <Popover>
-        <PopoverTrigger asChild>
-          {
-            tags.length > 0 ? (
-              <div className="flex items-center gap-1">
-                {
-                  tags.map((tag, index) => {
-                    return (
-                      <label key={`tag-${index}`} className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
-                        {tag}
-                      </label>
-                    )
-                  }
-                  )
-                }
-              </div>
-            ) : (
-              <div className='text-sm text-muted-foreground flex items-center gap-2'>
-                <Tags className="h-4 w-4"/>
-                Add tags
-                </div>
-            )
-          }
-        </PopoverTrigger>
-        <PopoverContent>
-          <div>
-            <h4 className="font-medium text-base leading-none">Board Settings</h4>
-            <div>
-              <input type="text"
-                className='mt-2 justify-between border rounded px-2 py- h-10 w-full'
-                placeholder="Add new tag"
-                onChange={handleOnChange}
-                value={value}
-                onKeyDown={handleEnter} />
-              <ul className='py-2'>
-                {tags.map((tag, index) => {
-                  return (
-                    <li key={`tag-${index}`} className='flex items-center justify-between'>
-                      <span>
-                        {tag}
-                      </span>
-                      <span>
-                        <X />
-                      </span>
-                    </li>
-                  )
-                }
-                )}
-              </ul>
-            </div>
-          </div>
-        </PopoverContent>
-
-      </Popover>
-    </div>
   )
 }
 
