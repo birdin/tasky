@@ -18,6 +18,8 @@ import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
+import { TagsSelect } from './TagSelect';
+
 type ItemsType = {
   id: UniqueIdentifier | string;
   item: Item | null;
@@ -119,7 +121,7 @@ const Items = (
                       </div>
                     </div>
                   }
-                  <div className="tag">
+                  <div className="tag flex items-center gap-1 flex-wrap">
                     {
                       item?.labels?.map((label) => {
                         return (
@@ -401,7 +403,6 @@ const DateSelect = ({ setUpdatedItem, dateValue, updatedItem }: { setUpdatedItem
     setUpdatedItem({ ...updatedItem, dueDate: el })
   }
 
-
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -423,95 +424,6 @@ const DateSelect = ({ setUpdatedItem, dateValue, updatedItem }: { setUpdatedItem
         />
       </PopoverContent>
     </Popover>
-  )
-}
-
-const TagsSelect = (
-  { labelsValue, setUpdatedItem, updatedItem }
-    : { labelsValue: any, setUpdatedItem: any, updatedItem: any }) => {
-  const [value, setValue] = useState('')
-  const [tags, setTags] = useState<Label[]>(labelsValue || [])
-
-  const handleOnChange = (e: any) => {
-    setValue(e.target.value)
-  }
-
-  const handleEnter = (e: any) => {
-    if (e.key === 'Enter') {
-      if (value === '') return;
-      const newTag = { id: Math.random().toString(), title: value }
-      setUpdatedItem({ ...updatedItem, labels: [...tags, newTag] })
-      setTags([...tags, newTag])
-      setValue('')
-    }
-
-  }
-
-  const removeItem = (index: number) => {
-    const newList = tags.filter(el => tags.indexOf(el) !== index)
-    setTags(newList)
-  }
-
-  return (
-    <div className=''>
-      <Popover>
-        <PopoverTrigger asChild>
-          {
-            tags?.length > 0 ? (
-              <div className="flex items-center gap-1">
-                {
-                  tags?.map((tag, index) => {
-                    return (
-                      <label key={`tag-${index}`} className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
-                        {tag.title}
-                      </label>
-                    )
-                  }
-                  )
-                }
-              </div>
-            ) : (
-              <div className='text-sm text-muted-foreground flex items-center gap-2'>
-                <Tags className="h-4 w-4" />
-                Add tags
-              </div>
-            )
-          }
-        </PopoverTrigger>
-        <PopoverContent>
-          <div>
-            <h4 className="font-medium text-base leading-none">Board Settings</h4>
-            <div>
-              <input type="text"
-                className='mt-2 justify-between border rounded px-2 py- h-10 w-full text-sm'
-                placeholder="Add new tag"
-                onChange={handleOnChange}
-                value={value}
-                onKeyDown={handleEnter} />
-              <ul className='py-2'>
-                {tags?.map((tag, index) => {
-                  return (
-                    <li key={`tag-${index}`} className='flex items-center justify-between py-2'>
-                      <span>
-                        {tag.title}
-                      </span>
-                      <span>
-                        <X
-                          className='h-4 w-4 cursor-pointer'
-                          onClick={() => removeItem(index)}
-                        />
-                      </span>
-                    </li>
-                  )
-                }
-                )}
-              </ul>
-            </div>
-          </div>
-        </PopoverContent>
-
-      </Popover>
-    </div>
   )
 }
 
