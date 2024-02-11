@@ -98,9 +98,22 @@ export const TagsSelect = (
 }
 
 
+const COLOR = [
+    { name: 'red', color: 'bg-red-500' },
+    { name: 'blue', color: 'bg-blue-500' },
+    { name: 'green', color: 'bg-green-500' },
+    { name: 'yellow', color: 'bg-yellow-500' },
+    { name: 'indigo', color: 'bg-indigo-500' },
+    { name: 'pink', color: 'bg-pink-500' },
+    { name: 'purple', color: 'bg-purple-500' },
+    { name: 'gray', color: 'bg-gray-500' },
+    { name: 'teal', color: 'bg-teal-500' },
+]
+
 const SelectColor = (
     { setColor, color }
         : { setColor: any, color: string }) => {
+    const [selectedColor, setSelectedColor] = useState(color)
     return (
         <DropdownMenu>
             <DropdownMenuTrigger>
@@ -110,8 +123,21 @@ const SelectColor = (
                 </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-             <DropdownMenuLabel>Select label color</DropdownMenuLabel>
-             
+                <DropdownMenuLabel>Select label color</DropdownMenuLabel>
+                {
+                    COLOR.map((el, index) => {
+                        return (
+                            <div key={`color-${index}`} className={`w-10 h-8 p-[6px] border rounded cursor-pointer ${selectedColor === el.color ? ' bg-fuchsia-400 border-2' : ''}`}
+                                onClick={() => {
+                                    setColor(el.name)
+                                    setSelectedColor(el.color)
+                                }}>
+                                <div className={`p-2 h-full ${el.color}`}>
+                                </div>
+                            </div>
+                        )
+                    })
+                }
             </DropdownMenuContent>
         </DropdownMenu>
     )
