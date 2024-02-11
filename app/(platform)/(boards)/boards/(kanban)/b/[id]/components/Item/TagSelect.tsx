@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Label } from "../../types"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tags, X } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export const TagsSelect = (
     { labelsValue, setUpdatedItem, updatedItem }
@@ -56,27 +57,23 @@ export const TagsSelect = (
                         )
                     }
                 </PopoverTrigger>
-                <PopoverContent>
+                <PopoverContent align="start">
                     <div>
-                        <h4 className="font-medium text-base leading-none">List of tags</h4>
                         <div>
-                            <div className="flex items-center gap-1 mt-2">
+                            <div className="flex items-center gap-1">
                                 <input type="text"
                                     className='justify-between border rounded px-2 h-8 w-full text-sm'
                                     placeholder="Add new tag"
+                                    autoFocus={false}
                                     onChange={handleOnChange}
                                     value={value}
                                     onKeyDown={handleEnter} />
-                                <div className="w-12 h-8 p-[5px] border rounded">
-                                    <div className="p-2 h-full bg-red-500">
-
-                                    </div>
-                                </div>
+                                <SelectColor color='red' setColor={() => { }} />
                             </div>
                             <ul className='py-2'>
                                 {tags?.map((tag, index) => {
                                     return (
-                                        <li key={`tag-${index}`} className='flex items-center justify-between py-2'>
+                                        <li key={`tag-${index}`} className='flex items-center justify-between py-2 text-sm'>
                                             <span>
                                                 {tag.title}
                                             </span>
@@ -97,5 +94,24 @@ export const TagsSelect = (
 
             </Popover>
         </div>
+    )
+}
+
+
+const SelectColor = (
+    { setColor, color }
+        : { setColor: any, color: string }) => {
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger>
+                <div className="w-10 h-8 p-[6px] border rounded">
+                    <div className="p-2 h-full bg-red-500">
+                    </div>
+                </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+             <DropdownMenuLabel>Select label color</DropdownMenuLabel>
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }
