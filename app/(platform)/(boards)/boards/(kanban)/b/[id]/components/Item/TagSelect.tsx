@@ -3,11 +3,13 @@ import { Label } from "../../types"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tags, X } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { set } from "date-fns"
 
 export const TagsSelect = (
     { labelsValue, setUpdatedItem, updatedItem }
         : { labelsValue: any, setUpdatedItem: any, updatedItem: any }) => {
     const [value, setValue] = useState('')
+    const [color, setColor] = useState('red' as string)
     const [tags, setTags] = useState<Label[]>(labelsValue || [])
 
     const handleOnChange = (e: any) => {
@@ -17,12 +19,18 @@ export const TagsSelect = (
     const handleEnter = (e: any) => {
         if (e.key === 'Enter') {
             if (value === '') return;
-            const newTag = { id: Math.random().toString(), title: value }
+            const newTag = { id: Math.random().toString(), title: value, color: color}
             setUpdatedItem({ ...updatedItem, labels: [...tags, newTag] })
             setTags([...tags, newTag])
             setValue('')
+            setColor('red')
         }
+    }
 
+    const handleColor = (newColor: string) => {
+        setColor(newColor)
+        console.log('newColor', newColor)
+        console.log(updatedItem)
     }
 
     const removeItem = (index: number) => {
@@ -41,7 +49,7 @@ export const TagsSelect = (
                                 {
                                     tags?.map((tag, index) => {
                                         return (
-                                            <label key={`tag-${index}`} className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
+                                            <label key={`tag-${index}`} className={`bg-${tag.color}-500/50 text-silver-900 text-[13px] px-3 rounded capitalize border border-sky-400`}>
                                                 {tag.title}
                                             </label>
                                         )
@@ -68,7 +76,7 @@ export const TagsSelect = (
                                     onChange={handleOnChange}
                                     value={value}
                                     onKeyDown={handleEnter} />
-                                <SelectColor color='red' setColor={() => { }} />
+                                <SelectColor color={color} setColor={(el:string) => handleColor(el)} />
                             </div>
                             <ul className='py-2'>
                                 {tags?.map((tag, index) => {
@@ -113,27 +121,33 @@ const COLOR = [
 const SelectColor = (
     { setColor, color }
         : { setColor: any, color: string }) => {
-    const [selectedColor, setSelectedColor] = useState(color)
+    const [selectedColor, setSelectedColor] = useState( COLOR.find(el=>el.name == color)?.color || 'bg-gray-500')
     return (
         <DropdownMenu>
             <DropdownMenuTrigger>
                 <div className="w-10 h-8 p-[6px] border rounded">
-                    <div className="p-2 h-full bg-red-500">
+                    <div className={`p-2 h-full ${
+                        selectedColor
+                    }`}>
                     </div>
                 </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align="start">
                 <DropdownMenuLabel>Select label color</DropdownMenuLabel>
                 {
                     COLOR.map((el, index) => {
                         return (
-                            <div key={`color-${index}`} className={`w-10 h-8 p-[6px] border rounded cursor-pointer ${selectedColor === el.color ? ' bg-fuchsia-400 border-2' : ''}`}
+                            <div key={`color-${index}`} 
+                                className={`text-sm my-1 gap-2 h-8 p-[6px] flex items-center border rounded cursor-pointer ${selectedColor === el.color ? ' border-blue-400 border-2' : ''}`}
                                 onClick={() => {
-                                    setColor(el.name)
+                                    setColor(COLOR.find(el=>el.color == el.color)?.name || 'gray')
                                     setSelectedColor(el.color)
                                 }}>
-                                <div className={`p-2 h-full ${el.color}`}>
+                                <div className={`p-2 h-full w-6 ${el.color}`}>
                                 </div>
+                                <span className="capitalize">
+                                    {el.name}
+                                </span>
                             </div>
                         )
                     })
