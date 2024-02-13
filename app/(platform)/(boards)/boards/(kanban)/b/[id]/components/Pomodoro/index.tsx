@@ -1,12 +1,20 @@
 "use client"
 
-import { PauseCircle, Play, StopCircle, Timer } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ChevronDown, MoreVertical, PauseCircle, Play, StopCircle, Timer, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom';
 
 
 type Props = {
 
+}
+
+function convertSecondsToMinutes(seconds: number) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds}`;
 }
 
 function ReactPortal({ children, wrapperId }: {
@@ -87,10 +95,31 @@ export const Pomodoro = () => {
                 open && (
 
                     <ReactPortal wrapperId="portal">
-                        <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 bg-white">
+                        <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 pt-0 bg-white border">
+                            <div className="flex items-center justify-between py-2">
+                                <div className="text-sm font-medium flex items-center gap-1">
+                                    <Timer width={15} />
+                                    <span>
+                                        Timer
+                                    </span>
+                                </div>
+                                <div className='flex items-center gap-1'>
+                                    <div className="cursor-pointer">
+                                        <ChevronDown width={19} />
+                                    </div>
+                                    <div className="cursor-pointer flex items-center">
+                                        <DialogCloseButton handleClose={() => setOpen(false)} />
+                                    </div>
+                                    <div className="">
+                                        <MoreVertical width={19} />
+                                    </div>
+                                </div>
+                            </div>
                             <div className="flex justify-between items-center">
                                 <div className="font-medium text-5xl">
-                                    {time}
+                                    {
+                                        convertSecondsToMinutes(time)
+                                    }
                                 </div>
                                 <div className="text-gray-600">
                                     {
@@ -106,3 +135,25 @@ export const Pomodoro = () => {
     )
 }
 
+const DialogCloseButton = ({ handleClose }: { handleClose: () => void }) => {
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <button>
+                    <X width={19}/>
+                </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Close pomodoro</DialogTitle>
+                    <DialogDescription>
+                        Make changes to your profile here. Click save when you're done.
+                    </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                    <Button type="submit" onClick={handleClose}>Save changes</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
