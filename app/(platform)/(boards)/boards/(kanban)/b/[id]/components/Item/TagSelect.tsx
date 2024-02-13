@@ -9,7 +9,7 @@ export const TagsSelect = (
     { labelsValue, setUpdatedItem, updatedItem }
         : { labelsValue: any, setUpdatedItem: any, updatedItem: any }) => {
     const [value, setValue] = useState('')
-    const [color, setColor] = useState('red' as string)
+    const [color, setColor] = useState('red')
     const [tags, setTags] = useState<Label[]>(labelsValue || [])
 
     const handleOnChange = (e: any) => {
@@ -20,6 +20,7 @@ export const TagsSelect = (
         if (e.key === 'Enter') {
             if (value === '') return;
             const newTag = { id: Math.random().toString(), title: value, color: color}
+            console.log("Color", color )
             setUpdatedItem({ ...updatedItem, labels: [...tags, newTag] })
             setTags([...tags, newTag])
             setValue('')
@@ -29,7 +30,7 @@ export const TagsSelect = (
 
     const handleColor = (newColor: string) => {
         setColor(newColor)
-        console.log('newColor', newColor)
+        console.log('New Color here', newColor)
         console.log(updatedItem)
     }
 
@@ -45,11 +46,12 @@ export const TagsSelect = (
                 <PopoverTrigger asChild>
                     {
                         tags?.length > 0 ? (
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 flex-wrap">
                                 {
                                     tags?.map((tag, index) => {
                                         return (
-                                            <label key={`tag-${index}`} className={`bg-${tag.color}-500/50 text-silver-900 text-[13px] px-3 rounded capitalize border border-sky-400`}>
+                                            <label key={`tag-${index}`} 
+                                                className={`bg-${tag.color}-200 text-${tag.color}-800 text-[13px] px-3 rounded capitalize border border-${tag.color}-400`}>
                                                 {tag.title}
                                             </label>
                                         )
@@ -108,7 +110,7 @@ export const TagsSelect = (
 
 const COLOR = [
     { name: 'red', color: 'bg-red-500' },
-    { name: 'blue', color: 'bg-blue-500' },
+    { name: 'sky', color: 'bg-sky-500' },
     { name: 'green', color: 'bg-green-500' },
     { name: 'yellow', color: 'bg-yellow-500' },
     { name: 'indigo', color: 'bg-indigo-500' },
@@ -140,11 +142,12 @@ const SelectColor = (
                             <div key={`color-${index}`} 
                                 className={`text-sm my-1 gap-2 h-8 p-[6px] flex items-center border rounded cursor-pointer ${selectedColor === el.color ? ' border-blue-400 border-2' : ''}`}
                                 onClick={() => {
-                                    setColor(COLOR.find(el=>el.color == el.color)?.name || 'gray')
+                                    setColor(el.name)
                                     setSelectedColor(el.color)
                                 }}>
                                 <div className={`p-2 h-full w-6 ${el.color}`}>
                                 </div>
+                                <span className={`bg-${el.name}-500/50`}></span>
                                 <span className="capitalize">
                                     {el.name}
                                 </span>
@@ -152,6 +155,30 @@ const SelectColor = (
                         )
                     })
                 }
+                <div className="hidden">
+                    <span className="bg-red-200"></span>
+                    <span className="border-red-400"></span>
+                    <span className="text-red-800"></span>
+                    <span className="bg-sky-200"></span>
+                    <span className="border-sky-400"></span>
+                    <span className="text-sky-800"></span>
+                    <span className="bg-pink-200"></span>
+                    <span className="border-pink-400"></span>
+                    <span className="text-pink-800"></span>
+                    <span className="bg-yellow-200"></span>
+                    <span className="border-yellow-400"></span>
+                    <span className="bg-green-200"></span>
+                    <span className="border-green-400"></span>
+                    <span className="bg-indigo-200"></span>
+                    <span className="border-indigo-400"></span>
+                    <span className="bg-purple-200"></span>
+                    <span className="border-purple-400"></span>
+                    <span className="bg-gray-200"></span>
+                    <span className="border-gray-400"></span>
+                    <span className="bg-teal-200"></span>
+                    <span className="border-teal-400"></span>
+
+                </div>
             </DropdownMenuContent>
         </DropdownMenu>
     )
