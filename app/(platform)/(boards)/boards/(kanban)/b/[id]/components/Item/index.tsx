@@ -125,7 +125,7 @@ const Items = (
                     {
                       item?.labels?.map((label) => {
                         return (
-                          <label key={`label-${label.id}`} className='bg-sky-200 text-sky-800 text-[13px] px-3 rounded capitalize border border-sky-400'>
+                          <label key={`label-${label.id}`} className={`bg-${label.color}-200 text-${label.color}-800 text-[13px] px-3 rounded capitalize border border-${label.color}-400`}>
                             {label.title}
                           </label>
                         )
