@@ -56,8 +56,9 @@ export const Pomodoro = () => {
     }, [time, start])
 
     const handleStart = () => {
-        setTimeStart(new Date().getTime())
+        setTimeStart(new Date().getTime()-500)
         setStart(true)
+        setMinimized(el => !el)
     }
 
     const handleStop = () => {
