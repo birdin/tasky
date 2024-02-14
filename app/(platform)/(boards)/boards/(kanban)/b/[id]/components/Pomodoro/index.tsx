@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ChevronDown, MoreVertical, PauseCircle, Play, StopCircle, Timer, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, MoreVertical, PauseCircle, Play, StopCircle, Timer, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom';
 
@@ -38,6 +38,7 @@ export const Pomodoro = () => {
     const [startTime, setTimeStart] = useState<any>()
     const [start, setStart] = useState(false);
     const [open, setOpen] = useState(false);
+    const [minimized, setMinimized] = useState(false);
 
     useEffect(() => {
         const current = new Date().getTime()
@@ -93,42 +94,60 @@ export const Pomodoro = () => {
             </div>
             {
                 open && (
-
-                    <ReactPortal wrapperId="portal">
-                        <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 pt-0 bg-white border">
-                            <div className="flex items-center justify-between py-2">
-                                <div className="text-sm font-medium flex items-center gap-1">
-                                    <Timer width={15} />
-                                    <span>
-                                        Timer
-                                    </span>
-                                </div>
-                                <div className='flex items-center gap-1'>
-                                    <div className="cursor-pointer">
-                                        <ChevronDown width={19} />
-                                    </div>
-                                    <div className="cursor-pointer flex items-center">
-                                        <DialogCloseButton handleClose={() => setOpen(false)} />
-                                    </div>
-                                    <div className="">
-                                        <MoreVertical width={19} />
-                                    </div>
-                                </div>
+                    minimized ? (
+                        <div className='absolute top-12 w-52 right-0 bg-white border flex items-center justify-between p-2 rounded'>
+                            <div className='mr-2'>
+                                <Timer size={15} />
                             </div>
-                            <div className="flex justify-between items-center">
-                                <div className="font-medium text-5xl">
-                                    {
-                                        convertSecondsToMinutes(time)
-                                    }
-                                </div>
-                                <div className="text-gray-600">
-                                    {
-                                        handleButtonSection()
-                                    }
-                                </div>
+                            <div className="font-medium mr-auto">
+                                {
+                                    convertSecondsToMinutes(time)
+                                }
+                            </div>
+                            <div className="" onClick={() => setMinimized(false)}>
+                                <ChevronUp size={19} />
+                            </div>
+                            <div className="cursor-pointer flex items-center">
+                                <DialogCloseButton handleClose={() => setOpen(false)} />
                             </div>
                         </div>
-                    </ReactPortal >
+                    )
+                        :
+                        <ReactPortal wrapperId="portal">
+                            <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 pt-0 bg-white border">
+                                <div className="flex items-center justify-between py-2">
+                                    <div className="text-sm font-medium flex items-center gap-1">
+                                        <Timer width={15} />
+                                        <span>
+                                            Timer
+                                        </span>
+                                    </div>
+                                    <div className='flex items-center gap-1'>
+                                        <div className="cursor-pointer" onClick={() => setMinimized(el => !el)}>
+                                            <ChevronDown width={19} />
+                                        </div>
+                                        <div className="cursor-pointer flex items-center">
+                                            <DialogCloseButton handleClose={() => setOpen(false)} />
+                                        </div>
+                                        <div className="">
+                                            <MoreVertical width={19} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <div className="font-medium text-5xl">
+                                        {
+                                            convertSecondsToMinutes(time)
+                                        }
+                                    </div>
+                                    <div className="text-gray-600">
+                                        {
+                                            handleButtonSection()
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </ReactPortal >
                 )
             }
         </>
@@ -140,7 +159,7 @@ const DialogCloseButton = ({ handleClose }: { handleClose: () => void }) => {
         <Dialog>
             <DialogTrigger asChild>
                 <button>
-                    <X width={19}/>
+                    <X width={19} />
                 </button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
