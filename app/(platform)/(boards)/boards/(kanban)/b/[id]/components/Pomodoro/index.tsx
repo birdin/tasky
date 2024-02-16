@@ -1,10 +1,13 @@
 "use client"
 
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ChevronDown, ChevronUp, MoreVertical, PauseCircle, Play, StopCircle, Timer, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom';
+
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ChevronDown, ChevronUp, MoreVertical, Play, Timer, X } from 'lucide-react';
+
+import { PlayIcon, PauseIcon, StopIcon } from './icons';
 
 
 type Props = {
@@ -29,15 +32,20 @@ function ReactPortal({ children, wrapperId }: {
     if (!element) {
         return null
     }
-
     return createPortal(children, element);
 }
 
 export const Pomodoro = () => {
     const [time, setTime] = useState<any>(0)
+    const [referenceTime, setReferenceTime] = useState<any>(20)
+    const [breakTime, setBreakTime] = useState<any>(5)
+    const [longBreakTime, setLongBreakTime] = useState<any>(15)
+    const [isBreak, setIsBreak] = useState(false)
     const [startTime, setTimeStart] = useState<any>()
     const [start, setStart] = useState(false);
+    const [startBreak, setStartBreak] = useState(false)
     const [open, setOpen] = useState(false);
+    const [finished, setFinished] = useState(false);
     const [minimized, setMinimized] = useState(false);
 
     useEffect(() => {
@@ -45,8 +53,14 @@ export const Pomodoro = () => {
         if (start) {
             var interval = setInterval(function () {
                 const value = ((current - startTime) / 1000).toFixed(0)
-                console.log('value', value)
                 setTime(value);
+                if ((referenceTime - parseInt(value)) <= 0) {
+                    setStart(false)
+                    setFinished(true)
+                    setTime(value);
+                    clearInterval(interval)
+                    setIsBreak(true)
+                }
             }, 1000);
             return () => clearInterval(interval)
         } else {
@@ -55,9 +69,34 @@ export const Pomodoro = () => {
         console.log('time', time)
     }, [time, start])
 
+    useEffect(() => {
+        if (startBreak) {
+            const interval = setInterval(() => {
+                const value = ((new Date().getTime() - startTime) / 1000).toFixed(0)
+                setTime(value)
+            }
+                , 1000)
+            if (breakTime * 60 - time <= 0) {
+                setIsBreak(false)
+                setReferenceTime(20 * 60)
+                setStart(false)
+                setFinished(false)
+            }
+            return () => clearInterval(interval)
+        }
+    }, [time, isBreak])
+
     const handleStart = () => {
-        setTimeStart(new Date().getTime())
+        setTimeStart(new Date().getTime() - 500)
         setStart(true)
+        setMinimized(el => !el)
+    }
+
+    const handleStartBreak = () => {
+        setStart(true)
+        setTimeStart(new Date().getTime() - 500)
+        setReferenceTime(breakTime * 60)
+        setStartBreak(true)
     }
 
     const handleStop = () => {
@@ -65,21 +104,34 @@ export const Pomodoro = () => {
     }
 
     const handleButtonSection = () => {
+        if (isBreak) {
+            return (
+                <>
+                    <div className="font-medium">
+                        Break Time
+                    </div>
+                    <div className="cursor-pointer gap-1" onClick={handleStartBreak}>
+                        <PlayIcon size={"3.5rem"} />
+                    </div>
+                </>
+            )
+        }
+
         if (start) {
             return (
                 <div className="flex items-center gap-2">
                     <div className="cursor-pointer" onClick={handleStop}>
-                        <PauseCircle size={"2.8rem"} />
+                        <PauseIcon size={"3.5rem"} />
                     </div>
                     <div className="cursor-pointer">
-                        <StopCircle size={"2.8rem"} />
+                        <StopIcon size={"3.5rem"} />
                     </div>
                 </div>
             )
         } else {
             return (
                 <div className="cursor-pointer" onClick={handleStart}>
-                    <Play size={"2.5rem"} />
+                    <PlayIcon size={"3.5rem"} />
                 </div>
             )
         }
@@ -96,12 +148,12 @@ export const Pomodoro = () => {
                 open && (
                     minimized ? (
                         <div className='absolute top-12 w-52 right-0 bg-white border flex items-center justify-between p-2 rounded'>
-                            <div className='mr-2'>
+                            <div className={`mr-2 ${start && 'text-red-700 '}`}>
                                 <Timer size={15} />
                             </div>
                             <div className="font-medium mr-auto">
                                 {
-                                    convertSecondsToMinutes(time)
+                                    convertSecondsToMinutes(referenceTime - time)
                                 }
                             </div>
                             <div className="" onClick={() => setMinimized(false)}>
@@ -116,7 +168,7 @@ export const Pomodoro = () => {
                         <ReactPortal wrapperId="portal">
                             <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 pt-0 bg-white border">
                                 <div className="flex items-center justify-between py-2">
-                                    <div className="text-sm font-medium flex items-center gap-1">
+                                    <div className="text-sm font-medium flex items-center text-red-700 gap-1">
                                         <Timer width={15} />
                                         <span>
                                             Timer
@@ -137,7 +189,7 @@ export const Pomodoro = () => {
                                 <div className="flex justify-between items-center">
                                     <div className="font-medium text-5xl">
                                         {
-                                            convertSecondsToMinutes(time)
+                                            convertSecondsToMinutes(referenceTime - time)
                                         }
                                     </div>
                                     <div className="text-gray-600">
