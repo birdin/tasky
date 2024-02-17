@@ -104,6 +104,10 @@ export const Pomodoro = () => {
         setStart(false)
     }
 
+    const handlePause = () => {
+        setStart(false)
+    }
+
     const handleButtonSection = () => {
         if (isBreak) {
             return (
@@ -136,10 +140,10 @@ export const Pomodoro = () => {
         if (start) {
             return (
                 <div className="flex items-center gap-2">
-                    <div className="cursor-pointer" onClick={handleStop}>
+                    <div className="cursor-pointer" onClick={handlePause}>
                         <PauseIcon size={"3.5rem"} />
                     </div>
-                    <div className="cursor-pointer">
+                    <div className="cursor-pointer" onClick={handleStop}>
                         <StopIcon size={"3.5rem"} />
                     </div>
                 </div>
