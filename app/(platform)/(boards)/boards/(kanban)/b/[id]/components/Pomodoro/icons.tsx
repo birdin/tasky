@@ -70,3 +70,22 @@ export function StopIcon({ size }: { size: string }) {
         </svg>
     );
 }
+
+
+export function SmallPlayIcon({ size }: { size: string }) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={size}
+        height={size}
+        fill="none"
+        viewBox="0 0 15 15"
+      >
+        <path
+          fill="#7B9786"
+          d="M13.38 5.846a1.874 1.874 0 010 3.308L5.374 13.51c-1.29.702-2.873-.21-2.873-1.654v-8.71C2.5 1.703 4.084.79 5.373 1.492l8.008 4.355z"
+        ></path>
+      </svg>
+    );
+  }
+  

@@ -5,9 +5,9 @@ import { createPortal } from 'react-dom';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ChevronDown, ChevronUp, MoreVertical, Play, Timer, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, MoreVertical, Play, SkipForward, Timer, X } from 'lucide-react';
 
-import { PlayIcon, PauseIcon, StopIcon } from './icons';
+import { PlayIcon, PauseIcon, StopIcon, SmallPlayIcon } from './icons';
 
 
 type Props = {
@@ -60,6 +60,7 @@ export const Pomodoro = () => {
                     setTime(value);
                     clearInterval(interval)
                     setIsBreak(true)
+                    setMinimized(false)
                 }
             }, 1000);
             return () => clearInterval(interval)
@@ -107,12 +108,27 @@ export const Pomodoro = () => {
         if (isBreak) {
             return (
                 <>
-                    <div className="font-medium">
-                        Break Time
+                    <div className="cursor-pointer gap-1 rounded flex items-center bg-zinc-200/90 py-1 px-3 text-sm"
+                        onClick={handleStartBreak}>
+                        <SmallPlayIcon size={"1.2rem"} />
+                        <span className='text-sm capitalize'>
+                            Break time
+                        </span>
                     </div>
-                    <div className="cursor-pointer gap-1" onClick={handleStartBreak}>
-                        <PlayIcon size={"3.5rem"} />
-                    </div>
+                    <span className='mt-1 text-xs capitalize flex'>
+                        <div className="flex items-center gap-1 cursor-pointer mx-auto text-muted-foreground"
+                            onClick={()=> {
+                                setReferenceTime(20 * 60)
+                                setStart(false)
+                                setFinished(false)
+                                setIsBreak(false)
+                            }}>
+                            <SkipForward size={12} />
+                            <span>
+                                Skip break
+                            </span>
+                        </div>
+                    </span>
                 </>
             )
         }
@@ -187,7 +203,7 @@ export const Pomodoro = () => {
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <div className="font-medium text-5xl">
+                                    <div className="font-semibold text-6xl">
                                         {
                                             convertSecondsToMinutes(referenceTime - time)
                                         }
