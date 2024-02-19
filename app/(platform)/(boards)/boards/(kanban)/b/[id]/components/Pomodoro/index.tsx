@@ -38,6 +38,7 @@ function ReactPortal({ children, wrapperId }: {
 export const Pomodoro = () => {
     const [time, setTime] = useState<any>(0)
     const [referenceTime, setReferenceTime] = useState<any>(20)
+    const [rounds, setRounds] = useState<any>(0)
     const [breakTime, setBreakTime] = useState<any>(5)
     const [longBreakTime, setLongBreakTime] = useState<any>(15)
     const [isBreak, setIsBreak] = useState(false)
@@ -45,6 +46,7 @@ export const Pomodoro = () => {
     const [start, setStart] = useState(false);
     const [startBreak, setStartBreak] = useState(false)
     const [open, setOpen] = useState(false);
+    const [pause, setPause] = useState(false)
     const [finished, setFinished] = useState(false);
     const [minimized, setMinimized] = useState(false);
 
@@ -53,7 +55,6 @@ export const Pomodoro = () => {
         if (start) {
             var interval = setInterval(function () {
                 const value = ((current - startTime) / 1000).toFixed(0)
-                setTime(value);
                 if ((referenceTime - parseInt(value)) <= 0) {
                     setStart(false)
                     setFinished(true)
@@ -61,11 +62,14 @@ export const Pomodoro = () => {
                     clearInterval(interval)
                     setIsBreak(true)
                     setMinimized(false)
+                    setRounds(rounds + 1)
+                } else {
+                    setTime(value);
                 }
             }, 1000);
             return () => clearInterval(interval)
         } else {
-            setTime(0)
+            //setTime(0)
         }
         console.log('time', time)
     }, [time, start])
@@ -93,19 +97,30 @@ export const Pomodoro = () => {
         setMinimized(el => !el)
     }
 
+    
     const handleStartBreak = () => {
         setStart(true)
         setTimeStart(new Date().getTime() - 500)
         setReferenceTime(breakTime * 60)
         setStartBreak(true)
     }
-
+    
     const handleStop = () => {
         setStart(false)
     }
 
+    
     const handlePause = () => {
         setStart(false)
+        setPause(true)
+    }
+    
+    const handleStarPause = () => { 
+        setTimeStart(new Date().getTime() - 500)
+        console.log('Pause start',referenceTime - time)
+        setReferenceTime(referenceTime - time)
+        setTime(0)
+        setStart(true)
     }
 
     const handleButtonSection = () => {
@@ -124,6 +139,7 @@ export const Pomodoro = () => {
                             onClick={()=> {
                                 setReferenceTime(20 * 60)
                                 setStart(false)
+                                setTime(0)
                                 setFinished(false)
                                 setIsBreak(false)
                             }}>
@@ -150,7 +166,13 @@ export const Pomodoro = () => {
             )
         } else {
             return (
-                <div className="cursor-pointer" onClick={handleStart}>
+                <div className="cursor-pointer" onClick={() => {
+                    if(pause) {
+                        handleStarPause()
+                    } else {
+                        handleStart()
+                    }
+                }}>
                     <PlayIcon size={"3.5rem"} />
                 </div>
             )
@@ -173,7 +195,7 @@ export const Pomodoro = () => {
                             </div>
                             <div className="font-medium mr-auto">
                                 {
-                                    convertSecondsToMinutes(referenceTime - time)
+                                    convertSecondsToMinutes((referenceTime - time) + 2)
                                 }
                             </div>
                             <div className="" onClick={() => setMinimized(false)}>
@@ -186,7 +208,7 @@ export const Pomodoro = () => {
                     )
                         :
                         <ReactPortal wrapperId="portal">
-                            <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 pt-0 bg-white border">
+                            <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 pt-0 bg-white border flex flex-col justify-between">
                                 <div className="flex items-center justify-between py-2">
                                     <div className="text-sm font-medium flex items-center text-red-700 gap-1">
                                         <Timer width={15} />
@@ -217,6 +239,9 @@ export const Pomodoro = () => {
                                             handleButtonSection()
                                         }
                                     </div>
+                                </div>
+                                <div className="flex text-sm font-medium justify-end">
+                                    Round: {rounds}
                                 </div>
                             </div>
                         </ReactPortal >
