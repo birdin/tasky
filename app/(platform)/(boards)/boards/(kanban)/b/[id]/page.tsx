@@ -23,7 +23,7 @@ import {
 
 import Container from './components/Container';
 import Items from './components/Item';
-import { KanbanSquare, Palette, Plus, Settings } from 'lucide-react';
+import { KanbanSquare, Palette, Plus, Radio, Settings } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Item, DNDType, Background } from './types';
@@ -530,6 +530,11 @@ export default function Home() {
     >
 
       <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/70 backdrop-blur-sm">
+      <div className="card">
+				<button onClick={() => broadcast(containers)}>
+					<Radio />
+				</button>
+			</div>
         <h1 className="text-gray-800 text-base font-medium pl-1 flex items-center gap-2 md:ml-1">
           <KanbanSquare width={"19px"} />
           {boardData?.name}
@@ -544,11 +549,7 @@ export default function Home() {
         />
       </div>
 
-      <div className="card">
-				<button onClick={() => broadcast(containers)}>
-					Update All tabs
-				</button>
-			</div>
+
 
       <div className="mt-5">
         <div id="boardContainer" className=" w-full min-h-screen inline-grid grid-flow-col auto-cols-min gap-8 overflow-x-auto pt-1 px-[40px]">

@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ChevronDown, ChevronUp, MoreVertical, Play, SkipForward, Timer, X } from 'lucide-react';
 
 import { PlayIcon, PauseIcon, StopIcon, SmallPlayIcon } from './icons';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 
 type Props = {
@@ -79,14 +80,15 @@ export const Pomodoro = () => {
             const interval = setInterval(() => {
                 const value = ((new Date().getTime() - startTime) / 1000).toFixed(0)
                 setTime(value)
-            }
-                , 1000)
+            }, 1000)
+
             if (breakTime * 60 - time <= 0) {
                 setIsBreak(false)
                 setReferenceTime(20 * 60)
                 setStart(false)
                 setFinished(false)
             }
+
             return () => clearInterval(interval)
         }
     }, [time, isBreak])
@@ -100,7 +102,8 @@ export const Pomodoro = () => {
     
     const handleStartBreak = () => {
         setStart(true)
-        setTimeStart(new Date().getTime() - 500)
+        setTimeStart(new Date().getTime() - 200)
+        setTime(0)
         setReferenceTime(breakTime * 60)
         setStartBreak(true)
     }
@@ -198,8 +201,17 @@ export const Pomodoro = () => {
     return (
         <>
             <div className='ml-auto cursor-pointer'>
-                <div className='font-bold' onClick={() => setOpen(e => !e)}>
-                    <Timer />
+                <div className='mr-2' onClick={() => setOpen(e => !e)}>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger>                   
+                             <Timer />
+                        </TooltipTrigger>
+                        <TooltipContent side='bottom' className='mt-4'>
+                            <p>Timer</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    </TooltipProvider>
                 </div>
             </div>
             {
@@ -211,7 +223,7 @@ export const Pomodoro = () => {
                             </div>
                             <div className="font-medium mr-auto">
                                 {
-                                    convertSecondsToMinutes((referenceTime - time) + 2)
+                                    convertSecondsToMinutes((referenceTime - time))
                                 }
                             </div>
                             <div className="" onClick={() => setMinimized(false)}>

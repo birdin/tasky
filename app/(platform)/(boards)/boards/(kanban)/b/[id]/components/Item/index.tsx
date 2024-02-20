@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import React, { useEffect, useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { CalendarIcon, FileText, MoreHorizontal, Text, X, Tags, CheckCircle2, MoreVertical } from 'lucide-react';
+import { CalendarIcon, FileText, MoreHorizontal, Text, X, Trash2, Tags, CheckCircle2, MoreVertical } from 'lucide-react';
 import { Item, Label } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
 import { SelectContent, SelectGroup, SelectItem, SelectValue } from '@/components/ui/select';
@@ -19,6 +19,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 import { TagsSelect } from './TagSelect';
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 type ItemsType = {
   id: UniqueIdentifier | string;
@@ -220,7 +221,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
           <div className="text-sm font-medium flex items-center justify-end mt-[5px] mr-3">
             <div className="border-r">
               <div className="mr-1 cursor-pointer">
-                <MoreVertical size={16} />
+                <ItemDropdownMenu  onDelete={()=> onDeleteItem(id)}/>
               </div>
             </div>
           </div>
@@ -431,6 +432,33 @@ const DateSelect = ({ setUpdatedItem, dateValue, updatedItem }: { setUpdatedItem
         />
       </PopoverContent>
     </Popover>
+  )
+}
+
+const ItemDropdownMenu = ({onDelete} : {onDelete : any}) => {
+  const [showStatusBar, setShowStatusBar] = React.useState(true)
+  const [showActivityBar, setShowActivityBar] = React.useState(false)
+  const [showPanel, setShowPanel] = React.useState(false)
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <div className="">
+          <MoreVertical size={18} />
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuItem 
+          className='text-red-700 hover:text-red-700 text-sm gap-2'
+          onClick={onDelete}
+          >
+          <Trash2 size={16} />
+          <span>
+            Delete item
+          </span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
