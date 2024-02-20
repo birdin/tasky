@@ -123,6 +123,26 @@ export const Pomodoro = () => {
         setStart(true)
     }
 
+    const handleSkipBreak = () => {
+        setReferenceTime(20 * 60)
+        setTimeStart(new Date().getTime() - 500)
+        setStart(true)
+        setTime(0)
+        setFinished(false)
+        setIsBreak(false)
+    }
+
+    const handleCloseModal = () => {
+        setOpen(false)
+        setTime(0)
+        setStart(false)
+        setPause(false)
+        setFinished(false)
+        setIsBreak(false)
+        setStartBreak(false)
+        setMinimized(false)
+    }
+
     const handleButtonSection = () => {
         if (isBreak) {
             return (
@@ -137,11 +157,7 @@ export const Pomodoro = () => {
                     <span className='mt-1 text-xs capitalize flex'>
                         <div className="flex items-center gap-1 cursor-pointer mx-auto text-muted-foreground"
                             onClick={()=> {
-                                setReferenceTime(20 * 60)
-                                setStart(false)
-                                setTime(0)
-                                setFinished(false)
-                                setIsBreak(false)
+                                handleSkipBreak()
                             }}>
                             <SkipForward size={12} />
                             <span>
@@ -189,7 +205,7 @@ export const Pomodoro = () => {
             {
                 open && (
                     minimized ? (
-                        <div className='absolute top-12 w-52 right-0 bg-white border flex items-center justify-between p-2 rounded'>
+                        <div className='absolute top-12 w-56 right-0 bg-white border flex items-center justify-between p-2 rounded'>
                             <div className={`mr-2 ${start && 'text-red-700 '}`}>
                                 <Timer size={15} />
                             </div>
@@ -202,7 +218,7 @@ export const Pomodoro = () => {
                                 <ChevronUp size={19} />
                             </div>
                             <div className="cursor-pointer flex items-center">
-                                <DialogCloseButton handleClose={() => setOpen(false)} />
+                                <DialogCloseButton handleClose={handleCloseModal} />
                             </div>
                         </div>
                     )
@@ -221,7 +237,7 @@ export const Pomodoro = () => {
                                             <ChevronDown width={19} />
                                         </div>
                                         <div className="cursor-pointer flex items-center">
-                                            <DialogCloseButton handleClose={() => setOpen(false)} />
+                                            <DialogCloseButton handleClose={handleCloseModal} />
                                         </div>
                                         <div className="">
                                             <MoreVertical width={19} />

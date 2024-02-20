@@ -178,8 +178,15 @@ export default function Home() {
     const container = containers.find((item) => item.id === id);
     if (!container) return;
     const newContainers = containers.filter((item) => item.id !== id);
-    const newArchiveItems = [...boardData.archive, ...container.items]
+    let newArchiveItems;
+    if(boardData.archive){
+      newArchiveItems = [...boardData.archive, ...container.items.filter(item => item.isPlaceholder !== false)]
+    } else {
+      newArchiveItems = container.items
+    }
+
     setContainers([...newContainers]);
+    console.log("Board Data", boardData)
     setBoardData({ ...boardData, archive: newArchiveItems });
     //setBoardData({ ...boardData, archive: [...boardData.archive, container]});
   }
