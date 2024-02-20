@@ -207,7 +207,7 @@ export const Pomodoro = () => {
                         <TooltipTrigger>                   
                              <Timer />
                         </TooltipTrigger>
-                        <TooltipContent side='bottom' className='mt-4'>
+                        <TooltipContent side='bottom' className='mt-4 z-[9999999]'>
                             <p>Timer</p>
                         </TooltipContent>
                     </Tooltip>

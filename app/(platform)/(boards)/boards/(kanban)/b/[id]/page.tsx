@@ -529,7 +529,7 @@ export default function Home() {
       }}
     >
 
-      <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/70 backdrop-blur-sm">
+      <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/70 backdrop-blur-sm relative z-50">
       <div className="card">
 				<button onClick={() => broadcast(containers)}>
 					<Radio />
