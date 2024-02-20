@@ -6,6 +6,7 @@ import { SessionProvider, useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 import { Navbar } from '@/components/Navbar'
 import { useIsAuth } from '@/hooks/useIsAuth';
+import { Logo } from '@/components/logo';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = React.useState(true)
@@ -65,7 +66,24 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <>
                 <SessionProvider>
                     <Navbar />
-                    <h1>Page is loading…</h1>
+                    <div className="h-[calc(100vh-20px)] flex justify-center items-center">
+                        <div className="flex flex-col items-center justify-center ">
+                            <div className="mt-[-5rem]">
+                                <div className="">
+                                    <Logo />
+                                </div>
+                                <div className="">
+                                    <div className="flex justify-center items-center mt-6">
+                                        <div className="relative inline-flex">
+                                            <div className="w-6 h-6 bg-gray-600 rounded-full"></div>
+                                            <div className="w-6 h-6 bg-gray-600 rounded-full absolute top-0 left-0 animate-ping"></div>
+                                            <div className="w-6 h-6 bg-gray-600 rounded-full absolute top-0 left-0 animate-pulse"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </SessionProvider> d
             </>
         )

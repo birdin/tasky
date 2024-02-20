@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import React, { useEffect, useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { CalendarIcon, FileText, MoreHorizontal, Text, X, Tags } from 'lucide-react';
+import { CalendarIcon, FileText, MoreHorizontal, Text, X, Tags, CheckCircle2, MoreVertical } from 'lucide-react';
 import { Item, Label } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
 import { SelectContent, SelectGroup, SelectItem, SelectValue } from '@/components/ui/select';
@@ -215,8 +215,15 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent className="md:min-w-[500px]">
-        <SheetHeader className='mt-2'>
+      <SheetContent className="md:min-w-[500px] pt-3">
+        <SheetHeader className=''>
+          <div className="text-sm font-medium flex items-center justify-end mt-[5px] mr-3">
+            <div className="border-r">
+              <div className="mr-1 cursor-pointer">
+                <MoreVertical size={16} />
+              </div>
+            </div>
+          </div>
         </SheetHeader>
         <div>
           <div className='min-h-12 flex items-center'>
