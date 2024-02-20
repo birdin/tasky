@@ -132,6 +132,17 @@ export const Pomodoro = () => {
         setIsBreak(false)
     }
 
+    const handleCloseModal = () => {
+        setOpen(false)
+        setTime(0)
+        setStart(false)
+        setPause(false)
+        setFinished(false)
+        setIsBreak(false)
+        setStartBreak(false)
+        setMinimized(false)
+    }
+
     const handleButtonSection = () => {
         if (isBreak) {
             return (
@@ -207,7 +218,7 @@ export const Pomodoro = () => {
                                 <ChevronUp size={19} />
                             </div>
                             <div className="cursor-pointer flex items-center">
-                                <DialogCloseButton handleClose={() => setOpen(false)} />
+                                <DialogCloseButton handleClose={handleCloseModal} />
                             </div>
                         </div>
                     )
@@ -226,7 +237,7 @@ export const Pomodoro = () => {
                                             <ChevronDown width={19} />
                                         </div>
                                         <div className="cursor-pointer flex items-center">
-                                            <DialogCloseButton handleClose={() => setOpen(false)} />
+                                            <DialogCloseButton handleClose={handleCloseModal} />
                                         </div>
                                         <div className="">
                                             <MoreVertical width={19} />
