@@ -10,7 +10,6 @@ import { ChevronDown, ChevronUp, MoreVertical, Play, SkipForward, Timer, X } fro
 import { PlayIcon, PauseIcon, StopIcon, SmallPlayIcon } from './icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-
 type Props = {
 
 }
@@ -37,10 +36,13 @@ function ReactPortal({ children, wrapperId }: {
 }
 
 export const Pomodoro = () => {
+    const [configTime, setConfigTime] = useState<any>(20)
+
+
     const [time, setTime] = useState<any>(0)
-    const [referenceTime, setReferenceTime] = useState<any>(20)
+    const [referenceTime, setReferenceTime] = useState<any>(configTime)
     const [rounds, setRounds] = useState<any>(0)
-    const [breakTime, setBreakTime] = useState<any>(5)
+    const [breakTime, setBreakTime] = useState<any>(10)
     const [longBreakTime, setLongBreakTime] = useState<any>(15)
     const [isBreak, setIsBreak] = useState(false)
     const [startTime, setTimeStart] = useState<any>()
@@ -80,14 +82,16 @@ export const Pomodoro = () => {
             const interval = setInterval(() => {
                 const value = ((new Date().getTime() - startTime) / 1000).toFixed(0)
                 setTime(value)
-            }, 1000)
+                console.log('Break time', breakTime - time)
+                if (breakTime - time <= 1) {
+                    setIsBreak(false)
+                    setReferenceTime(configTime)
+                    setStart(false)
+                    setFinished(false)
+                    setStartBreak(false)
+                }
 
-            if (breakTime * 60 - time <= 0) {
-                setIsBreak(false)
-                setReferenceTime(20 * 60)
-                setStart(false)
-                setFinished(false)
-            }
+            }, 1000)
 
             return () => clearInterval(interval)
         }
@@ -99,28 +103,28 @@ export const Pomodoro = () => {
         setMinimized(el => !el)
     }
 
-    
+
     const handleStartBreak = () => {
         setStart(true)
         setTimeStart(new Date().getTime() - 200)
         setTime(0)
-        setReferenceTime(breakTime * 60)
+        setReferenceTime(breakTime)
         setStartBreak(true)
     }
-    
+
     const handleStop = () => {
         setStart(false)
     }
 
-    
+
     const handlePause = () => {
         setStart(false)
         setPause(true)
     }
-    
-    const handleStarPause = () => { 
+
+    const handleStarPause = () => {
         setTimeStart(new Date().getTime() - 500)
-        console.log('Pause start',referenceTime - time)
+        console.log('Pause start', referenceTime - time)
         setReferenceTime(referenceTime - time)
         setTime(0)
         setStart(true)
@@ -159,7 +163,7 @@ export const Pomodoro = () => {
                     </div>
                     <span className='mt-1 text-xs capitalize flex'>
                         <div className="flex items-center gap-1 cursor-pointer mx-auto text-muted-foreground"
-                            onClick={()=> {
+                            onClick={() => {
                                 handleSkipBreak()
                             }}>
                             <SkipForward size={12} />
@@ -186,7 +190,7 @@ export const Pomodoro = () => {
         } else {
             return (
                 <div className="cursor-pointer" onClick={() => {
-                    if(pause) {
+                    if (pause) {
                         handleStarPause()
                     } else {
                         handleStart()
@@ -202,15 +206,15 @@ export const Pomodoro = () => {
         <>
             <div className='ml-auto cursor-pointer'>
                 <div className='mr-2' onClick={() => setOpen(e => !e)}>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger>                   
-                             <Timer />
-                        </TooltipTrigger>
-                        <TooltipContent side='bottom' className='mt-4 z-[9999999]'>
-                            <p>Timer</p>
-                        </TooltipContent>
-                    </Tooltip>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <Timer />
+                            </TooltipTrigger>
+                            <TooltipContent side='bottom' className='mt-4 z-[9999999]'>
+                                <p>Timer</p>
+                            </TooltipContent>
+                        </Tooltip>
                     </TooltipProvider>
                 </div>
             </div>
