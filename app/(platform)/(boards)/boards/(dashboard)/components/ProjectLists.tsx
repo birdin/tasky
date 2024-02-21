@@ -9,6 +9,7 @@ import { useInput } from '@/hooks/useInput'
 import { toast } from "sonner"
 
 import { CreateProjectForm } from './CreatProjectForm'
+import { BoardsItemsSkeleton } from '@/components/placeholders';
 
 type Project = {
     id: string;
@@ -25,15 +26,17 @@ type Project = {
 const ProjectLists = () => {
     const inputSearch = useInput('')
     const [projects, setProjects] = React.useState<any>([])
+    const [loading, setLoading] = React.useState(true)
+
     useEffect(() => {
         getProjects()
     }, []);
 
     const cookie = getCookie("token_2sl");
-    console.log('Cookie on project page', cookie)
 
     // Send to the server
     function getProjects() {
+        setLoading(true)
         var myHeaders = new Headers();
         myHeaders.append("Accept", "application/json");
         myHeaders.append("Authorization", "Bearer " + cookie);
@@ -44,8 +47,9 @@ const ProjectLists = () => {
         })
             .then(response => response.json())
             .then(result => {
-                console.log('result', result)
                 setProjects(result.data.projects)
+            }).then(() => {
+                setLoading(false)
             })
             .catch(error => console.log('error', error));
     }
@@ -161,6 +165,10 @@ const ProjectLists = () => {
                     <input type="text" className='bg-transparent outline-0 w-screen' placeholder='Search project…' {...inputSearch} />
                 </div>
             </div>
+        
+            {
+                loading && <BoardsItemsSkeleton />
+            }
 
             <section className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2'>
                 {

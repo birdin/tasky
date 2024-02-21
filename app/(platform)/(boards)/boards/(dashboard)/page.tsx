@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ProjectLists from "./components/ProjectLists";
 import { Container } from "@/components/ui";
 

@@ -16,14 +16,14 @@ export default function HomePage() {
 
   if (status === "loading") {
     return (
-      <h1>Loading</h1>
+      <h1>🦌 Loading 🦌</h1>
     )
   }
 
 
 
   return (
-    <Suspense fallback={<h1>Loading</h1>}>
+    <Suspense fallback={<h1>🎻 Loading 🎻</h1>}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <h2>This is it</h2>
         <button onClick={() => {
