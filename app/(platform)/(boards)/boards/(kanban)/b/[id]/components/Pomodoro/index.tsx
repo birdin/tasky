@@ -322,6 +322,16 @@ const TIME = [
     { name: '60', value: '60' },
 ]
 
+const BREAL_TIME = [
+    { name: '5', value: '5' },
+    { name: '10', value: '10' },
+    { name: '15', value: '15' },
+    { name: '25', value: '25' },
+    { name: '30', value: '30' },
+    { name: '45', value: '45' },
+    { name: '60', value: '60' },
+]
+
 
 const PomodoroSettingsPopover = () => {
     const [configTime, setConfigTime] = useState<any>(20)
@@ -332,16 +342,19 @@ const PomodoroSettingsPopover = () => {
             <PopoverTrigger>
                 <MoreVertical width={19} />
             </PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent className='backdrop-blur-md bg-white/80'>
                 <h4 className="font-medium text-base leading-none">Timer Settings</h4>
                 <p className="text-muted-foreground text-sm mt-2">
                     Change the basic settings of your board.
                 </p>
-                <div className="grid gap-2 mt-2">
-                    <div className="grid grid-cols-3 items-center gap-4">
+                <div className="grid gap-2 mt-4">
+                    <div className="grid grid-cols-2 items-center gap-4">
                         <Label htmlFor="width">Time (min)</Label>
-                        <TimeSettingsBox/>
-
+                        <TimeSettingsBox />
+                    </div>
+                    <div className="grid grid-cols-2 items-center gap-4">
+                        <Label htmlFor="width">Break (min)</Label>
+                        <BrakeSettingsBox />
                     </div>
                 </div>
             </PopoverContent>
@@ -356,7 +369,9 @@ const TimeSettingsBox = () => {
     return (
         <Popover>
             <PopoverTrigger>
-                {configTime}
+                <div className="border rounded">
+                    {configTime}
+                </div>
             </PopoverTrigger>
             <PopoverContent className='w-52' align='end'>
                 <Command>
@@ -381,18 +396,68 @@ const TimeSettingsBox = () => {
                         {
                             customizedTime ? (
                                 <Input
-                                type='number'
-                                id="width"
-                                defaultValue="100"
-                                className="col-span-2 h-8"
-                                min={1}
-                                value={configTime}
-                                onChange={(e) => setConfigTime(e.target.value)}
+                                    type='number'
+                                    id="width"
+                                    defaultValue="100"
+                                    className="col-span-2 h-8"
+                                    min={1}
+                                    value={configTime}
+                                    onChange={(e) => setConfigTime(e.target.value)}
                                 />
-                            ) : <div onClick={() => setCustomizedTime(true) }>Custome time</div>
-
+                            ) : <div onClick={() => setCustomizedTime(true)}>Custome time</div>
                         }
-   
+                    </div>
+                </Command>
+            </PopoverContent>
+        </Popover>
+    )
+}
+
+
+const BrakeSettingsBox = () => {
+    const [configTime, setConfigTime] = useState<any>(20)
+    const [customizedTime, setCustomizedTime] = useState<any>(false)
+
+    return (
+        <Popover>
+            <PopoverTrigger>
+                <div className="border rounded">
+                    {configTime}
+                </div>
+            </PopoverTrigger>
+            <PopoverContent className='w-52' align='end'>
+                <Command>
+                    <CommandGroup>
+                        {
+                            BREAL_TIME.map((el, index) => {
+                                return (
+                                    <CommandItem
+                                        key={index}
+                                        value={el.value}
+                                        onSelect={(value) => setConfigTime(value)}
+                                    >
+                                        {el.name}
+                                    </CommandItem>
+                                )
+                            })
+                        }
+
+
+                    </CommandGroup>
+                    <div className="">
+                        {
+                            customizedTime ? (
+                                <Input
+                                    type='number'
+                                    id="width"
+                                    defaultValue="100"
+                                    className="col-span-2 h-8"
+                                    min={1}
+                                    value={configTime}
+                                    onChange={(e) => setConfigTime(e.target.value)}
+                                />
+                            ) : <div onClick={() => setCustomizedTime(true)}>Custome time</div>
+                        }
                     </div>
                 </Command>
             </PopoverContent>
