@@ -9,6 +9,11 @@ import { ChevronDown, ChevronUp, MoreVertical, Play, SkipForward, Timer, X } fro
 
 import { PlayIcon, PauseIcon, StopIcon, SmallPlayIcon } from './icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { DropdownMenuRadioGroup, DropdownMenuRadioItem } from '@/components/ui/dropdown-menu';
+import { Command, CommandGroup, CommandItem } from '@/components/ui/command';
 
 type Props = {
 
@@ -37,7 +42,6 @@ function ReactPortal({ children, wrapperId }: {
 
 export const Pomodoro = () => {
     const [configTime, setConfigTime] = useState<any>(20)
-
 
     const [time, setTime] = useState<any>(0)
     const [referenceTime, setReferenceTime] = useState<any>(configTime)
@@ -255,8 +259,8 @@ export const Pomodoro = () => {
                                         <div className="cursor-pointer flex items-center">
                                             <DialogCloseButton handleClose={handleCloseModal} />
                                         </div>
-                                        <div className="">
-                                            <MoreVertical width={19} />
+                                        <div className="cursor-pointer flex items-center">
+                                            <PomodoroSettingsPopover />
                                         </div>
                                     </div>
                                 </div>
@@ -303,5 +307,95 @@ const DialogCloseButton = ({ handleClose }: { handleClose: () => void }) => {
                 </DialogFooter>
             </DialogContent>
         </Dialog>
+    )
+}
+
+
+const TIME = [
+    { name: '25', value: '25' },
+    { name: '30', value: '30' },
+    { name: '35', value: '35' },
+    { name: '40', value: '40' },
+    { name: '45', value: '45' },
+    { name: '50', value: '50' },
+    { name: '55', value: '55' },
+    { name: '60', value: '60' },
+]
+
+
+const PomodoroSettingsPopover = () => {
+    const [configTime, setConfigTime] = useState<any>(20)
+    const [position, setPosition] = useState<any>("bottom")
+
+    return (
+        <Popover>
+            <PopoverTrigger>
+                <MoreVertical width={19} />
+            </PopoverTrigger>
+            <PopoverContent>
+                <h4 className="font-medium text-base leading-none">Timer Settings</h4>
+                <p className="text-muted-foreground text-sm mt-2">
+                    Change the basic settings of your board.
+                </p>
+                <div className="grid gap-2 mt-2">
+                    <div className="grid grid-cols-3 items-center gap-4">
+                        <Label htmlFor="width">Time (min)</Label>
+                        <TimeSettingsBox/>
+
+                    </div>
+                </div>
+            </PopoverContent>
+        </Popover>
+    )
+}
+
+const TimeSettingsBox = () => {
+    const [configTime, setConfigTime] = useState<any>(20)
+    const [customizedTime, setCustomizedTime] = useState<any>(false)
+
+    return (
+        <Popover>
+            <PopoverTrigger>
+                {configTime}
+            </PopoverTrigger>
+            <PopoverContent className='w-52' align='end'>
+                <Command>
+                    <CommandGroup>
+                        {
+                            TIME.map((el, index) => {
+                                return (
+                                    <CommandItem
+                                        key={index}
+                                        value={el.value}
+                                        onSelect={(value) => setConfigTime(value)}
+                                    >
+                                        {el.name}
+                                    </CommandItem>
+                                )
+                            })
+                        }
+
+
+                    </CommandGroup>
+                    <div className="">
+                        {
+                            customizedTime ? (
+                                <Input
+                                type='number'
+                                id="width"
+                                defaultValue="100"
+                                className="col-span-2 h-8"
+                                min={1}
+                                value={configTime}
+                                onChange={(e) => setConfigTime(e.target.value)}
+                                />
+                            ) : <div onClick={() => setCustomizedTime(true) }>Custome time</div>
+
+                        }
+   
+                    </div>
+                </Command>
+            </PopoverContent>
+        </Popover>
     )
 }
