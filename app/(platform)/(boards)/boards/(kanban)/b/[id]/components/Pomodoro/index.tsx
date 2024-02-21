@@ -8,7 +8,12 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ChevronDown, ChevronUp, MoreVertical, Play, SkipForward, Timer, X } from 'lucide-react';
 
 import { PlayIcon, PauseIcon, StopIcon, SmallPlayIcon } from './icons';
-
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { DropdownMenuRadioGroup, DropdownMenuRadioItem } from '@/components/ui/dropdown-menu';
+import { Command, CommandGroup, CommandItem } from '@/components/ui/command';
 
 type Props = {
 
@@ -36,10 +41,12 @@ function ReactPortal({ children, wrapperId }: {
 }
 
 export const Pomodoro = () => {
+    const [configTime, setConfigTime] = useState<any>(20)
+
     const [time, setTime] = useState<any>(0)
-    const [referenceTime, setReferenceTime] = useState<any>(20)
+    const [referenceTime, setReferenceTime] = useState<any>(configTime)
     const [rounds, setRounds] = useState<any>(0)
-    const [breakTime, setBreakTime] = useState<any>(5)
+    const [breakTime, setBreakTime] = useState<any>(10)
     const [longBreakTime, setLongBreakTime] = useState<any>(15)
     const [isBreak, setIsBreak] = useState(false)
     const [startTime, setTimeStart] = useState<any>()
@@ -79,14 +86,17 @@ export const Pomodoro = () => {
             const interval = setInterval(() => {
                 const value = ((new Date().getTime() - startTime) / 1000).toFixed(0)
                 setTime(value)
-            }
-                , 1000)
-            if (breakTime * 60 - time <= 0) {
-                setIsBreak(false)
-                setReferenceTime(20 * 60)
-                setStart(false)
-                setFinished(false)
-            }
+                console.log('Break time', breakTime - time)
+                if (breakTime - time <= 1) {
+                    setIsBreak(false)
+                    setReferenceTime(configTime)
+                    setStart(false)
+                    setFinished(false)
+                    setStartBreak(false)
+                }
+
+            }, 1000)
+
             return () => clearInterval(interval)
         }
     }, [time, isBreak])
@@ -97,27 +107,28 @@ export const Pomodoro = () => {
         setMinimized(el => !el)
     }
 
-    
+
     const handleStartBreak = () => {
         setStart(true)
-        setTimeStart(new Date().getTime() - 500)
-        setReferenceTime(breakTime * 60)
+        setTimeStart(new Date().getTime() - 200)
+        setTime(0)
+        setReferenceTime(breakTime)
         setStartBreak(true)
     }
-    
+
     const handleStop = () => {
         setStart(false)
     }
 
-    
+
     const handlePause = () => {
         setStart(false)
         setPause(true)
     }
-    
-    const handleStarPause = () => { 
+
+    const handleStarPause = () => {
         setTimeStart(new Date().getTime() - 500)
-        console.log('Pause start',referenceTime - time)
+        console.log('Pause start', referenceTime - time)
         setReferenceTime(referenceTime - time)
         setTime(0)
         setStart(true)
@@ -156,7 +167,7 @@ export const Pomodoro = () => {
                     </div>
                     <span className='mt-1 text-xs capitalize flex'>
                         <div className="flex items-center gap-1 cursor-pointer mx-auto text-muted-foreground"
-                            onClick={()=> {
+                            onClick={() => {
                                 handleSkipBreak()
                             }}>
                             <SkipForward size={12} />
@@ -183,7 +194,7 @@ export const Pomodoro = () => {
         } else {
             return (
                 <div className="cursor-pointer" onClick={() => {
-                    if(pause) {
+                    if (pause) {
                         handleStarPause()
                     } else {
                         handleStart()
@@ -198,8 +209,17 @@ export const Pomodoro = () => {
     return (
         <>
             <div className='ml-auto cursor-pointer'>
-                <div className='font-bold' onClick={() => setOpen(e => !e)}>
-                    <Timer />
+                <div className='mr-2' onClick={() => setOpen(e => !e)}>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <Timer />
+                            </TooltipTrigger>
+                            <TooltipContent side='bottom' className='mt-4 z-[9999999]'>
+                                <p>Timer</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
             </div>
             {
@@ -211,7 +231,7 @@ export const Pomodoro = () => {
                             </div>
                             <div className="font-medium mr-auto">
                                 {
-                                    convertSecondsToMinutes((referenceTime - time) + 2)
+                                    convertSecondsToMinutes((referenceTime - time))
                                 }
                             </div>
                             <div className="" onClick={() => setMinimized(false)}>
@@ -239,8 +259,8 @@ export const Pomodoro = () => {
                                         <div className="cursor-pointer flex items-center">
                                             <DialogCloseButton handleClose={handleCloseModal} />
                                         </div>
-                                        <div className="">
-                                            <MoreVertical width={19} />
+                                        <div className="cursor-pointer flex items-center">
+                                            <PomodoroSettingsPopover />
                                         </div>
                                     </div>
                                 </div>
@@ -287,5 +307,160 @@ const DialogCloseButton = ({ handleClose }: { handleClose: () => void }) => {
                 </DialogFooter>
             </DialogContent>
         </Dialog>
+    )
+}
+
+
+const TIME = [
+    { name: '25', value: '25' },
+    { name: '30', value: '30' },
+    { name: '35', value: '35' },
+    { name: '40', value: '40' },
+    { name: '45', value: '45' },
+    { name: '50', value: '50' },
+    { name: '55', value: '55' },
+    { name: '60', value: '60' },
+]
+
+const BREAL_TIME = [
+    { name: '5', value: '5' },
+    { name: '10', value: '10' },
+    { name: '15', value: '15' },
+    { name: '25', value: '25' },
+    { name: '30', value: '30' },
+    { name: '45', value: '45' },
+    { name: '60', value: '60' },
+]
+
+
+const PomodoroSettingsPopover = () => {
+    const [configTime, setConfigTime] = useState<any>(20)
+    const [position, setPosition] = useState<any>("bottom")
+
+    return (
+        <Popover>
+            <PopoverTrigger>
+                <MoreVertical width={19} />
+            </PopoverTrigger>
+            <PopoverContent className='backdrop-blur-md bg-white/80'>
+                <h4 className="font-medium text-base leading-none">Timer Settings</h4>
+                <p className="text-muted-foreground text-sm mt-2">
+                    Change the basic settings of your board.
+                </p>
+                <div className="grid gap-2 mt-4">
+                    <div className="grid grid-cols-2 items-center gap-4">
+                        <Label htmlFor="width">Time (min)</Label>
+                        <TimeSettingsBox />
+                    </div>
+                    <div className="grid grid-cols-2 items-center gap-4">
+                        <Label htmlFor="width">Break (min)</Label>
+                        <BrakeSettingsBox />
+                    </div>
+                </div>
+            </PopoverContent>
+        </Popover>
+    )
+}
+
+const TimeSettingsBox = () => {
+    const [configTime, setConfigTime] = useState<any>(20)
+    const [customizedTime, setCustomizedTime] = useState<any>(false)
+
+    return (
+        <Popover>
+            <PopoverTrigger>
+                <div className="border rounded">
+                    {configTime}
+                </div>
+            </PopoverTrigger>
+            <PopoverContent className='w-52' align='end'>
+                <Command>
+                    <CommandGroup>
+                        {
+                            TIME.map((el, index) => {
+                                return (
+                                    <CommandItem
+                                        key={index}
+                                        value={el.value}
+                                        onSelect={(value) => setConfigTime(value)}
+                                    >
+                                        {el.name}
+                                    </CommandItem>
+                                )
+                            })
+                        }
+
+
+                    </CommandGroup>
+                    <div className="">
+                        {
+                            customizedTime ? (
+                                <Input
+                                    type='number'
+                                    id="width"
+                                    defaultValue="100"
+                                    className="col-span-2 h-8"
+                                    min={1}
+                                    value={configTime}
+                                    onChange={(e) => setConfigTime(e.target.value)}
+                                />
+                            ) : <div onClick={() => setCustomizedTime(true)}>Custome time</div>
+                        }
+                    </div>
+                </Command>
+            </PopoverContent>
+        </Popover>
+    )
+}
+
+
+const BrakeSettingsBox = () => {
+    const [configTime, setConfigTime] = useState<any>(20)
+    const [customizedTime, setCustomizedTime] = useState<any>(false)
+
+    return (
+        <Popover>
+            <PopoverTrigger>
+                <div className="border rounded">
+                    {configTime}
+                </div>
+            </PopoverTrigger>
+            <PopoverContent className='w-52' align='end'>
+                <Command>
+                    <CommandGroup>
+                        {
+                            BREAL_TIME.map((el, index) => {
+                                return (
+                                    <CommandItem
+                                        key={index}
+                                        value={el.value}
+                                        onSelect={(value) => setConfigTime(value)}
+                                    >
+                                        {el.name}
+                                    </CommandItem>
+                                )
+                            })
+                        }
+
+
+                    </CommandGroup>
+                    <div className="">
+                        {
+                            customizedTime ? (
+                                <Input
+                                    type='number'
+                                    id="width"
+                                    defaultValue="100"
+                                    className="col-span-2 h-8"
+                                    min={1}
+                                    value={configTime}
+                                    onChange={(e) => setConfigTime(e.target.value)}
+                                />
+                            ) : <div onClick={() => setCustomizedTime(true)}>Custome time</div>
+                        }
+                    </div>
+                </Command>
+            </PopoverContent>
+        </Popover>
     )
 }

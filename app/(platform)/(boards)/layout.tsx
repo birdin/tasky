@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation'
 import { Navbar } from '@/components/Navbar'
 import { useIsAuth } from '@/hooks/useIsAuth';
 import { Logo } from '@/components/logo';
+import { BoardsSkeleton } from '@/components/placeholders';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = React.useState(true)
@@ -73,7 +74,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                     <Logo />
                                 </div>
                                 <div className="">
-                                    <div className="flex justify-center items-center mt-6">
+                                    <div className="flex justify-center items-center mt-5">
                                         <div className="relative inline-flex">
                                             <div className="w-6 h-6 bg-gray-600 rounded-full"></div>
                                             <div className="w-6 h-6 bg-gray-600 rounded-full absolute top-0 left-0 animate-ping"></div>
@@ -84,7 +85,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                             </div>
                         </div>
                     </div>
-                </SessionProvider> d
+                </SessionProvider> 
             </>
         )
     }
@@ -117,7 +118,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <>
                 <SessionProvider>
                     <Navbar />
-                    <h1>Loading</h1>
+                    <BoardsSkeleton/>
                 </SessionProvider>
             </>
 
