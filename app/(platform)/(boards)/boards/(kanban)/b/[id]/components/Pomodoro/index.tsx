@@ -12,11 +12,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { DropdownMenuRadioGroup, DropdownMenuRadioItem } from '@/components/ui/dropdown-menu';
 import { Command, CommandGroup, CommandItem } from '@/components/ui/command';
+import { useAtom } from 'jotai';
+import { breakTimeAtom, configTimeAtom } from '@/store';
 
 type Props = {
-
 }
 
 function convertSecondsToMinutes(seconds: number) {
@@ -41,12 +41,12 @@ function ReactPortal({ children, wrapperId }: {
 }
 
 export const Pomodoro = () => {
-    const [configTime, setConfigTime] = useState<any>(20)
+    const [configTime, setConfigTime] = useAtom(configTimeAtom);
 
     const [time, setTime] = useState<any>(0)
     const [referenceTime, setReferenceTime] = useState<any>(configTime)
     const [rounds, setRounds] = useState<any>(0)
-    const [breakTime, setBreakTime] = useState<any>(10)
+    const [breakTime, setBreakTime] =  useAtom(breakTimeAtom);
     const [longBreakTime, setLongBreakTime] = useState<any>(15)
     const [isBreak, setIsBreak] = useState(false)
     const [startTime, setTimeStart] = useState<any>()
@@ -56,6 +56,20 @@ export const Pomodoro = () => {
     const [pause, setPause] = useState(false)
     const [finished, setFinished] = useState(false);
     const [minimized, setMinimized] = useState(false);
+    
+    useEffect(() => {
+        if(!start) {
+            setReferenceTime(configTime)
+        }
+    }  , [configTime])
+    
+    useEffect(() => {
+        if(!startBreak) {
+            setReferenceTime(configTime)
+            setTime(configTime)
+        }
+    }  , [breakTime])
+
 
     useEffect(() => {
         const current = new Date().getTime()
@@ -75,10 +89,7 @@ export const Pomodoro = () => {
                 }
             }, 1000);
             return () => clearInterval(interval)
-        } else {
-            //setTime(0)
         }
-        console.log('time', time)
     }, [time, start])
 
     useEffect(() => {
@@ -93,6 +104,7 @@ export const Pomodoro = () => {
                     setStart(false)
                     setFinished(false)
                     setStartBreak(false)
+                    setTime(0)
                 }
 
             }, 1000)
@@ -363,8 +375,10 @@ const PomodoroSettingsPopover = () => {
 }
 
 const TimeSettingsBox = () => {
-    const [configTime, setConfigTime] = useState<any>(20)
+    //const [configTime, setConfigTime] = useState(20)
     const [customizedTime, setCustomizedTime] = useState<any>(false)
+    const [configTime, setConfigTime] = useAtom(configTimeAtom);
+    //console.log('Count Atom', count)
 
     return (
         <Popover>
@@ -382,7 +396,7 @@ const TimeSettingsBox = () => {
                                     <CommandItem
                                         key={index}
                                         value={el.value}
-                                        onSelect={(value) => setConfigTime(value)}
+                                        onSelect={(value) => setConfigTime(parseInt(value))}
                                     >
                                         {el.name}
                                     </CommandItem>
@@ -402,7 +416,7 @@ const TimeSettingsBox = () => {
                                     className="col-span-2 h-8"
                                     min={1}
                                     value={configTime}
-                                    onChange={(e) => setConfigTime(e.target.value)}
+                                    onChange={(e) => setConfigTime(parseInt(e.target.value))}
                                 />
                             ) : <div onClick={() => setCustomizedTime(true)}>Custome time</div>
                         }
@@ -414,15 +428,16 @@ const TimeSettingsBox = () => {
 }
 
 
-const BrakeSettingsBox = () => {
-    const [configTime, setConfigTime] = useState<any>(20)
+const BrakeSettingsBox = ({}:{}) => {
+    //const [configTime, setConfigTime] = useState<any>(20)
     const [customizedTime, setCustomizedTime] = useState<any>(false)
+    const [breakTime, setBreakTime] =  useAtom(breakTimeAtom);
 
     return (
         <Popover>
             <PopoverTrigger>
                 <div className="border rounded">
-                    {configTime}
+                    {breakTime}
                 </div>
             </PopoverTrigger>
             <PopoverContent className='w-52' align='end'>
@@ -434,7 +449,7 @@ const BrakeSettingsBox = () => {
                                     <CommandItem
                                         key={index}
                                         value={el.value}
-                                        onSelect={(value) => setConfigTime(value)}
+                                        onSelect={(value) => setBreakTime(parseInt(value))}
                                     >
                                         {el.name}
                                     </CommandItem>
@@ -453,8 +468,8 @@ const BrakeSettingsBox = () => {
                                     defaultValue="100"
                                     className="col-span-2 h-8"
                                     min={1}
-                                    value={configTime}
-                                    onChange={(e) => setConfigTime(e.target.value)}
+                                    value={breakTime}
+                                    onChange={(e) => setBreakTime(parseInt(e.target.value))}
                                 />
                             ) : <div onClick={() => setCustomizedTime(true)}>Custome time</div>
                         }

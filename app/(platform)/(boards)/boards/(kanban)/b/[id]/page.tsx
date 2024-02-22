@@ -59,13 +59,13 @@ export default function Home() {
 
   const [value, setValue] = useState(0);
 
-	const { broadcast } = useChannel<any>({
-		channelName: "count-channel" + slug.id,
-		messageHandler: (msg : any) => {
+  const { broadcast } = useChannel<any>({
+    channelName: "count-channel" + slug.id,
+    messageHandler: (msg: any) => {
       console.log(msg);
       setContainers(msg.data);
     },
-	});
+  });
 
   //useGetProject(slug.id);
   useEffect(() => {
@@ -97,29 +97,29 @@ export default function Home() {
 
   useEffect(() => {
     if (boardData) {
-      onUpdateBoardInfo({slug: slug.id, boardData});
+      onUpdateBoardInfo({ slug: slug.id, boardData });
     }
   }
     , [boardData]);
 
-  const onUpdateBoardInfo = async ({slug, boardData}:{slug:any, boardData: any}) => {
+  const onUpdateBoardInfo = async ({ slug, boardData }: { slug: any, boardData: any }) => {
     var myHeaders: any = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     myHeaders.append("Authorization", "Bearer " + cookie);
-    
-    let urlencoded : any = new URLSearchParams();
+
+    let urlencoded: any = new URLSearchParams();
     urlencoded.append("name", boardData.name);
     urlencoded.append("description", boardData.description);
     urlencoded.append("background_id", boardData.background?.id);
-    
+
     let requestOptions: any = {
       method: 'PUT',
       headers: myHeaders,
       body: urlencoded,
       redirect: 'follow'
     };
-    
+
     fetch("http://api_taski.test/api/projects/" + slug, requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
@@ -156,7 +156,7 @@ export default function Home() {
       {
         id,
         title: "New Column",
-        items: [{ id: `item-${uuidv4()}`, title: "", isPlaceholder: true, labelColor: "#75D7B6", dueDate: "", description: ""}],
+        items: [{ id: `item-${uuidv4()}`, title: "", isPlaceholder: true, labelColor: "#75D7B6", dueDate: "", description: "" }],
       },
     ]);
     setContainerName('');
@@ -179,7 +179,7 @@ export default function Home() {
     if (!container) return;
     const newContainers = containers.filter((item) => item.id !== id);
     let newArchiveItems;
-    if(boardData.archive){
+    if (boardData.archive) {
       newArchiveItems = [...boardData.archive, ...container.items.filter(item => item.isPlaceholder !== false)]
     } else {
       newArchiveItems = container.items
@@ -530,11 +530,11 @@ export default function Home() {
     >
 
       <div className="wide-container flex items-center justify-between gap-y-2 bg-slate-50/70 backdrop-blur-sm relative z-50">
-      <div className="card">
-				<button onClick={() => broadcast(containers)}>
-					<Radio />
-				</button>
-			</div>
+        <div className="card">
+          <button onClick={() => broadcast(containers)}>
+            <Radio />
+          </button>
+        </div>
         <h1 className="text-gray-800 text-base font-medium pl-1 flex items-center gap-2 md:ml-1">
           <KanbanSquare width={"19px"} />
           {boardData?.name}
@@ -646,16 +646,20 @@ const Toolsection = (
     <>
       <div className="flex items-center">
         <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div onClick={addContainer} className='p-3 cursor-pointer'>
-                <Plus />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              <p>Add column</p>
-            </TooltipContent>
-          </Tooltip>
+          {
+            /*
+      <Tooltip>
+        <TooltipTrigger asChild>
+            <div onClick={addContainer} className='p-3 cursor-pointer'>
+              <Plus />
+            </div>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          <p>Add column</p>
+        </TooltipContent>
+      </Tooltip>
+          */
+          }
           <Popover>
             <PopoverTrigger>
               <Tooltip>

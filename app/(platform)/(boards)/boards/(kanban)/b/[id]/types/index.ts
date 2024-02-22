@@ -19,6 +19,12 @@ export type Item = {
   status?: string;
   comments?: number;
   priority?: string;
+  time?: {
+    configTime: number;
+    breakTime: number;
+    lastRound?: number;
+    rounds?: number;
+  }
 }
 
 export type DNDType = {
