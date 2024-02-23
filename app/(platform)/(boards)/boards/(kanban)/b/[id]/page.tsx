@@ -127,6 +127,29 @@ export default function Home() {
 
   }
 
+  const onUpdateTime = async ({ slug, body }: { slug: any, body: any }) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer " + cookie);
+    
+    var raw = JSON.stringify({
+      "time": body.time
+    });
+    
+    var requestOptions:any = {
+      method: 'PUT',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    
+    fetch("http://api_taski.test/api/projects/"+slug+"/time", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+  }
+
   //Server Uodate
   const updateData = ({ slug, containers }: { slug: string | any, containers: any }) => {
     var myHeaders = new Headers();
@@ -148,6 +171,7 @@ export default function Home() {
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
   }
+
 
   const onAddContainer = () => {
     const id = `container-${uuidv4()}`;
@@ -226,6 +250,7 @@ export default function Home() {
     item.dueDate = selectItem.dueDate;
     item.status = selectItem.status;
     item.labels = selectItem.labels;
+
     //item.on
 
     setContainers([...containers]);
@@ -539,7 +564,7 @@ export default function Home() {
           <KanbanSquare width={"19px"} />
           {boardData?.name}
         </h1>
-        <Pomodoro />
+        <Pomodoro data={boardData} onUpdateTime={onUpdateTime} />
 
         <Toolsection
           addContainer={onAddContainer}

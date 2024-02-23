@@ -17,12 +17,20 @@ import { useAtom } from 'jotai';
 import { breakTimeAtom, configTimeAtom } from '@/store';
 
 type Props = {
+    data: any,
+    onUpdateTime: ({ slug, body }: { slug: any, body: any }) => void
 }
 
 function convertSecondsToMinutes(seconds: number) {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds}`;
+}
+
+function getCurrentDate() {
+    const currentDate = new Date()
+    return `${currentDate.getFullYear()}${currentDate.getMonth()}${currentDate.getDate()}`
+
 }
 
 function ReactPortal({ children, wrapperId }: {
@@ -40,13 +48,13 @@ function ReactPortal({ children, wrapperId }: {
     return createPortal(children, element);
 }
 
-export const Pomodoro = () => {
+export const Pomodoro = ({ data, onUpdateTime }: Props) => {
     const [configTime, setConfigTime] = useAtom(configTimeAtom);
 
     const [time, setTime] = useState<any>(0)
     const [referenceTime, setReferenceTime] = useState<any>(configTime)
     const [rounds, setRounds] = useState<any>(0)
-    const [breakTime, setBreakTime] =  useAtom(breakTimeAtom);
+    const [breakTime, setBreakTime] = useAtom(breakTimeAtom);
     const [longBreakTime, setLongBreakTime] = useState<any>(15)
     const [isBreak, setIsBreak] = useState(false)
     const [startTime, setTimeStart] = useState<any>()
@@ -56,21 +64,48 @@ export const Pomodoro = () => {
     const [pause, setPause] = useState(false)
     const [finished, setFinished] = useState(false);
     const [minimized, setMinimized] = useState(false);
-    
+    const [date, setDate] = useState<string>('')
+
+    /*
+        Use effect compponents
+    */
     useEffect(() => {
-        if(!start) {
-            setReferenceTime(configTime)
+        if (data) {
+            if (data?.time) {
+                const dataResponse = JSON.parse(data?.time)
+                console.log('Data response', dataResponse)
+                if (dataResponse.date == getCurrentDate()) {
+                    console.log('Today')
+                    setRounds(dataResponse.rounds)
+                }
+            }
         }
-    }  , [configTime])
-    
-    useEffect(() => {
-        if(!startBreak) {
-            setReferenceTime(configTime)
-            setTime(configTime)
-        }
-    }  , [breakTime])
+    }, [data])
 
 
+    useEffect(() => {
+        if (!start) {
+            setReferenceTime(configTime)
+            setTime(0)
+        }
+    }, [configTime])
+
+    useEffect(() => {
+        if (!startBreak) {
+            setReferenceTime(configTime)
+            setTime(0)
+        }
+    }, [breakTime])
+
+    useEffect(() => {
+        if (data?.slug) {
+            updateTimeOnServer({})
+        }
+    }, [configTime, breakTime])
+
+    /*
+        Start time useEffect hook
+    */
     useEffect(() => {
         const current = new Date().getTime()
         if (start) {
@@ -83,7 +118,9 @@ export const Pomodoro = () => {
                     clearInterval(interval)
                     setIsBreak(true)
                     setMinimized(false)
+                    updateTimeOnServer({ rounds: rounds + 1 })
                     setRounds(rounds + 1)
+                    setDate(getCurrentDate())
                 } else {
                     setTime(value);
                 }
@@ -113,6 +150,36 @@ export const Pomodoro = () => {
         }
     }, [time, isBreak])
 
+
+    /*
+        Auxiliar functions
+    */
+
+    interface UpdateTimeProperties {
+        rounds?: number;
+    }
+
+    const updateTimeOnServer = async (optional: UpdateTimeProperties) => {
+        const aux = {
+            time: {
+                configTime: configTime,
+                configBreak: breakTime,
+                date: getCurrentDate(),
+                rounds: optional.rounds ? optional.rounds : rounds
+            }
+        }
+        console.log('Aux', aux)
+
+        await onUpdateTime({ slug: data.slug, body: aux })
+    }
+
+
+
+
+    /*
+        Handler functions
+    */
+
     const handleStart = () => {
         setTimeStart(new Date().getTime() - 500)
         setStart(true)
@@ -130,6 +197,7 @@ export const Pomodoro = () => {
 
     const handleStop = () => {
         setStart(false)
+        setTime(0)
     }
 
 
@@ -256,7 +324,7 @@ export const Pomodoro = () => {
                     )
                         :
                         <ReactPortal wrapperId="portal">
-                            <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 pt-0 bg-white border flex flex-col justify-between">
+                            <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 pt-0 bg-white border flex flex-col justify-between z-10">
                                 <div className="flex items-center justify-between py-2">
                                     <div className="text-sm font-medium flex items-center text-red-700 gap-1">
                                         <Timer width={15} />
@@ -378,10 +446,12 @@ const TimeSettingsBox = () => {
     //const [configTime, setConfigTime] = useState(20)
     const [customizedTime, setCustomizedTime] = useState<any>(false)
     const [configTime, setConfigTime] = useAtom(configTimeAtom);
+    const [open, setOpen] = useState(false)
+
     //console.log('Count Atom', count)
 
     return (
-        <Popover>
+        <Popover open={open} onOpenChange={el => setOpen(el)}>
             <PopoverTrigger>
                 <div className="border rounded">
                     {configTime}
@@ -396,7 +466,10 @@ const TimeSettingsBox = () => {
                                     <CommandItem
                                         key={index}
                                         value={el.value}
-                                        onSelect={(value) => setConfigTime(parseInt(value))}
+                                        onSelect={(value) => {
+                                            setConfigTime(parseInt(value))
+                                            setOpen(false)
+                                        }}
                                     >
                                         {el.name}
                                     </CommandItem>
@@ -428,13 +501,14 @@ const TimeSettingsBox = () => {
 }
 
 
-const BrakeSettingsBox = ({}:{}) => {
+const BrakeSettingsBox = ({ }: {}) => {
     //const [configTime, setConfigTime] = useState<any>(20)
     const [customizedTime, setCustomizedTime] = useState<any>(false)
-    const [breakTime, setBreakTime] =  useAtom(breakTimeAtom);
+    const [breakTime, setBreakTime] = useAtom(breakTimeAtom);
+    const [open, setOpen] = useState(false)
 
     return (
-        <Popover>
+        <Popover open={open} onOpenChange={el => setOpen(el)}>
             <PopoverTrigger>
                 <div className="border rounded">
                     {breakTime}
@@ -449,7 +523,11 @@ const BrakeSettingsBox = ({}:{}) => {
                                     <CommandItem
                                         key={index}
                                         value={el.value}
-                                        onSelect={(value) => setBreakTime(parseInt(value))}
+                                        onSelect={(value) => {
+                                            setBreakTime(parseInt(value))
+                                            setOpen(false)
+                                        }
+                                        }
                                     >
                                         {el.name}
                                     </CommandItem>
