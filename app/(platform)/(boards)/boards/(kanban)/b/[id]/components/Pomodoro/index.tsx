@@ -15,6 +15,9 @@ import { Input } from '@/components/ui/input';
 import { Command, CommandGroup, CommandItem } from '@/components/ui/command';
 import { useAtom } from 'jotai';
 import { breakTimeAtom, configTimeAtom } from '@/store';
+import { toast } from "sonner"
+
+
 
 type Props = {
     data: any,
@@ -78,6 +81,8 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
                     console.log('Today')
                     setRounds(dataResponse.rounds)
                 }
+                setConfigTime(dataResponse.configTime ? dataResponse.configTime : 40)
+                setBreakTime(dataResponse.configBreak ? dataResponse.configBreak : 5)
             }
         }
     }, [data])
@@ -120,6 +125,7 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
                     setMinimized(false)
                     updateTimeOnServer({ rounds: rounds + 1 })
                     setRounds(rounds + 1)
+                    toast.success('Pomodoro finished')
                     setDate(getCurrentDate())
                 } else {
                     setTime(value);
