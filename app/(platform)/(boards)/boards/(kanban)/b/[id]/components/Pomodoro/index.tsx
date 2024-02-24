@@ -15,6 +15,9 @@ import { Input } from '@/components/ui/input';
 import { Command, CommandGroup, CommandItem } from '@/components/ui/command';
 import { useAtom } from 'jotai';
 import { breakTimeAtom, configTimeAtom } from '@/store';
+import { toast } from "sonner"
+
+
 
 type Props = {
     data: any,
@@ -78,6 +81,8 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
                     console.log('Today')
                     setRounds(dataResponse.rounds)
                 }
+                setConfigTime(dataResponse.configTime ? dataResponse.configTime : 40)
+                setBreakTime(dataResponse.configBreak ? dataResponse.configBreak : 5)
             }
         }
     }, [data])
@@ -120,6 +125,7 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
                     setMinimized(false)
                     updateTimeOnServer({ rounds: rounds + 1 })
                     setRounds(rounds + 1)
+                    toast.success('Pomodoro finished')
                     setDate(getCurrentDate())
                 } else {
                     setTime(value);
@@ -196,8 +202,10 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
     }
 
     const handleStop = () => {
-        setStart(false)
         setTime(0)
+        setStart(false)
+        setStartBreak(false)
+        setReferenceTime(configTime)
     }
 
 
@@ -215,12 +223,13 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
     }
 
     const handleSkipBreak = () => {
-        setReferenceTime(20 * 60)
+        setReferenceTime(configTime)
         setTimeStart(new Date().getTime() - 500)
-        setStart(true)
+        setStart(false)
         setTime(0)
         setFinished(false)
         setIsBreak(false)
+        setStartBreak(false)
     }
 
     const handleCloseModal = () => {
@@ -356,7 +365,7 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
                                         }
                                     </div>
                                 </div>
-                                <div className="flex text-sm font-medium justify-end">
+                                <div className="flex text-sm text-silver-500 font-medium justify-end text-zinc-500">
                                     Round: {rounds}
                                 </div>
                             </div>
@@ -392,24 +401,25 @@ const DialogCloseButton = ({ handleClose }: { handleClose: () => void }) => {
 
 
 const TIME = [
-    { name: '25', value: '25' },
-    { name: '30', value: '30' },
-    { name: '35', value: '35' },
-    { name: '40', value: '40' },
-    { name: '45', value: '45' },
-    { name: '50', value: '50' },
-    { name: '55', value: '55' },
-    { name: '60', value: '60' },
+    { name: '25', value: '1500' },
+    { name: '30', value: '1800' },
+    { name: '35', value: '2100' },
+    { name: '40', value: '2400' },
+    { name: '45', value: '2700' },
+    { name: '50', value: '3000' },
+    { name: '55', value: '3300' },
+    { name: '60', value: '3600' },
+    { name: '90', value: '5400' },
 ]
 
 const BREAL_TIME = [
-    { name: '5', value: '5' },
-    { name: '10', value: '10' },
-    { name: '15', value: '15' },
-    { name: '25', value: '25' },
-    { name: '30', value: '30' },
-    { name: '45', value: '45' },
-    { name: '60', value: '60' },
+    { name: '5', value: '300' },
+    { name: '10', value: '600' },
+    { name: '15', value: '900' },
+    { name: '25', value: '1500' },
+    { name: '30', value: '1800' },
+    { name: '45', value: '2700' },
+    { name: '60', value: '3600' },
 ]
 
 
@@ -454,7 +464,7 @@ const TimeSettingsBox = () => {
         <Popover open={open} onOpenChange={el => setOpen(el)}>
             <PopoverTrigger>
                 <div className="border rounded">
-                    {configTime}
+                    {configTime / 60}
                 </div>
             </PopoverTrigger>
             <PopoverContent className='w-52' align='end'>
@@ -488,8 +498,8 @@ const TimeSettingsBox = () => {
                                     defaultValue="100"
                                     className="col-span-2 h-8"
                                     min={1}
-                                    value={configTime}
-                                    onChange={(e) => setConfigTime(parseInt(e.target.value))}
+                                    value={configTime/60}
+                                    onChange={(e) => setConfigTime(parseInt(e.target.value)* 60)}
                                 />
                             ) : <div onClick={() => setCustomizedTime(true)}>Custome time</div>
                         }
@@ -511,7 +521,7 @@ const BrakeSettingsBox = ({ }: {}) => {
         <Popover open={open} onOpenChange={el => setOpen(el)}>
             <PopoverTrigger>
                 <div className="border rounded">
-                    {breakTime}
+                    {breakTime / 60}
                 </div>
             </PopoverTrigger>
             <PopoverContent className='w-52' align='end'>
@@ -546,8 +556,8 @@ const BrakeSettingsBox = ({ }: {}) => {
                                     defaultValue="100"
                                     className="col-span-2 h-8"
                                     min={1}
-                                    value={breakTime}
-                                    onChange={(e) => setBreakTime(parseInt(e.target.value))}
+                                    value={breakTime / 60}
+                                    onChange={(e) => setBreakTime(parseInt(e.target.value)* 60)}
                                 />
                             ) : <div onClick={() => setCustomizedTime(true)}>Custome time</div>
                         }

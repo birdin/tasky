@@ -20,6 +20,8 @@ import { cn } from '@/lib/utils';
 
 import { TagsSelect } from './TagSelect';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { toast } from "sonner"
+
 
 type ItemsType = {
   id: UniqueIdentifier | string;
@@ -221,7 +223,15 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
           <div className="text-sm font-medium flex items-center justify-end mt-[5px] mr-3">
             <div className="border-r">
               <div className="mr-1 cursor-pointer">
-                <ItemDropdownMenu  onDelete={()=> onDeleteItem(id)}/>
+                <ItemDropdownMenu  onDelete={()=> {
+                  onDeleteItem(id)
+                  toast.success("Item has been deleted", {
+                    action: {
+                      label: "done",
+                      onClick: () => console.log("Undo"),
+                    },
+                  })
+                  }}/>
               </div>
             </div>
           </div>
