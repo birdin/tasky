@@ -116,6 +116,7 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
         if (start) {
             var interval = setInterval(function () {
                 const value = ((current - startTime) / 1000).toFixed(0)
+                console.log('Value', value, 'Reference', referenceTime)
                 if ((referenceTime - parseInt(value)) <= 0) {
                     setStart(false)
                     setFinished(true)
@@ -178,8 +179,6 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
 
         await onUpdateTime({ slug: data.slug, body: aux })
     }
-
-
 
 
     /*
@@ -247,14 +246,18 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
         if (isBreak) {
             return (
                 <>
-                    <div className="cursor-pointer gap-1 rounded flex items-center bg-zinc-200/90 py-1 px-3 text-sm"
-                        onClick={handleStartBreak}>
-                        <SmallPlayIcon size={"1.2rem"} />
-                        <span className='text-sm capitalize'>
-                            Break time
-                        </span>
-                    </div>
-                    <span className='mt-1 text-xs capitalize flex'>
+                    {
+                        !startBreak && (
+                            <div className="cursor-pointer gap-1 rounded flex items-center bg-zinc-200/90 py-1 px-3 text-sm"
+                                onClick={handleStartBreak}>
+                                <SmallPlayIcon size={"1.2rem"} />
+                                <span className='text-sm capitalize'>
+                                    Break time
+                                </span>
+                            </div>
+                        )
+                    }
+                    <span className='mt-1 text-xs capitalize flex mb-auto'>
                         <div className="flex items-center gap-1 cursor-pointer mx-auto text-muted-foreground"
                             onClick={() => {
                                 handleSkipBreak()
@@ -271,7 +274,7 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
 
         if (start) {
             return (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                     <div className="cursor-pointer" onClick={handlePause}>
                         <PauseIcon size={"3.5rem"} />
                     </div>
@@ -333,7 +336,7 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
                     )
                         :
                         <ReactPortal wrapperId="portal">
-                            <div className="absolute top-24 right-0 rounded-sm w-80 h-40 p-4 pt-0 bg-white border flex flex-col justify-between z-10">
+                            <div className="absolute top-24 right-0 rounded-sm w-[21rem] h-40 p-4 pt-0 bg-white border flex flex-col justify-between z-10">
                                 <div className="flex items-center justify-between py-2">
                                     <div className="text-sm font-medium flex items-center text-red-700 gap-1">
                                         <Timer width={15} />
@@ -388,11 +391,11 @@ const DialogCloseButton = ({ handleClose }: { handleClose: () => void }) => {
                 <DialogHeader>
                     <DialogTitle>Close pomodoro</DialogTitle>
                     <DialogDescription>
-                        Make changes to your profile here. Click save when you're done.
+                        Do you want to close the pomodoro? The time will be reseted.
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button type="submit" onClick={handleClose}>Save changes</Button>
+                    <Button type="submit" onClick={handleClose}>Continue</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -498,8 +501,8 @@ const TimeSettingsBox = () => {
                                     defaultValue="100"
                                     className="col-span-2 h-8"
                                     min={1}
-                                    value={configTime/60}
-                                    onChange={(e) => setConfigTime(parseInt(e.target.value)* 60)}
+                                    value={configTime / 60}
+                                    onChange={(e) => setConfigTime(parseInt(e.target.value) * 60)}
                                 />
                             ) : <div onClick={() => setCustomizedTime(true)}>Custome time</div>
                         }
@@ -557,7 +560,7 @@ const BrakeSettingsBox = ({ }: {}) => {
                                     className="col-span-2 h-8"
                                     min={1}
                                     value={breakTime / 60}
-                                    onChange={(e) => setBreakTime(parseInt(e.target.value)* 60)}
+                                    onChange={(e) => setBreakTime(parseInt(e.target.value) * 60)}
                                 />
                             ) : <div onClick={() => setCustomizedTime(true)}>Custome time</div>
                         }
