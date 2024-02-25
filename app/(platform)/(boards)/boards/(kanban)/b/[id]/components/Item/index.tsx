@@ -31,6 +31,7 @@ type ItemsType = {
   onDeleteItem: (id: UniqueIdentifier | string) => void;
   labelColor?: string;
   isPlaceholder?: boolean;
+  dueDate?: string;
 };
 
 const Items = (
@@ -40,7 +41,8 @@ const Items = (
     onDeleteItem,
     labelColor,
     isPlaceholder,
-    item
+    item,
+    dueDate,
   }: ItemsType) => {
   const {
     attributes,
@@ -55,6 +57,8 @@ const Items = (
       type: 'item',
     },
   });
+
+  console.log('Date ', dueDate)
 
   const [isEditing, setIsEditing] = useState(false);
   const [open, setOpen] = useState(false);
@@ -141,6 +145,13 @@ const Items = (
                     </label>
                   : <></>*/
                     }
+                    {dueDate && (
+                      <label className='text-gray-400 flex gap-1 items-center'>
+                        <CalendarIcon width={14} />
+                        {dueDate.split('T')[0]}
+                      </label>
+                    )
+                    }
                   </div>
                 </div>
               </div>
@@ -223,7 +234,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
           <div className="text-sm font-medium flex items-center justify-end mt-[5px] mr-3">
             <div className="border-r">
               <div className="mr-1 cursor-pointer">
-                <ItemDropdownMenu  onDelete={()=> {
+                <ItemDropdownMenu onDelete={() => {
                   onDeleteItem(id)
                   toast.success("Item has been deleted", {
                     action: {
@@ -231,7 +242,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
                       onClick: () => console.log("Undo"),
                     },
                   })
-                  }}/>
+                }} />
               </div>
             </div>
           </div>
@@ -445,7 +456,7 @@ const DateSelect = ({ setUpdatedItem, dateValue, updatedItem }: { setUpdatedItem
   )
 }
 
-const ItemDropdownMenu = ({onDelete} : {onDelete : any}) => {
+const ItemDropdownMenu = ({ onDelete }: { onDelete: any }) => {
   const [showStatusBar, setShowStatusBar] = React.useState(true)
   const [showActivityBar, setShowActivityBar] = React.useState(false)
   const [showPanel, setShowPanel] = React.useState(false)
@@ -458,10 +469,10 @@ const ItemDropdownMenu = ({onDelete} : {onDelete : any}) => {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuItem 
+        <DropdownMenuItem
           className='text-red-700 hover:text-red-700 text-sm gap-2'
           onClick={onDelete}
-          >
+        >
           <Trash2 size={16} />
           <span>
             Delete item

@@ -612,7 +612,9 @@ export default function Home() {
                           item={i}
                           title={i.title} id={i.id} key={i.id}
                           labelColor={i.labelColor}
-                          isPlaceholder={i.isPlaceholder} />
+                          isPlaceholder={i.isPlaceholder} 
+                          dueDate={i.dueDate}
+                          />
                       ))}
                     </div>
                   </SortableContext>
@@ -622,7 +624,7 @@ export default function Home() {
             <DragOverlay adjustScale={false}>
               {/* Drag Overlay For item Item */}
               {activeId && activeId.toString().includes('item') && (
-                <Items onEditItem={handleEditItem} id={activeId} title={""} item={findItem(activeId)} onDeleteItem={onDeleteItem} />
+                <Items onEditItem={handleEditItem} id={activeId} title={""} item={findItem(activeId)} onDeleteItem={onDeleteItem}  />
               )}
               {/* Drag Overlay For Container */}
               {activeId && activeId.toString().includes('container') && (
