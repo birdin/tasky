@@ -18,7 +18,7 @@ export const Hero = () => {
             >
                 <Container width='regular'>
                     <div className="max-w-2xl mx-auto text-center">
-                        <h1 className={`text-center text-4xl mt-[-13rem] font-medium tracking-tighter md:text-6xl ${readexPro.className}`}>
+                        <h1 className={`text-center text-4xl mt-[-13rem] font-semibold leading-tight tracking-tighter md:text-6xl ${readexPro.className}`}>
                             <Suspense fallback={<h1>🏃 Loading 🏃</h1>}>
                                 Manage Your Tasks easily and <span className='text-[--main-color]'>efficiently</span>!
                             </Suspense>
