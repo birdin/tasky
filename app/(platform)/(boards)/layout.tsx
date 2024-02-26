@@ -9,11 +9,14 @@ import { useIsAuth } from '@/hooks/useIsAuth';
 import { Logo } from '@/components/logo';
 import { BoardsSkeleton } from '@/components/placeholders';
 import { API_URL } from '@/helpers/contrants';
+import { useAtom } from 'jotai';
+import { userAtom } from '@/store';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = React.useState(true)
     const { data: session, status } = useSession()
     const cookie = getCookie("token_2sl");
+    const [globalUser, setGlobalUser] = useAtom(userAtom);
 
     const { isLoadded, isAuthenticated, error } = useIsAuth(cookie);
 
@@ -22,6 +25,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
      */
     useEffect(() => {
         if (status === "authenticated") {
+            setGlobalUser({user: session.user})
             if (cookie) {
                 if (!isLoadded) {
                     if (!isAuthenticated) {
