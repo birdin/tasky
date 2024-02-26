@@ -21,7 +21,7 @@ export default function HomePage() {
 
       <Container>
         <h2>Customize Your Workflow </h2>
-        <p>Tailor your boards and workflow to match your team's unique processes. Adapt columns, labels, and statuses to fit your specific needs.</p>
+        <p>{"Tailor your boards and workflow to match your team`&apos;`s unique processes. Adapt columns, labels, and statuses to fit your specific needs."}</p>
       </Container>
 
       <Container>

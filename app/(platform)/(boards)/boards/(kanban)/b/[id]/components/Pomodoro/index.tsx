@@ -25,6 +25,11 @@ type Props = {
 }
 
 function convertSecondsToMinutes(seconds: number) {
+    if(seconds < 0){
+        console.error('Seconds cannot be negative', seconds)
+        return '0:00'
+    }
+
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds}`;

@@ -32,6 +32,7 @@ type ItemsType = {
   labelColor?: string;
   isPlaceholder?: boolean;
   dueDate?: string;
+  status?: string;
 };
 
 const Items = (
@@ -43,6 +44,7 @@ const Items = (
     isPlaceholder,
     item,
     dueDate,
+    status
   }: ItemsType) => {
   const {
     attributes,
@@ -107,10 +109,10 @@ const Items = (
                 <h3 className='text-base font-medium'>
                   {item?.title}
                 </h3>
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center flex-wrap">
                   {
                     item?.member && (
-                      <div className="rounded-full bg-rose-600 w-7 h-7 flex justify-center items-center">
+                      <div className="rounded-full bg-rose-600 w-7 h-7 flex justify-center items-center mr-2">
                         <div className="text-white">
                           {item?.member?.name?.split(' ')[0].charAt(0).toUpperCase()}
                         </div>
@@ -118,8 +120,38 @@ const Items = (
                     )
                   }
                   {
+                    (item?.status && item?.status != 'default')  && (
+                      <div className="flex items-center gap-1 text-gray-400 capitalize mr-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          fill="none"
+                          viewBox="0 0 12 12"
+                        >
+                          <g clipPath="url(#clip0_607_9)">
+                            <path
+                              fill="#6E6E6E"
+                              fillRule="evenodd"
+                              d="M11.956 5.275A6 6 0 01.868 9.109a.563.563 0 01.962-.584 4.875 4.875 0 106.691-6.697.563.563 0 01.582-.963 6 6 0 012.853 4.41zM6.75.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm-4.647 3a.75.75 0 10-1.294-.759.75.75 0 001.294.759zM.75 5.25a.75.75 0 110 1.5.75.75 0 010-1.5zm3-3.147A.75.75 0 103.008.799a.75.75 0 00.742 1.304z"
+                              clipRule="evenodd"
+                            ></path>
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_607_9">
+                              <path fill="#fff" d="M0 0H12V12H0z"></path>
+                            </clipPath>
+                          </defs>
+                        </svg>
+                        <span className="text-xs">
+                          {item?.status}
+                        </span>
+                      </div>
+                    )
+                  }
+                  {
                     item?.description &&
-                    <div className='text-gray-400'>
+                    <div className='text-gray-400 mr-2'>
                       <div className='flex items-center gap-1 text-[13px]'>
                         <FileText width={14} />
                         <span>
@@ -128,6 +160,15 @@ const Items = (
                       </div>
                     </div>
                   }
+
+                  {dueDate && (
+                    <label className='text-gray-400 text-[13px] flex gap-1 items-center mr-2'>
+                      <CalendarIcon width={14} />
+                      {dueDate.split('T')[0]}
+                    </label>
+                  )
+                  }
+
                   <div className="tag flex items-center gap-1 flex-wrap">
                     {
                       item?.labels?.map((label) => {
@@ -145,13 +186,7 @@ const Items = (
                     </label>
                   : <></>*/
                     }
-                    {dueDate && (
-                      <label className='text-gray-400 flex gap-1 items-center'>
-                        <CalendarIcon width={14} />
-                        {dueDate.split('T')[0]}
-                      </label>
-                    )
-                    }
+
                   </div>
                 </div>
               </div>
@@ -347,7 +382,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
 const LabelSelect = () => {
   return (
     <Select>
-      <SelectTrigger className="w-[110px] text-sm text-muted-foreground">
+      <SelectTrigger className="text-sm text-muted-foreground mr-2">
         <div className="flex items-center gap-1 text-muted-foreground">
           <span className='w-[25px] h-[12px] rounded-md bg-red-400 border-w-1 ml-2 mr-2'></span>
           <SelectValue placeholder="Color" />

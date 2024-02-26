@@ -1,1 +1,1 @@
-export const API_URL = 'http://api_taski.test/api';
+export const API_URL = 'https://api-taski.algunwey.com/api';
