@@ -10,6 +10,7 @@ import { toast } from "sonner"
 
 import { CreateProjectForm } from './CreatProjectForm'
 import { BoardsItemsSkeleton } from '@/components/placeholders';
+import { API_URL } from '@/helpers/contrants';
 
 type Project = {
     id: string;
@@ -40,7 +41,7 @@ const ProjectLists = () => {
         var myHeaders = new Headers();
         myHeaders.append("Accept", "application/json");
         myHeaders.append("Authorization", "Bearer " + cookie);
-        fetch("http://api_taski.test" + "/api/projects", {
+        fetch(API_URL + "/projects", {
             method: 'GET',
             headers: myHeaders,
             redirect: 'follow'
@@ -83,7 +84,7 @@ const ProjectLists = () => {
             redirect: 'follow'
         };
 
-        fetch("http://api_taski.test/api/projects", requestOptions)
+        fetch(API_URL + "/projects", requestOptions)
             .then(response => response.json())
             .then(res => {
                 if(res.data.project) {

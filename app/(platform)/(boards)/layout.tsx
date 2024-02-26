@@ -8,6 +8,7 @@ import { Navbar } from '@/components/Navbar'
 import { useIsAuth } from '@/hooks/useIsAuth';
 import { Logo } from '@/components/logo';
 import { BoardsSkeleton } from '@/components/placeholders';
+import { API_URL } from '@/helpers/contrants';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = React.useState(true)
@@ -44,7 +45,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         urlencoded.append("email", session?.user?.email || "");
         urlencoded.append("name", session?.user?.name || "");
 
-        fetch("http://api_taski.test/api/auth/sessionToken", {
+        fetch(API_URL + "/auth/sessionToken", {
             method: 'POST',
             headers: myHeaders,
             body: urlencoded,

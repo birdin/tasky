@@ -34,6 +34,7 @@ import { Pomodoro } from './components/Pomodoro';
 import { useGetBackgrounds } from '@/hooks/useGetBackgrounds';
 import useChannel from '@/hooks/useChannel';
 import { useDebounce } from '@/hooks/useDebounce';
+import { API_URL } from '@/helpers/contrants';
 
 
 const UNIQUE_ID = uuidv4();
@@ -79,7 +80,7 @@ export default function Home() {
       redirect: 'follow'
     };
 
-    fetch(`http://api_taski.test/api/projects/${slug.id}`, requestOptions).then((res) => res.json()).then((res) => {
+    fetch(API_URL + `/projects/${slug.id}`, requestOptions).then((res) => res.json()).then((res) => {
       setContainers(JSON.parse(res.data.project.containers));
       setBoardData(res.data.project);
     }
@@ -120,7 +121,7 @@ export default function Home() {
       redirect: 'follow'
     };
 
-    fetch("http://api_taski.test/api/projects/" + slug, requestOptions)
+    fetch(API_URL + "/projects/" + slug, requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
@@ -144,7 +145,7 @@ export default function Home() {
       redirect: 'follow'
     };
     
-    fetch("http://api_taski.test/api/projects/"+slug+"/time", requestOptions)
+    fetch(API_URL + "/projects/"+slug+"/time", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
@@ -166,7 +167,7 @@ export default function Home() {
       redirect: 'follow'
     };
 
-    fetch(`http://api_taski.test/api/projects/${slug}/containers`, requestOptions)
+    fetch(API_URL + `/projects/${slug}/containers`, requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
@@ -614,6 +615,7 @@ export default function Home() {
                           labelColor={i.labelColor}
                           isPlaceholder={i.isPlaceholder} 
                           dueDate={i.dueDate}
+                          status={i.status}
                           />
                       ))}
                     </div>
@@ -750,7 +752,7 @@ const useGetProject = (slug: any) => {
   };
 
   useEffect(() => {
-    fetch("http://api_taski.test/api/projects/18a1ffd0-76b4-4c62-a2b5-2a4bf957868a", requestOptions)
+    fetch(API_URL + "/projects/18a1ffd0-76b4-4c62-a2b5-2a4bf957868a", requestOptions)
       .then(response => response.json())
       .then(result => {
         setProject(result.data.project)
