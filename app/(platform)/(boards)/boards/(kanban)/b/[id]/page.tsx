@@ -123,7 +123,7 @@ export default function Home() {
 
     fetch(API_URL + "/projects/" + slug, requestOptions)
       .then(response => response.text())
-      .then(result => console.log(result))
+      .then(result => '')
       .catch(error => console.log('error', error));
 
   }
@@ -147,7 +147,6 @@ export default function Home() {
     
     fetch(API_URL + "/projects/"+slug+"/time", requestOptions)
       .then(response => response.text())
-      .then(result => console.log(result))
       .catch(error => console.log('error', error));
   }
 
@@ -169,7 +168,6 @@ export default function Home() {
 
     fetch(API_URL + `/projects/${slug}/containers`, requestOptions)
       .then(response => response.text())
-      .then(result => console.log(result))
       .catch(error => console.log('error', error));
   }
 
