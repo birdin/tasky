@@ -89,12 +89,12 @@ export const HomepageNavbar = () => {
                         <Logo />
                     </Link>
                     <div className="hidden md:flex items-center text-sm gap-4">
-                        <Link href="/login">
+                        <a href="/login">
                             Log in
-                        </Link>
-                        <Link href="/signup" className="bg-[--main-color] py-2 px-3 text-white rounded">
+                        </a>
+                        <a href="/signup" className="bg-[--main-color] py-2 px-3 text-white rounded">
                             Get it for free
-                        </Link>
+                        </a>
                     </div>
                     <div className="md:hidden cursor-pointer">
                         <MenuIcon />
