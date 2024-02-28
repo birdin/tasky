@@ -2,7 +2,7 @@
 
 import { Container } from "@/components/ui";
 import Link from "next/link";
-import { signIn, useSession, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { Logo } from "./logo";
 import { MenuIcon } from "./icons";
 

@@ -15,7 +15,7 @@ import {
 import { useDebounce } from '@/hooks/useDebounce';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 import { TagsSelect } from './TagSelect';
@@ -60,7 +60,6 @@ const Items = (
     },
   });
 
-  console.log('Date ', dueDate)
 
   const [isEditing, setIsEditing] = useState(false);
   const [open, setOpen] = useState(false);
@@ -105,8 +104,8 @@ const Items = (
           :
           <>
             <div className=" px-2 py-4 flex items-center justify-between text-sm" onClick={el => setOpen(true)}>
-              <div className="flex flex-col gap-1 w-full">
-                <h3 className='text-base font-medium'>
+              <div className="flex flex-col gap-2 w-full">
+                <h3 className='text-[15px]'>
                   {item?.title}
                 </h3>
                 <div className="flex items-center flex-wrap">
@@ -120,7 +119,7 @@ const Items = (
                     )
                   }
                   {
-                    (item?.status && item?.status != 'default')  && (
+                    (item?.status && item?.status != 'default') && (
                       <div className="flex items-center gap-1 text-gray-400 capitalize mr-2">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -312,7 +311,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
           </div>
 
           <div className="flex items-center flex-wrap my-2 gap-2">
-            <LabelSelect />
+            <LabelSelect setUpdatedItem={setUpdatedItem} colorValue={updatedItem?.labelColor} updatedItem={updatedItem} />
             <StatusSelect setUpdatedItem={setUpdatedItem} statusValue={updatedItem?.status} updatedItem={updatedItem} />
             <DateSelect setUpdatedItem={setUpdatedItem} dateValue={updatedItem?.dueDate} updatedItem={updatedItem} />
             <TagsSelect setUpdatedItem={setUpdatedItem} labelsValue={updatedItem?.labels} updatedItem={updatedItem} />
@@ -379,21 +378,57 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
 }
 
 
-const LabelSelect = () => {
+const COLOR = [
+  { name: 'high-red', color: 'bg-red-700' },
+  { name: 'red', color: 'bg-red-500' },
+  { name: 'low-red', color: 'bg-red-300' },
+  { name: 'high-sky', color: 'bg-sky-700' },
+  { name: 'sky', color: 'bg-sky-500' },
+  { name: 'low-sky', color: 'bg-sky-300' },
+  { name: 'high-green', color: 'bg-green-700' },
+  { name: 'green', color: 'bg-green-500' },
+  { name: 'low-green', color: 'bg-green-300' },
+  { name: 'yellow', color: 'bg-yellow-500' },
+  { name: 'indigo', color: 'bg-indigo-500' },
+  { name: 'pink', color: 'bg-pink-500' },
+  { name: 'purple', color: 'bg-purple-500' },
+  { name: 'gray', color: 'bg-gray-500' },
+  { name: 'teal', color: 'bg-teal-500' },
+  { name: 'blue', color: 'bg-blue-500' },
+  { name: 'rose', color: 'bg-rose-500' },
+  { name: 'none', color: '' },
+]
+
+
+const LabelSelect = ({ setUpdatedItem, colorValue, updatedItem }: { setUpdatedItem: any, colorValue: any, updatedItem: any }) => {
+  const [selectedColor, setSelectedColor] = useState(colorValue)
+
   return (
-    <Select>
-      <SelectTrigger className="text-sm text-muted-foreground mr-2">
+    <DropdownMenu>
+      <DropdownMenuTrigger className="text-sm text-muted-foreground mr-2">
         <div className="flex items-center gap-1 text-muted-foreground">
-          <span className='w-[25px] h-[12px] rounded-md bg-red-400 border-w-1 ml-2 mr-2'></span>
-          <SelectValue placeholder="Color" />
+          <span className={`w-[25px] h-[12px] rounded-md ${selectedColor ? selectedColor : 'bg-gray-200'} border-w-1 ml-2 mr-2`}></span>
+          <span>Color</span>
         </div>
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="light">Light</SelectItem>
-        <SelectItem value="dark">Dark</SelectItem>
-        <SelectItem value="system">System</SelectItem>
-      </SelectContent>
-    </Select>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className='p-2'>
+        <div className="grid grid-cols-3 gap-2">
+          {COLOR.map((color, index) => {
+            return (
+              <div 
+                key={`colorLabel-${index}`} 
+                className={`h-5 rounded ${color.color} pointer ${selectedColor === color.color && 'ring'}`}
+                onClick={() => {
+                  setSelectedColor(color.color)
+                  setUpdatedItem({ ...updatedItem, labelColor: color.color })
+                }}
+              >
+              </div>
+            )
+          })}
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
