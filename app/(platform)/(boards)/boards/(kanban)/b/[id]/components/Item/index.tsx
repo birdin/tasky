@@ -92,10 +92,9 @@ const Items = (
         style={{
           transition,
           transform: CSS.Translate.toString(transform),
-          borderLeft: labelColor ? `5px solid ${labelColor}` : 'none',
         }}
         className={clsx(
-          ' bg-white shadow-sm rounded border w-full hover:ring-blue-500/40 hover:ring-2 cursor-pointer',
+          `bg-white shadow-sm rounded border w-full hover:ring-blue-500/40 hover:ring-2 cursor-pointer `,
           isDragging && 'opacity-50 ring-2 ring-rose-400'
         )}
       >
@@ -103,10 +102,10 @@ const Items = (
           <div></div>
           :
           <>
-            <div className=" px-2 py-4 flex items-center justify-between text-sm" onClick={el => setOpen(true)}>
+            <div className={`px-2 py-4 flex items-center justify-between text-sm ${item?.labelColor}`} onClick={el => setOpen(true)}>
               <div className="flex flex-col gap-2 w-full">
-                <h3 className='text-[15px]'>
-                  {item?.title}
+                <h3 className={`text-[15px]`}>
+                  {item?.title} {item?.labelColor}
                 </h3>
                 <div className="flex items-center flex-wrap">
                   {
@@ -396,7 +395,6 @@ const COLOR = [
   { name: 'teal', color: 'bg-teal-500' },
   { name: 'blue', color: 'bg-blue-500' },
   { name: 'rose', color: 'bg-rose-500' },
-  { name: 'none', color: '' },
 ]
 
 
@@ -415,8 +413,8 @@ const LabelSelect = ({ setUpdatedItem, colorValue, updatedItem }: { setUpdatedIt
         <div className="grid grid-cols-3 gap-2">
           {COLOR.map((color, index) => {
             return (
-              <div 
-                key={`colorLabel-${index}`} 
+              <div
+                key={`colorLabel-${index}`}
                 className={`h-5 rounded ${color.color} pointer ${selectedColor === color.color && 'ring'}`}
                 onClick={() => {
                   setSelectedColor(color.color)
@@ -426,6 +424,16 @@ const LabelSelect = ({ setUpdatedItem, colorValue, updatedItem }: { setUpdatedIt
               </div>
             )
           })}
+          <div
+            className={`h-5 rounded pointer flex items-center overflow-hidden border ${(selectedColor == null || !selectedColor) && 'ring'}`}
+            onClick={() => {
+              setSelectedColor('')
+              setUpdatedItem({ ...updatedItem, labelColor: '' })
+            }}>
+            <div className="bg-red-500 h-[2px] w-7 rotate-45">
+            </div>
+          </div>
+
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -3,6 +3,20 @@ import React, { useState } from "react"
 import { Pencil, Trash2 } from "lucide-react"
 import { Item } from "../../types"
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+
 /*
     Update board name API
     : if response is ok, update board name in state
@@ -56,16 +70,46 @@ export const BoardSettingForm = ({ onEditBoardTitle, board }: { onEditBoardTitle
                 }
 
             </div>
-            {
-                //Delete button
-            }
-            <div className="hidden">
-                <h3 className=" text-rose-600 cursor-pointer py-1 flex items-center gap-2 w-fit">
-                    <Trash2 width={16} height={16} />
-                    Delete board
-                </h3>
-            </div>
+            <DeleteDialog boardName={boardName} />
         </div>
     )
 }
 
+
+const DeleteDialog = ({boardName}: {boardName:string | undefined}) => {
+    return (
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <div className="hover:bg-slate-200" >
+                    <h3 className=" text-rose-600 cursor-pointer py-1 flex items-center gap-2 w-fit">
+                        <Trash2 width={16} height={16} />
+                        Delete board
+                    </h3>
+                </div>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        <p>
+
+                            This action cannot be undone. This will permanently delete your
+                            board and remove your data from our servers.
+                        </p>
+
+                        <p className="my-4">
+                            If you what to delete this board, please type the name of the board below: <b>"{boardName}"</b>.
+                        </p>
+
+                        <Input/>
+
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    )
+}
