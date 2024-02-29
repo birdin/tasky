@@ -70,13 +70,13 @@ export const BoardSettingForm = ({ onEditBoardTitle, board }: { onEditBoardTitle
                 }
 
             </div>
-            <DeleteDialog />
+            <DeleteDialog boardName={boardName} />
         </div>
     )
 }
 
 
-const DeleteDialog = () => {
+const DeleteDialog = ({boardName}: {boardName:string | undefined}) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -98,7 +98,7 @@ const DeleteDialog = () => {
                         </p>
 
                         <p className="my-4">
-                            If you what to delete this board, please type the name of the board below.
+                            If you what to delete this board, please type the name of the board below: <b>"{boardName}"</b>.
                         </p>
 
                         <Input/>
