@@ -20,6 +20,7 @@ import { toast } from "sonner"
 import { useRouter } from 'next/navigation'
 import { useDelete } from "@/hooks/useDelete"
 import { API_URL } from "@/helpers/contrants"
+import { getCookie } from "cookies-next"
 
 /*
     Update board name API
@@ -85,7 +86,7 @@ const DeleteDialog = ({ boardName, slug }: { boardName: string | undefined, slug
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [value, setValue] = useState<string>("")
-    const cookies = 'cookies'
+    const cookie = getCookie("token_2sl");
 
     const router = useRouter()
 
@@ -98,15 +99,15 @@ const DeleteDialog = ({ boardName, slug }: { boardName: string | undefined, slug
         toast.error(`Error deleting board ${error}`)
     }
 
-
     const handleDelete = async () => {
         const myHeaders = new Headers();
-        if(!cookies || !slug) return
+        if (!cookie || !slug) return
 
         myHeaders.append("Accept", "application/json");
-        myHeaders.append("Authorization", "Bearer " + cookies);
-    
-    
+        myHeaders.append("Authorization", "Bearer " + cookie);
+
+        console.log("slug", slug, "cookie", cookie)
+
         const requestOptions: any = {
             method: "DELETE",
             headers: myHeaders,
@@ -115,11 +116,11 @@ const DeleteDialog = ({ boardName, slug }: { boardName: string | undefined, slug
 
 
         setIsLoading(true)
-        fetch(API_URL + "/projects/" + boardName, requestOptions)
+        fetch(API_URL + "/projects/" + slug, requestOptions)
             .then((response) => response.json())
             .then((result) => {
-                
-                if(result.message === "Project deleted"){
+
+                if (result.message === "Project deleted") {
                     setIsDeleted(true)
                 } else {
                     setError(result.message)

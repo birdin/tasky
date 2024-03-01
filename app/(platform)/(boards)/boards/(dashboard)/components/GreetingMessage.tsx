@@ -7,7 +7,6 @@ type Props = {}
 
 const GreetingMessage = (props: Props) => {
     const sessionUser = useAtomValue(userAtom)
-    console.log(sessionUser.user?.name)
     return (
         <h1 className="text-2xl md:text-3xl font-semibold">
             Good evening{`${sessionUser.user?.name && " " + sessionUser.user?.name}`}!
