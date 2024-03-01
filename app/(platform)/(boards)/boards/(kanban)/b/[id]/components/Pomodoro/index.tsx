@@ -58,7 +58,6 @@ function ReactPortal({ children, wrapperId }: {
 
 export const Pomodoro = ({ data, onUpdateTime }: Props) => {
     const [configTime, setConfigTime] = useAtom(configTimeAtom);
-
     const [time, setTime] = useState<any>(0)
     const [referenceTime, setReferenceTime] = useState<any>(configTime)
     const [rounds, setRounds] = useState<any>(0)
@@ -74,6 +73,9 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
     const [minimized, setMinimized] = useState(false);
     const [date, setDate] = useState<string>('')
 
+    const bellAudio = new Audio('https://icharliearaiza.github.io/smarttab.github.io/assets/audio/bell.wav')
+    const pressAudio = new Audio('https://icharliearaiza.github.io/smarttab.github.io/assets/audio/button-press.wav')
+
     /*
         Use effect compponents
     */
@@ -81,9 +83,7 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
         if (data) {
             if (data?.time) {
                 const dataResponse = JSON.parse(data?.time)
-                console.log('Data response', dataResponse)
                 if (dataResponse.date == getCurrentDate()) {
-                    console.log('Today')
                     setRounds(dataResponse.rounds)
                 }
                 setConfigTime(dataResponse.configTime ? dataResponse.configTime : 40)
@@ -121,8 +121,8 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
         if (start) {
             var interval = setInterval(function () {
                 const value = ((current - startTime) / 1000).toFixed(0)
-                console.log('Value', value, 'Reference', referenceTime)
                 if ((referenceTime - parseInt(value)) <= 0) {
+                    bellAudio.play()
                     setStart(false)
                     setFinished(true)
                     setTime(value);
@@ -148,6 +148,7 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
                 setTime(value)
                 console.log('Break time', breakTime - time)
                 if (breakTime - time <= 1) {
+                    bellAudio.play()
                     setIsBreak(false)
                     setReferenceTime(configTime)
                     setStart(false)
@@ -191,6 +192,7 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
     */
 
     const handleStart = () => {
+        pressAudio.play()
         setTimeStart(new Date().getTime() - 500)
         setStart(true)
         setMinimized(el => !el)
@@ -198,6 +200,7 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
 
 
     const handleStartBreak = () => {
+        pressAudio.play()
         setStart(true)
         setTimeStart(new Date().getTime() - 200)
         setTime(0)

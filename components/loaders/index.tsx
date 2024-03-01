@@ -6,7 +6,7 @@ type Props = {}
 
 export function GeneralLoader({ }: Props) {
     return (
-        <div className="h-[calc(100vh-40px)] flex justify-center items-center">
+        <div className="h-[calc(100vh-100px)] flex justify-center items-center">
             <div className="flex flex-col items-center justify-center ">
                 <div className="">
                     <Logo />
