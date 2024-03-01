@@ -6,6 +6,8 @@ import { Suspense } from 'react';
 
 import GoogleIcon from '@/assets/google.svg'
 
+import { GeneralLoader } from '@/components/loaders'
+
 export default function HomePage() {
   const { data: session, status } = useSession()
   console.log({ session, status })
@@ -17,36 +19,36 @@ export default function HomePage() {
 
   if (status === "loading") {
     return (
-      <h1>🦌 Loading 🦌</h1>
+      <GeneralLoader />
     )
   }
 
 
 
   return (
-    <Suspense fallback={<h1>🎻 Loading 🎻</h1>}>
+    <Suspense fallback={<GeneralLoader />}>
       <div className="max-w-lg mx-auto mt-5 md:mt-10 px-4 sm:px-6 md:px-8">
         <h2 className='text-center text-4xl md:text-5xl font-medium'>Log in</h2>
         <div className="text-center">
           <p>Sign in to your account</p>
         </div>
         <div className="mt-5 mx-auto">
-          <button 
+          <button
             className='bg-slate-200/80	rounded-md p-3 w-full text-center text-sm flex items-center justify-center gap-2'
             onClick={() => {
-            signIn("google");
-          }}>
+              signIn("google");
+            }}>
             <img src={GoogleIcon.src} className='w-4' alt="" />
             Log in  with google</button>
-            <p className="text-center my-2">
+          <p className="text-center my-2">
             –– or ––
-            </p>
+          </p>
           <form className="flex flex-col mt-4 gap-2">
             <label htmlFor="email">Email</label>
             <input type="email" className='border p-1' name="email" id="email" />
             <label htmlFor="password">Password</label>
             <input type="password" className='border p-1' name="password" id="password" />
-            <button 
+            <button
               type="submit"
               className='bg-gray-500 text-white rounded-md p-3 w-full text-center text-sm'
             >Sign in</button>
