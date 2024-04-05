@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils';
 import { TagsSelect } from './TagSelect';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from "sonner"
+import SubList from '../Lists/Sublist';
 
 
 type ItemsType = {
@@ -260,6 +261,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
     onEditItem(id, updatedItem);
   }, [val])
 
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent className="md:min-w-[500px] pt-3">
@@ -335,13 +337,18 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
                       setUpdatedItem(newItem);
                     }} />
                 ) : (
-                  <div className="">
-                    {updatedItem?.description ? updatedItem?.description : <span className='text-slate-500'>Add a description (optional)</span>}
+                  <div className="" dangerouslySetInnerHTML={{
+                    __html: updatedItem?.description ? updatedItem?.description?.replaceAll('\n','<br/>') : '<span class="text-slate-500">Add a description (optional)</span>'
+                  }} >
                   </div>
                 )
               }
             </div>
           </div>
+
+          {
+            <SubList />
+          }
           {
             /*
           <div>
