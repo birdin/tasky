@@ -21,7 +21,7 @@ import { cn } from '@/lib/utils';
 import { TagsSelect } from './TagSelect';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from "sonner"
-import SubList from '../Lists/Sublist';
+import SubList from './Sublist';
 
 
 type ItemsType = {
