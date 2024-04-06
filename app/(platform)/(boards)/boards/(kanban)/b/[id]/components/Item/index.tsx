@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import React, { useEffect, useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { CalendarIcon, FileText, MoreHorizontal, Text, X, Trash2, Tags, CheckCircle2, MoreVertical } from 'lucide-react';
+import { CalendarIcon, FileText, MoreHorizontal, Text, X, Trash2, Tags, CheckCircle2, MoreVertical, SquareCheck } from 'lucide-react';
 import { Item, Label } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
 import { SelectContent, SelectGroup, SelectItem, SelectValue } from '@/components/ui/select';
@@ -74,6 +74,8 @@ const Items = (
       ></div>
     )
   }
+
+  console.log("DUE DATE!",dueDate?.split('T')[0])
 
   return (
     <>
@@ -160,10 +162,22 @@ const Items = (
                     </div>
                   }
 
+                  {
+                    (item?.taskList && item?.taskList.length > 0) && 
+                    <div className='text-gray-400 mr-2'>
+                      <div className='flex items-center gap-1 text-[13px]'>
+                        <SquareCheck width={14}/>
+                        <span>
+                          {item?.taskList.filter((el:any) => el.done).length} / {item?.taskList.length} completed
+                        </span>
+                      </div>
+                    </div>
+                  }
+
                   {dueDate && (
                     <label className='text-gray-400 text-[13px] flex gap-1 items-center mr-2'>
                       <CalendarIcon width={14} />
-                      {dueDate.split('T')[0]}
+                       { dueDate?.split('T')[0] }
                     </label>
                   )
                   }
@@ -217,11 +231,6 @@ type Props = {
 
 
 function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props) {
-  const [title, setTitle] = useState(item?.title)
-  const [description, setDescription] = useState(item?.description)
-  const [label, setLabel] = useState('')
-  const [labelColor, setLabelColor] = useState('')
-  const [member, setMember] = useState('')
 
   const [editTitle, setEditTitle] = useState(false)
   const [editDescription, setEditDescription] = useState(false)
@@ -292,7 +301,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
           </div>
           
           <div>
-            <div className="px-2 py-1 text-sm flex items-start mt-1" onClick={() => { setEditDescription(true) }}>
+            <div className="px-2 py-1 text-sm flex items-start mt-1" >
               <div className="mr-2">
                 <Text width={16} />
               </div>
@@ -311,7 +320,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
                       setUpdatedItem(newItem);
                     }} />
                 ) : (
-                  <div className="" dangerouslySetInnerHTML={{
+                  <div className="" onClick={() => { setEditDescription(true) }} dangerouslySetInnerHTML={{
                     __html: updatedItem?.description ? updatedItem?.description?.replaceAll('\n','<br/>') : '<span class="text-slate-500">Add a description (optional)</span>'
                   }} >
                   </div>

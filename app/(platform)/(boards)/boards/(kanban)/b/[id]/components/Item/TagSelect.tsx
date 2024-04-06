@@ -1,9 +1,10 @@
 import { useState } from "react"
 import { Label } from "../../types"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Tags, X } from "lucide-react"
+import { CornerDownLeft, Tags, X } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { set } from "date-fns"
+import clsx from "clsx"
 
 export const TagsSelect = (
     { labelsValue, setUpdatedItem, updatedItem }
@@ -11,6 +12,7 @@ export const TagsSelect = (
     const [value, setValue] = useState('')
     const [color, setColor] = useState('red')
     const [tags, setTags] = useState<Label[]>(labelsValue || [])
+    const [isInputSelected, setIsInputSelected] = useState(false)
 
     const handleOnChange = (e: any) => {
         setValue(e.target.value)
@@ -19,8 +21,8 @@ export const TagsSelect = (
     const handleEnter = (e: any) => {
         if (e.key === 'Enter') {
             if (value === '') return;
-            const newTag = { id: Math.random().toString(), title: value, color: color}
-            console.log("Color", color )
+            const newTag = { id: Math.random().toString(), title: value, color: color }
+            console.log("Color", color)
             setUpdatedItem({ ...updatedItem, labels: [...tags, newTag] })
             setTags([...tags, newTag])
             setValue('')
@@ -50,7 +52,7 @@ export const TagsSelect = (
                                 {
                                     tags?.map((tag, index) => {
                                         return (
-                                            <label key={`tag-${index}`} 
+                                            <label key={`tag-${index}`}
                                                 className={`bg-${tag.color}-200 text-${tag.color}-800 text-[13px] px-3 rounded capitalize border border-${tag.color}-400`}>
                                                 {tag.title}
                                             </label>
@@ -71,14 +73,23 @@ export const TagsSelect = (
                     <div>
                         <div>
                             <div className="flex items-center gap-1">
-                                <input type="text"
-                                    className='justify-between border rounded px-2 h-8 w-full text-sm'
-                                    placeholder="Add new tag"
-                                    autoFocus={false}
-                                    onChange={handleOnChange}
-                                    value={value}
-                                    onKeyDown={handleEnter} />
-                                <SelectColor color={color} setColor={(el:string) => handleColor(el)} />
+                                <div className={clsx("flex items-center justify-between border rounded", isInputSelected && 'ring')}>
+                                    <input type="text"
+                                        className=' px-2 h-8 w-full text-sm focus:outline-none'
+                                        placeholder="Add new tag"
+                                        autoFocus={false}
+                                        onChange={handleOnChange}
+                                        value={value}
+                                        onKeyDown={handleEnter} 
+                                        onClick={()=> setIsInputSelected(true)}
+                                        onBlur={()=> setIsInputSelected(false)}
+                                        
+                                        />
+                                    <div className="bg-slate-300/90 border rounded h-[18px] w-[18px] mr-2">
+                                        <CornerDownLeft size={12} />
+                                    </div>
+                                </div>
+                                <SelectColor color={color} setColor={(el: string) => handleColor(el)} />
                             </div>
                             <ul className='py-2'>
                                 {tags?.map((tag, index) => {
@@ -123,14 +134,13 @@ const COLOR = [
 const SelectColor = (
     { setColor, color }
         : { setColor: any, color: string }) => {
-    const [selectedColor, setSelectedColor] = useState( COLOR.find(el=>el.name == color)?.color || 'bg-gray-500')
+    const [selectedColor, setSelectedColor] = useState(COLOR.find(el => el.name == color)?.color || 'bg-gray-500')
     return (
         <DropdownMenu>
             <DropdownMenuTrigger>
                 <div className="w-10 h-8 p-[6px] border rounded">
-                    <div className={`p-2 h-full ${
-                        selectedColor
-                    }`}>
+                    <div className={`p-2 h-full ${selectedColor
+                        }`}>
                     </div>
                 </div>
             </DropdownMenuTrigger>
@@ -139,7 +149,7 @@ const SelectColor = (
                 {
                     COLOR.map((el, index) => {
                         return (
-                            <div key={`color-${index}`} 
+                            <div key={`color-${index}`}
                                 className={`text-sm my-1 gap-2 h-8 p-[6px] flex items-center border rounded cursor-pointer ${selectedColor === el.color ? ' border-blue-400 border-2' : ''}`}
                                 onClick={() => {
                                     setColor(el.name)
