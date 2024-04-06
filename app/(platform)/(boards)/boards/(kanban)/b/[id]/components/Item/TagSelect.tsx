@@ -60,7 +60,7 @@ export const TagsSelect = (
                                 }
                             </div>
                         ) : (
-                            <div className='text-sm text-muted-foreground flex items-center gap-2'>
+                            <div className='text-sm text-muted-foreground flex items-center gap-2 cursor-pointer'>
                                 <Tags className="h-4 w-4" />
                                 Add tags
                             </div>
