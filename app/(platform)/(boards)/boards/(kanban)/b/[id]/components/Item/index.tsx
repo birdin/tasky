@@ -204,33 +204,6 @@ const Items = (
   );
 };
 
-function SelectDemo(
-  {
-    label,
-    onChangeLabel
-  }
-    : {
-      label: string | undefined,
-      onChangeLabel: (label: string) => void;
-    }) {
-  return (
-    <Select value={label}
-      onValueChange={onChangeLabel}
-      defaultValue='default'
-    >
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a fruit" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectItem value="default">Not Defined</SelectItem>
-          <SelectItem value="regular">Regular</SelectItem>
-          <SelectItem value="important">Important</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  )
-}
 
 type Props = {
   open: boolean;
@@ -347,7 +320,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
           </div>
 
           {
-            <SubList />
+            <SubList setUpdatedItem={setUpdatedItem} taskListElement={updatedItem.taskList}  updatedItem={updatedItem} />
           }
           {
             /*
