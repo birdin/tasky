@@ -1,7 +1,10 @@
 import clsx from 'clsx';
-import { Check, Plus, X } from 'lucide-react';
+import { Check, Grip, GripVertical, Plus, X } from 'lucide-react';
 import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { set } from 'date-fns';
 
 type SubListProps = {
     setUpdatedItem: any;
@@ -15,7 +18,7 @@ type ItemListType = {
     done: boolean;
 }
 
-export default function SubList({setUpdatedItem, updatedItem, taskListElement}:SubListProps) {
+export default function SubList({ setUpdatedItem, updatedItem, taskListElement }: SubListProps) {
     const [taskList, setTaskList] = useState(taskListElement ? taskListElement : [] as ItemListType[])
 
     const addTask = (task: string) => {
@@ -36,11 +39,16 @@ export default function SubList({setUpdatedItem, updatedItem, taskListElement}:S
     }
 
     const removeTask = (id: any) => {
-        setTaskList(taskList.filter((task:any) => task.id !== id))
+        const newList = taskList.filter((task: any) => task.id !== id)
+        setTaskList(newList)
+        setUpdatedItem({
+            ...updatedItem,
+            taskList: newList
+        })
     }
 
     const checkTask = (id: any) => {
-        setTaskList(taskList.map((task:any) => {
+        setTaskList(taskList.map((task: any) => {
             if (task.id === id) {
                 return {
                     ...task,
@@ -51,16 +59,36 @@ export default function SubList({setUpdatedItem, updatedItem, taskListElement}:S
         }))
     }
 
+    const handleDragEnd = (event: any) => {
+        const {active, over} = event;
+        if (active.id === over.id) return;
+        const activeIndex = taskList.findIndex((task: any) => task.id === active.id);
+        const overIndex = taskList.findIndex((task: any) => task.id === over.id);
+        const newTaskList = [...taskList];
+        newTaskList.splice(activeIndex, 1);
+        newTaskList.splice(overIndex, 0, taskList[activeIndex]);
+        setTaskList(newTaskList);
+        setUpdatedItem({
+            ...updatedItem,
+            taskList: newTaskList
+        })
+    }
+
     return (
         <>
             <div>
                 <h3 className='text-sm font-semibold mt-4 mb-2 text-slate-500'>Subtasks</h3>
                 <ul>
-                    {taskList?.map((task:any) => {
-                        return (
-                            <Item key={task.id} task={task} removeTask={removeTask} checkTask={checkTask} />
-                        )
-                    })}
+                    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}> 
+                        <SortableContext items={taskList} strategy={verticalListSortingStrategy}>
+                            {taskList.map((task: any) => {
+                                return (
+                                    <Item key={task.id} task={task} removeTask={removeTask} checkTask={checkTask} />
+                                ) 
+                            })}
+                        </SortableContext>
+                        
+                    </DndContext>
                 </ul>
             </div>
             <div className="flex items-center gap-2">
@@ -90,9 +118,20 @@ type ItemProps = {
 
 const Item = ({ task, removeTask, checkTask }: ItemProps) => {
     const [edit, setEdit] = useState(false);
+    const {attributes, listeners, setNodeRef, transform, transition} = useSortable({ id: task.id });
 
     return (
-        <li className='flex items-center justify-between gap-2 py-2 text-sm border-b'>
+        <li 
+            ref={setNodeRef}
+            style={{
+                transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+                transition,
+            }}
+            {...attributes}
+            className='flex items-center justify-between gap-2 py-3 text-sm border-b'>
+            <div {...listeners}>
+                <GripVertical className='text-slate-300/90 hover:text-slate-400' size={18} />
+            </div>
             <div onClick={() => checkTask(task.id)}>
                 <div className={clsx('w-5 h-5 border-2 rounded-full cursor-pointer',
                     task.done && 'bg-slate-400 flex items-center justify-center')}>
@@ -114,7 +153,7 @@ const Item = ({ task, removeTask, checkTask }: ItemProps) => {
                             setEdit(false);
                         }}
                         autoFocus
-                        onBlur={() => setEdit(false)}                    />
+                        onBlur={() => setEdit(false)} />
                 )
             }
             <button onClick={() => removeTask(task.id)} className='text-slate-400'>
