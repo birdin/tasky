@@ -3,16 +3,20 @@ import { Check, Plus, X } from 'lucide-react';
 import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
-type Props = {}
+type SubListProps = {
+    setUpdatedItem: any;
+    updatedItem: any;
+    taskListElement: any;
+}
 
-type ItemList = {
+type ItemListType = {
     id: any;
     name: string;
     done: boolean;
 }
 
-export default function SubList() {
-    const [taskList, setTaskList] = useState([] as ItemList[])
+export default function SubList({setUpdatedItem, updatedItem, taskListElement}:SubListProps) {
+    const [taskList, setTaskList] = useState(taskListElement ? taskListElement : [] as ItemListType[])
 
     const addTask = (task: string) => {
         setTaskList([...taskList, {
@@ -20,15 +24,23 @@ export default function SubList() {
             name: task,
             done: false
         }])
+
+        setUpdatedItem({
+            ...updatedItem,
+            taskList: [...taskList, {
+                id: uuidv4(),
+                name: task,
+                done: false
+            }]
+        })
     }
 
     const removeTask = (id: any) => {
-        setTaskList(taskList.filter(task => task.id !== id))
+        setTaskList(taskList.filter((task:any) => task.id !== id))
     }
 
     const checkTask = (id: any) => {
-        console.log("element is checked", id)
-        setTaskList(taskList.map(task => {
+        setTaskList(taskList.map((task:any) => {
             if (task.id === id) {
                 return {
                     ...task,
@@ -44,7 +56,7 @@ export default function SubList() {
             <div>
                 <h3 className='text-sm font-semibold mt-4 mb-2 text-slate-500'>Subtasks</h3>
                 <ul>
-                    {taskList.map(task => {
+                    {taskList?.map((task:any) => {
                         return (
                             <Item key={task.id} task={task} removeTask={removeTask} checkTask={checkTask} />
                         )
@@ -71,7 +83,7 @@ export default function SubList() {
 }
 
 type ItemProps = {
-    task: ItemList;
+    task: ItemListType;
     removeTask: (id: any) => void;
     checkTask: (id: any) => void;
 }
@@ -101,8 +113,8 @@ const Item = ({ task, removeTask, checkTask }: ItemProps) => {
                             if (e.key !== "Enter") return;
                             setEdit(false);
                         }}
-                        onBlur={() => setEdit(false)}
-                    />
+                        autoFocus
+                        onBlur={() => setEdit(false)}                    />
                 )
             }
             <button onClick={() => removeTask(task.id)} className='text-slate-400'>

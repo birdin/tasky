@@ -19,6 +19,7 @@ export type Item = {
   status?: string;
   comments?: number;
   priority?: string;
+  taskList?: any;
 }
 
 export type DNDType = {

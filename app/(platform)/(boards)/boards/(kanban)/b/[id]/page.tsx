@@ -249,6 +249,7 @@ export default function Home() {
     item.dueDate = selectItem.dueDate;
     item.status = selectItem.status;
     item.labels = selectItem.labels;
+    item.taskList = selectItem.taskList;
 
     //item.on
 
