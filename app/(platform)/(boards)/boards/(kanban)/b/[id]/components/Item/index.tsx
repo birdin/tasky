@@ -290,6 +290,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
             <DateSelect setUpdatedItem={setUpdatedItem} dateValue={updatedItem?.dueDate} updatedItem={updatedItem} />
             <TagsSelect setUpdatedItem={setUpdatedItem} labelsValue={updatedItem?.labels} updatedItem={updatedItem} />
           </div>
+          
           <div>
             <div className="px-2 py-1 text-sm flex items-start mt-1" onClick={() => { setEditDescription(true) }}>
               <div className="mr-2">

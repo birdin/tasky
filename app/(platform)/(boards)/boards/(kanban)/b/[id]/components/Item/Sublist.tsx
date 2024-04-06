@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { set } from 'date-fns';
 
 type SubListProps = {
     setUpdatedItem: any;
@@ -47,8 +46,25 @@ export default function SubList({ setUpdatedItem, updatedItem, taskListElement }
         })
     }
 
+    const editTask = (id: any, name: string) => {
+        const newList = taskList.map((task: any) => {
+            if (task.id === id) {
+                return {
+                    ...task,
+                    name: name
+                }
+            }
+            return task;
+        })
+        setTaskList(newList)
+        setUpdatedItem({
+            ...updatedItem,
+            taskList: newList
+        })
+    }
+
     const checkTask = (id: any) => {
-        setTaskList(taskList.map((task: any) => {
+        const newList = taskList.map((task: any) => {
             if (task.id === id) {
                 return {
                     ...task,
@@ -56,7 +72,12 @@ export default function SubList({ setUpdatedItem, updatedItem, taskListElement }
                 }
             }
             return task;
-        }))
+        })
+        setUpdatedItem({
+            ...updatedItem,
+            taskList: newList
+        })
+        setTaskList(newList)
     }
 
     const handleDragEnd = (event: any) => {
@@ -83,7 +104,13 @@ export default function SubList({ setUpdatedItem, updatedItem, taskListElement }
                         <SortableContext items={taskList} strategy={verticalListSortingStrategy}>
                             {taskList.map((task: any) => {
                                 return (
-                                    <Item key={task.id} task={task} removeTask={removeTask} checkTask={checkTask} />
+                                    <Item 
+                                        key={task.id} 
+                                        task={task} 
+                                        removeTask={removeTask} 
+                                        checkTask={checkTask} 
+                                        editTask={editTask}
+                                    />
                                 ) 
                             })}
                         </SortableContext>
@@ -114,9 +141,10 @@ type ItemProps = {
     task: ItemListType;
     removeTask: (id: any) => void;
     checkTask: (id: any) => void;
+    editTask: (id: any, task: string) => void;
 }
 
-const Item = ({ task, removeTask, checkTask }: ItemProps) => {
+const Item = ({ task, removeTask, checkTask, editTask }: ItemProps) => {
     const [edit, setEdit] = useState(false);
     const {attributes, listeners, setNodeRef, transform, transition} = useSortable({ id: task.id });
 
@@ -128,7 +156,7 @@ const Item = ({ task, removeTask, checkTask }: ItemProps) => {
                 transition,
             }}
             {...attributes}
-            className='flex items-center justify-between gap-2 py-3 text-sm border-b'>
+            className='flex items-center justify-between gap-2 py-3 text-sm border-b bg-white'>
             <div {...listeners}>
                 <GripVertical className='text-slate-300/90 hover:text-slate-400' size={18} />
             </div>
@@ -149,11 +177,17 @@ const Item = ({ task, removeTask, checkTask }: ItemProps) => {
                         defaultValue={task.name}
                         className='focus:outline-none ring border-slate-200 text-sm block px-1 w-full bg-transparent'
                         onKeyDown={(e) => {
-                            if (e.key !== "Enter") return;
+                            if (e.key !== "Enter") {
+                                return;
+                            }
+                            editTask(task.id, e.currentTarget.value);
                             setEdit(false);
                         }}
                         autoFocus
-                        onBlur={() => setEdit(false)} />
+                        onBlur={(e) => {
+                            editTask(task.id, e.currentTarget.value);
+                            setEdit(false)
+                        }} />
                 )
             }
             <button onClick={() => removeTask(task.id)} className='text-slate-400'>
