@@ -85,7 +85,7 @@ export const TagsSelect = (
                                         onBlur={()=> setIsInputSelected(false)}
                                         
                                         />
-                                    <div className="bg-slate-300/90 border rounded h-[18px] w-[18px] mr-2">
+                                    <div className="bg-slate-300/90 border-2 rounded h-[18px] w-[18px] mr-2">
                                         <CornerDownLeft size={12} />
                                     </div>
                                 </div>

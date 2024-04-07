@@ -168,7 +168,7 @@ const Items = (
                       <div className='flex items-center gap-1 text-[13px]'>
                         <SquareCheck width={14}/>
                         <span>
-                          {item?.taskList.filter((el:any) => el.done).length} / {item?.taskList.length} completed
+                          {item?.taskList.filter((el:any) => el.done).length}/{item?.taskList.length}
                         </span>
                       </div>
                     </div>
@@ -237,7 +237,7 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
 
   const [updatedItem, setUpdatedItem] = useState<any>(item);
 
-  const val = useDebounce(updatedItem, 2500)
+  const val = useDebounce(updatedItem, 1000)
 
   useEffect(() => {
     onEditItem(id, updatedItem);
