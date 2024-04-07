@@ -3,7 +3,6 @@ import { Label } from "../../types"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CornerDownLeft, Tags, X } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { set } from "date-fns"
 import clsx from "clsx"
 
 export const TagsSelect = (
@@ -85,7 +84,7 @@ export const TagsSelect = (
                                         onBlur={()=> setIsInputSelected(false)}
                                         
                                         />
-                                    <div className="bg-slate-300/90 border rounded h-[18px] w-[18px] mr-2">
+                                    <div className="bg-slate-300/90 border-2 rounded h-[18px] w-[18px] mr-2">
                                         <CornerDownLeft size={12} />
                                     </div>
                                 </div>
