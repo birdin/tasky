@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { CalendarIcon, FileText, MoreHorizontal, Text, X, Trash2, Tags, CheckCircle2, MoreVertical, SquareCheck } from 'lucide-react';
 import { Item, Label } from '../../types';
 import { Select, SelectTrigger } from '@radix-ui/react-select';
-import { SelectContent, SelectGroup, SelectItem, SelectValue } from '@/components/ui/select';
+import { SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import {
   Sheet,
   SheetContent,
@@ -15,7 +15,7 @@ import {
 import { useDebounce } from '@/hooks/useDebounce';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { format, set } from 'date-fns';
+import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 import { TagsSelect } from './TagSelect';
@@ -242,7 +242,6 @@ function SheetDemo({ open, setOpen, item, onEditItem, onDeleteItem, id }: Props)
   useEffect(() => {
     onEditItem(id, updatedItem);
   }, [val])
-
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

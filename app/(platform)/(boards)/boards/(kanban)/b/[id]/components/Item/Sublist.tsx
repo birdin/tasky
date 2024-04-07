@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Check, Grip, GripVertical, Plus, X } from 'lucide-react';
+import { Check, GripVertical, Plus, X } from 'lucide-react';
 import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { DndContext, closestCenter } from '@dnd-kit/core';

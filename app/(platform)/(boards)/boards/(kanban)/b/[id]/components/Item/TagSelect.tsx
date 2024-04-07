@@ -3,7 +3,6 @@ import { Label } from "../../types"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CornerDownLeft, Tags, X } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { set } from "date-fns"
 import clsx from "clsx"
 
 export const TagsSelect = (
