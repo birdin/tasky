@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { CardDescription } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useGetBackgrounds } from '@/hooks/useGetBackgrounds'
-import { getCookie } from "cookies-next";
 
 const urlOptions = [
     {
