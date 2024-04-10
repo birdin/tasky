@@ -133,8 +133,12 @@ export const Pomodoro = ({ data, onUpdateTime }: Props) => {
                     setRounds(rounds + 1)
                     toast.success('Pomodoro finished')
                     setDate(getCurrentDate())
+
+                    //change title of the page
+                    document.title = "Tasky - Project"
                 } else {
                     setTime(value);
+                    document.title = `⏰ ${convertSecondsToMinutes(referenceTime - parseInt(value))} - Tasky project managment`
                 }
             }, 1000);
             return () => clearInterval(interval)

@@ -31,8 +31,6 @@ export const TagsSelect = (
 
     const handleColor = (newColor: string) => {
         setColor(newColor)
-        console.log('New Color here', newColor)
-        console.log(updatedItem)
     }
 
     const removeItem = (index: number) => {
