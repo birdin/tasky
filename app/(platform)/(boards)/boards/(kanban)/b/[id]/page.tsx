@@ -542,7 +542,7 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-[#cde0e0] bg-cover max-h-[100vh - 250px]"
+    <div className="bg-[#eeeeee] bg-cover max-h-[100vh - 250px]"
       style={{
         backgroundImage: `url(${boardData?.background?.url})`,
         backgroundSize: 'cover',
