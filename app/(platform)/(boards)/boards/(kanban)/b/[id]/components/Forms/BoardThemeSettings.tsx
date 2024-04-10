@@ -10,8 +10,8 @@ const urlOptions = [
     {
         id: "bg-1",
         value: "bg-1",
-        url: "https://images.unsplash.com/photo-1703002917693-e51692232c81?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        thumb: "https://images.unsplash.com/photo-1703002917693-e51692232c81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDJ8MzE3MDk5fHx8fHwyfHwxNzA0MjE1Mjg0fA&ixlib=rb-4.0.3&q=80&w=200&quot"
+        url: "https://artefeed.com/wp-content/uploads/2024/04/default-bg.jpg",
+        thumb: "https://artefeed.com/wp-content/uploads/2024/04/default-bg-thumb.jpg"
     },
     {
         id: "bg-2",
@@ -42,6 +42,18 @@ const urlOptions = [
         value: "bg-6",
         url: "https://images.unsplash.com/photo-1459535653751-d571815e906b?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         thumb: "https://images.unsplash.com/photo-1459535653751-d571815e906b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwcm9maWxlLXBhZ2V8MTB8fHxlbnwwfHx8fHw%3D"
+    },
+    {
+        id: "bg-7",
+        value: "bg-7",
+        url: "https://images.unsplash.com/photo-1634693798046-b00e706c3076?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        thumb: "https://images.unsplash.com/photo-1634693798046-b00e706c3076?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwcm9maWxlLXBhZ2V8MTJ8fHxlbnwwfHx8fHw%3D"
+    },
+    {
+        id: "bg-8",
+        value: "bg-8",
+        url: "https://images.unsplash.com/photo-1703002917693-e51692232c81?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        thumb: "https://images.unsplash.com/photo-1703002917693-e51692232c81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDJ8MzE3MDk5fHx8fHwyfHwxNzA0MjE1Mjg0fA&ixlib=rb-4.0.3&q=80&w=200&quot"
     },
 ]
 
