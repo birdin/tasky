@@ -75,7 +75,6 @@ const Items = (
     )
   }
 
-  console.log("DUE DATE!",dueDate?.split('T')[0])
 
   return (
     <>

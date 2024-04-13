@@ -67,7 +67,7 @@ export const BoardThemeSettings = ({ onEditBackground, background, backgroundLis
 
     const handleSelect = (value: string) => {
         const resp = urlOptions.find(el => el.value === value)
-        console.log(resp)
+
         if (resp) {
             onEditBackground(resp)
             setSelected(resp)
